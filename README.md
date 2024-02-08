@@ -1,24 +1,8 @@
-# 001-slide-detection
+<!--
+ * @Author      : Mr.bin
+ * @Date        : 2024-02-07 14:19:32
+ * @LastEditTime: 2024-02-07 15:26:33
+ * @Description : 001-slide-detection
+-->
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# 滑块数据检测软件
