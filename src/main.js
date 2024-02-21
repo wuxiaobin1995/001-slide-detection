@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-02-07 14:51:42
+ * @LastEditTime: 2024-02-21 10:55:00
  * @Description : 渲染进程入口
  */
 import Vue from 'vue'
@@ -10,9 +10,6 @@ import router from './router'
 import store from './store'
 
 /************************************************************/
-/* 引入阿里巴巴iconfont图标 */
-import '@/assets/icon/iconfont.css'
-import '@/assets/icon/iconfont.js' // 用于彩色图标
 /* 引入Element-UI组件库 */
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
