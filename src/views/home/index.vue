@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 15:05:37
- * @LastEditTime: 2024-02-21 15:07:13
+ * @LastEditTime: 2024-02-22 17:56:31
  * @Description : 首页
 -->
 <template>
@@ -9,6 +9,9 @@
     <div class="wrapper">
       <!-- 软件名称 -->
       <div class="title">滑块数据检测软件</div>
+
+      <div>规格：</div>
+      <div>型号：</div>
 
       <!-- 配置 -->
       <div class="select-item">

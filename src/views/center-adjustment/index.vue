@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-21 14:18:34
- * @LastEditTime: 2024-02-21 17:59:56
+ * @LastEditTime: 2024-02-22 17:35:04
  * @Description : 中心距调零
 -->
 <template>
@@ -9,17 +9,34 @@
     <!-- 标题 -->
     <div class="title">中心距调零-页面</div>
 
+    <!-- 主内容 -->
     <div class="main">
       <div class="left">
-        <div class="text">文字说明</div>
+        <div class="text">
+          <div class="item">
+            1、若中心距不为0，则先擦拭导轨、滑块等，再次按下机械按钮
+          </div>
+          <div class="item">
+            2、若中心距仍不为0，则查看滑块是否对准了，再次按下机械按钮
+          </div>
+          <div class="item">3、若中心距依然不为0，则点击“调 零”按钮</div>
+        </div>
+
         <el-collapse class="collapse">
-          <el-collapse-item title="详 情">
+          <el-collapse-item title="详 情 展 开">
             <div class="item">下位机源数据：{{ source }}</div>
+            <div class="item">k：{{ k }}</div>
+            <div class="item">b：{{ b }}</div>
             <div class="item">
-              缓存中心距：{{ spacingStorage > 0 ? '+' : ''
-              }}{{ spacingStorage }}
+              公式【精确到0.1】：实时中心距 = （k * x + b） / 10 + 补偿值
             </div>
-            <div class="item">实时中心距：{{ spacingActual }}</div>
+            <div class="item">
+              缓存中心距(基准)：{{ spacingReference > 0 ? '+' : ''
+              }}{{ spacingReference }}
+            </div>
+            <div class="item">
+              实时中心距：{{ spacingActual > 0 ? '+' : '' }}{{ spacingActual }}
+            </div>
           </el-collapse-item>
         </el-collapse>
       </div>
@@ -36,8 +53,15 @@
 
     <!-- 按钮组 -->
     <div class="btn">
-      <el-button class="item" type="danger" @click="handleToHome"
+      <el-button
+        class="item"
+        icon="el-icon-back"
+        type="info"
+        @click="handleToHome"
         >返 回 首 页</el-button
+      >
+      <el-button class="item" type="primary" @click="handleRefresh"
+        >刷 新 页 面</el-button
       >
     </div>
   </div>
@@ -61,22 +85,22 @@ export default {
       source: '', // 下位机源数据
       pressureDigital: '', // 实时的压力数字量
       k: 0.16,
-      c: 5680,
+      b: -5680,
+      spacingReference: 0, // 基准中心距
       spacingActual: '', // 实时的中心距
-      spacingShow: '', // 展示的中心距
-      spacingStorage: 0 // 缓存的中心距
+      spacingShow: '' // 展示的中心距
     }
   },
 
   created() {
-    // 先取出缓存中的中心距值
-    this.spacingStorage = JSON.parse(
-      window.sessionStorage.getItem('spacingStorage')
+    // 取出缓存中的基准中心距值
+    this.spacingReference = JSON.parse(
+      window.sessionStorage.getItem('spacingReference')
     )
-      ? JSON.parse(window.sessionStorage.getItem('spacingStorage'))
+      ? JSON.parse(window.sessionStorage.getItem('spacingReference'))
       : 0
 
-    this.initSerialPort() // 检测串口通信是否正常
+    this.initSerialPort()
   },
   beforeDestroy() {
     if (this.usbPort) {
@@ -87,6 +111,9 @@ export default {
   },
 
   methods: {
+    /**
+     * @description: 串口
+     */
     initSerialPort() {
       SerialPort.list()
         .then(ports => {
@@ -123,7 +150,7 @@ export default {
                   center: true,
                   confirmButtonText: '刷新页面',
                   callback: () => {
-                    window.location.reload()
+                    this.handleRefresh()
                   }
                 }
               )
@@ -139,14 +166,20 @@ export default {
               this.pressureDigital = dataArray[dataArray.length - 1] // 取出最后一个压力数字量
 
               /* 计算 */
-              this.spacingActual = parseFloat(
-                ((this.pressureDigital * this.k - this.c) / 10).toFixed(1)
+              const spacingOriginal = parseFloat(
+                ((this.k * this.pressureDigital + this.b) / 10).toFixed(1)
               )
+              // 补偿，算出最终的实时中心距
+              if (spacingOriginal >= 0 && spacingOriginal < 4) {
+                this.spacingActual = parseFloat(
+                  (spacingOriginal + 0.1).toFixed(1)
+                )
+              } else {
+                this.spacingActual = spacingOriginal
+              }
+
               this.spacingShow = parseFloat(
-                (
-                  (this.pressureDigital * this.k - this.c) / 10 -
-                  this.spacingStorage
-                ).toFixed(1)
+                (this.spacingActual - this.spacingReference).toFixed(1)
               )
             })
           } else {
@@ -159,7 +192,7 @@ export default {
                 center: true,
                 confirmButtonText: '刷新页面',
                 callback: () => {
-                  window.location.reload()
+                  this.handleRefresh()
                 }
               }
             )
@@ -175,7 +208,7 @@ export default {
               center: true,
               confirmButtonText: '刷新页面',
               callback: () => {
-                window.location.reload()
+                this.handleRefresh()
               }
             }
           )
@@ -186,20 +219,26 @@ export default {
      * @description: 调零
      */
     handleConfirm() {
-      this.spacingStorage = parseFloat(
-        ((this.pressureDigital * this.k - this.c) / 10).toFixed(1)
-      )
-      window.sessionStorage.setItem(
-        'spacingStorage',
-        JSON.stringify(this.spacingStorage)
-      )
-      this.spacingShow = 0
+      if (this.pressureDigital === '') {
+        this.$message({
+          message: `下位机数据为空，请先点击“机械按钮”`,
+          type: 'error',
+          duration: 2000
+        })
+      } else {
+        this.spacingReference = this.spacingActual
+        window.sessionStorage.setItem(
+          'spacingReference',
+          JSON.stringify(this.spacingReference)
+        )
+        this.spacingShow = 0
 
-      this.$message({
-        message: '调零成功',
-        type: 'success',
-        duration: 3000
-      })
+        this.$message({
+          message: '调零成功',
+          type: 'success',
+          duration: 3000
+        })
+      }
     },
 
     /**
@@ -243,24 +282,28 @@ export default {
     flex: 1;
     @include flex(row, stretch, stretch);
     .left {
-      width: 30%;
+      width: 40%;
       .text {
-        font-size: 26px;
+        font-size: 24px;
         margin-bottom: 10px;
+        .item {
+          margin-bottom: 10px;
+        }
       }
       .collapse {
         .item {
           font-size: 20px;
-          margin: 10px 0;
+          margin: 5px 0;
         }
       }
     }
     .right {
-      width: 70%;
-      @include flex(column, center, center);
+      width: 60%;
+      @include flex(column, stretch, center);
       .item {
-        font-size: 30px;
-        margin: 50px 0;
+        font-size: 100px;
+        color: red;
+        margin: 100px 0 80px 0;
       }
       .btn-confirm {
         width: 160px;
@@ -271,11 +314,12 @@ export default {
   }
 
   .btn {
-    margin-top: 10px;
-    @include flex(row, center, center);
+    margin: 10px 0 20px 0;
+    @include flex(row, stretch, center);
     .item {
-      width: 150px;
+      width: 190px;
       font-size: 22px;
+      margin-right: 40px;
     }
   }
 }
