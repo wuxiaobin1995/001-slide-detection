@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 15:05:37
- * @LastEditTime: 2024-02-22 17:56:31
+ * @LastEditTime: 2024-02-23 11:44:48
  * @Description : 首页
 -->
 <template>
@@ -10,8 +10,24 @@
       <!-- 软件名称 -->
       <div class="title">滑块数据检测软件</div>
 
-      <div>规格：</div>
-      <div>型号：</div>
+      <!-- 设置规格型号 -->
+      <div class="model-specifications">
+        <el-button class="btn" type="danger" @click="handleModelSpecifications"
+          >选择 - 规格型号</el-button
+        >
+        <div class="text">
+          规格：{{
+            this.$store.state.specifications === ''
+              ? '未选择'
+              : this.$store.state.specifications
+          }}
+        </div>
+        <div class="text">
+          型号：{{
+            this.$store.state.model === '' ? '未选择' : this.$store.state.model
+          }}
+        </div>
+      </div>
 
       <!-- 配置 -->
       <div class="select-item">
@@ -99,32 +115,56 @@ export default {
      * @param {String} src
      */
     handleClick(src) {
-      if (src === 'src1') {
-        // 配置
-        this.$router.push({
-          path: '/configuration'
+      // 先判断规格型号是否选择了
+      const specifications = this.$store.state.specifications
+      const model = this.$store.state.model
+      if (specifications === '' || model === '') {
+        this.$alert(`您好，请先选择规格型号，点击“确 认”按钮`, `提示`, {
+          type: 'warning',
+          showClose: false,
+          center: true,
+          confirmButtonText: '确 认',
+          callback: () => {
+            this.handleModelSpecifications()
+          }
         })
-      } else if (src === 'src2') {
-        // 中心距调零
-        this.$router.push({
-          path: '/center-adjustment'
-        })
-      } else if (src === 'src3') {
-        // 球号推荐
-        this.$router.push({
-          path: '/ball-recommendation'
-        })
-      } else if (src === 'src4') {
-        // 滑块数据测量
-        this.$router.push({
-          path: '/slide-measurement'
-        })
-      } else if (src === 'src5') {
-        // 测基准
-        this.$router.push({
-          path: '/datum'
-        })
+      } else {
+        if (src === 'src1') {
+          // 配置
+          this.$router.push({
+            path: '/configuration'
+          })
+        } else if (src === 'src2') {
+          // 中心距调零
+          this.$router.push({
+            path: '/center-adjustment'
+          })
+        } else if (src === 'src3') {
+          // 球号推荐
+          this.$router.push({
+            path: '/ball-recommendation'
+          })
+        } else if (src === 'src4') {
+          // 滑块数据测量
+          this.$router.push({
+            path: '/slide-measurement'
+          })
+        } else if (src === 'src5') {
+          // 测基准
+          this.$router.push({
+            path: '/datum'
+          })
+        }
       }
+    },
+
+    /**
+     * @description: 设置规格型号
+     */
+    handleModelSpecifications() {
+      this.$router.push({
+        path: '/model-specifications'
+      })
     },
 
     /**
@@ -175,6 +215,20 @@ export default {
       top: 15px;
       font-size: 60px;
       font-weight: 700;
+    }
+
+    .model-specifications {
+      position: absolute;
+      left: 25px;
+      top: 30px;
+      .btn {
+        font-size: 34px;
+      }
+      .text {
+        font-size: 24px;
+        font-weight: 700;
+        margin-top: 10px;
+      }
     }
 
     .select-item {

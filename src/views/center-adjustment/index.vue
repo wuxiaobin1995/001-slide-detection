@@ -1,13 +1,29 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-21 14:18:34
- * @LastEditTime: 2024-02-22 17:35:04
+ * @LastEditTime: 2024-02-23 16:29:57
  * @Description : 中心距调零
 -->
 <template>
   <div class="center-adjustment">
     <!-- 标题 -->
     <div class="title">中心距调零-页面</div>
+
+    <!-- 规格型号 -->
+    <div class="model-specifications">
+      <div class="text">
+        规格：{{
+          this.$store.state.specifications === ''
+            ? '未选择'
+            : this.$store.state.specifications
+        }}
+      </div>
+      <div class="text">
+        型号：{{
+          this.$store.state.model === '' ? '未选择' : this.$store.state.model
+        }}
+      </div>
+    </div>
 
     <!-- 主内容 -->
     <div class="main">
@@ -43,7 +59,10 @@
 
       <div class="right">
         <div class="item">
-          中心距：{{ spacingShow > 0 ? '+' : '' }}{{ spacingShow }}
+          <div class="text">中心距</div>
+          <div class="value">
+            {{ spacingShow > 0 ? '+' : '' }}{{ spacingShow }}
+          </div>
         </div>
         <el-button class="btn-confirm" type="success" @click="handleConfirm"
           >调 零</el-button
@@ -278,6 +297,17 @@ export default {
     margin-bottom: 10px;
   }
 
+  .model-specifications {
+    position: absolute;
+    right: 2.5%;
+    top: 30px;
+    .text {
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+  }
+
   .main {
     flex: 1;
     @include flex(row, stretch, stretch);
@@ -301,9 +331,16 @@ export default {
       width: 60%;
       @include flex(column, stretch, center);
       .item {
-        font-size: 100px;
-        color: red;
-        margin: 100px 0 80px 0;
+        margin: 50px 0 50px 0;
+        @include flex(column, stretch, center);
+        .text {
+          font-size: 50px;
+          color: black;
+        }
+        .value {
+          font-size: 200px;
+          color: red;
+        }
       }
       .btn-confirm {
         width: 160px;

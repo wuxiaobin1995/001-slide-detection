@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-21 14:18:34
- * @LastEditTime: 2024-02-21 15:40:02
+ * @LastEditTime: 2024-02-23 16:21:09
  * @Description : 配置
 -->
 <template>
@@ -13,7 +13,7 @@
 
     <!-- 按钮组 -->
     <div class="btn">
-      <el-button class="item" type="danger" @click="handleToHome"
+      <el-button class="item" type="info" @click="handleToHome"
         >返 回 首 页</el-button
       >
     </div>

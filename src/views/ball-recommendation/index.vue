@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-21 14:18:34
- * @LastEditTime: 2024-02-22 17:31:23
+ * @LastEditTime: 2024-02-23 15:39:07
  * @Description : 球号推荐
 -->
 <template>
@@ -9,11 +9,29 @@
     <!-- 标题 -->
     <div class="title">球号推荐-页面</div>
 
+    <!-- 规格型号 -->
+    <div class="model-specifications">
+      <div class="text">
+        规格：{{
+          this.$store.state.specifications === ''
+            ? '未选择'
+            : this.$store.state.specifications
+        }}
+      </div>
+      <div class="text">
+        型号：{{
+          this.$store.state.model === '' ? '未选择' : this.$store.state.model
+        }}
+      </div>
+    </div>
+
     <!-- 主内容 -->
     <div class="main">
       <div class="left">
         <div class="text">
-          <div class="item">按下机械按钮，就会显示推荐的球号</div>
+          <div class="item">
+            气嘴对准滑块中部，然后按下机械按钮，就会显示推荐的球号
+          </div>
         </div>
 
         <el-collapse class="collapse">
@@ -44,7 +62,10 @@
 
       <div class="right">
         <div class="item">
-          球号：{{ ballNumber > 0 ? '+' : '' }}{{ ballNumber }}
+          <div class="text">球号</div>
+          <div class="value">
+            {{ ballNumber > 0 ? '+' : '' }}{{ ballNumber }}
+          </div>
         </div>
       </div>
     </div>
@@ -252,6 +273,17 @@ export default {
     margin-bottom: 10px;
   }
 
+  .model-specifications {
+    position: absolute;
+    right: 2.5%;
+    top: 30px;
+    .text {
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+  }
+
   .main {
     flex: 1;
     @include flex(row, stretch, stretch);
@@ -275,9 +307,16 @@ export default {
       width: 60%;
       @include flex(column, stretch, center);
       .item {
-        font-size: 100px;
-        color: red;
-        margin: 100px 0 80px 0;
+        margin: 50px 0 50px 0;
+        @include flex(column, stretch, center);
+        .text {
+          font-size: 50px;
+          color: black;
+        }
+        .value {
+          font-size: 200px;
+          color: red;
+        }
       }
       .btn-confirm {
         width: 160px;

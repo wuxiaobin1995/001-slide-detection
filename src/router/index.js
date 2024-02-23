@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-02-22 16:53:14
+ * @LastEditTime: 2024-02-23 09:23:03
  * @Description : 路由
  */
 import Vue from 'vue'
@@ -22,6 +22,14 @@ const routes = [
     name: 'home',
     component: () => import('@/views/home'),
     meta: ['首页']
+  },
+
+  // 设置规格型号
+  {
+    path: '/model-specifications',
+    name: 'model-specifications',
+    component: () => import('@/views/model-specifications'),
+    meta: ['设置规格型号']
   },
 
   // 配置
