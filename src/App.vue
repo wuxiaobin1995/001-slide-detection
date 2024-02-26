@@ -32,6 +32,10 @@ export default {
       if (!window.sessionStorage.getItem('spacingReference')) {
         window.sessionStorage.setItem('spacingReference', JSON.stringify(0))
       }
+      /* 初始化标准滑块的基准值 */
+      if (!window.sessionStorage.getItem('slideBenchmark')) {
+        window.sessionStorage.setItem('slideBenchmark', JSON.stringify([]))
+      }
     },
 
     /**

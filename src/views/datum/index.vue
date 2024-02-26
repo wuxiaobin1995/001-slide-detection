@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-21 14:18:34
- * @LastEditTime: 2024-02-23 17:00:46
+ * @LastEditTime: 2024-02-26 17:03:37
  * @Description : 测基准
 -->
 <template>
@@ -27,7 +27,42 @@
 
     <!-- 主内容 -->
     <div class="main">
-      <div>{{ sourceArray }}</div>
+      <div class="item">
+        <span>下位机源数据：</span>
+        <span>
+          {{ source }}
+        </span>
+      </div>
+
+      <div class="item">
+        <span>第一次：</span>
+        <span>
+          {{ sourceArray[0] }} {{ sourceArray[1] }} {{ sourceArray[2] }}
+          {{ sourceArray[3] }}
+        </span>
+      </div>
+
+      <div class="item">
+        <span>第二次：</span>
+        <span>
+          {{ sourceArray[4] }} {{ sourceArray[5] }} {{ sourceArray[6] }}
+          {{ sourceArray[7] }}
+        </span>
+      </div>
+
+      <div class="item">
+        <span>第三次：</span>
+        <span>
+          {{ sourceArray[8] }} {{ sourceArray[9] }} {{ sourceArray[10] }}
+          {{ sourceArray[11] }}
+        </span>
+      </div>
+
+      <div>
+        <el-button class="item" type="primary" @click="handleSave"
+          >保 存</el-button
+        >
+      </div>
     </div>
 
     <!-- 按钮组 -->
@@ -127,7 +162,7 @@ export default {
             this.parser = this.usbPort.pipe(new Readline({ delimiter: '\n' }))
             this.parser.on('data', data => {
               // console.log(data) //  格式：'5,13,5,16,5,20,5,10,35568'
-              const adData = '5,13,5,16,5,20,5,10,35568'
+              const adData = '5,13,5,16,5,26,5,30,35568'
               this.source = adData
 
               const dataArray = adData.split(',') // 将原始数据以逗号作为分割符，组成一个数组
@@ -186,6 +221,23 @@ export default {
     },
 
     /**
+     * @description: 保存
+     */
+    handleSave() {
+      // 标准滑块基准值保存
+      window.sessionStorage.setItem(
+        'slideBenchmark',
+        JSON.stringify(this.sourceArray)
+      )
+
+      this.$message({
+        message: '保存成功',
+        type: 'success',
+        duration: 2000
+      })
+    },
+
+    /**
      * @description: 返回首页
      */
     handleToHome() {
@@ -235,6 +287,10 @@ export default {
 
   .main {
     flex: 1;
+    .item {
+      margin: 20px 0;
+      font-size: 36px;
+    }
   }
 
   .btn {

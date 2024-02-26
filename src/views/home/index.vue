@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 15:05:37
- * @LastEditTime: 2024-02-23 11:44:48
+ * @LastEditTime: 2024-02-26 16:58:24
  * @Description : 首页
 -->
 <template>
@@ -146,9 +146,32 @@ export default {
           })
         } else if (src === 'src4') {
           // 滑块数据测量
-          this.$router.push({
-            path: '/slide-measurement'
-          })
+          // 先判断是否已经测了基准
+          const slideBenchmark = JSON.parse(
+            window.sessionStorage.getItem('slideBenchmark')
+          )
+          if (slideBenchmark.length === 0) {
+            this.$alert(
+              `您好，请先进行标准滑块基准测量，点击“确 认”按钮`,
+              `提示`,
+              {
+                type: 'warning',
+                showClose: false,
+                center: true,
+                confirmButtonText: '确 认',
+                callback: () => {
+                  // 测基准
+                  this.$router.push({
+                    path: '/datum'
+                  })
+                }
+              }
+            )
+          } else {
+            this.$router.push({
+              path: '/slide-measurement'
+            })
+          }
         } else if (src === 'src5') {
           // 测基准
           this.$router.push({
