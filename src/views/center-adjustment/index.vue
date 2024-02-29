@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-21 14:18:34
- * @LastEditTime: 2024-02-23 16:29:57
+ * @LastEditTime: 2024-02-29 11:59:56
  * @Description : 中心距调零
 -->
 <template>
@@ -103,8 +103,8 @@ export default {
 
       source: '', // 下位机源数据
       pressureDigital: '', // 实时的压力数字量
-      k: 0.16,
-      b: -5680,
+      k: 0.13019,
+      b: -4300,
       spacingReference: 0, // 基准中心距
       spacingActual: '', // 实时的中心距
       spacingShow: '' // 展示的中心距
@@ -177,25 +177,51 @@ export default {
 
             this.parser = this.usbPort.pipe(new Readline({ delimiter: '\n' }))
             this.parser.on('data', data => {
-              // console.log(data) //  格式：'5,13,5,16,5,20,5,10,35568'
-              const adData = '5,13,5,16,5,20,5,10,35568'
-              this.source = adData
+              console.log(data) //  格式：'1369,1379,1359,1359,1374,1391,1376,1357,33753'
+              this.source = data
 
-              const dataArray = adData.split(',') // 将原始数据以逗号作为分割符，组成一个数组
+              const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
               this.pressureDigital = dataArray[dataArray.length - 1] // 取出最后一个压力数字量
 
               /* 计算 */
-              const spacingOriginal = parseFloat(
+              let spacingOriginal = parseFloat(
                 ((this.k * this.pressureDigital + this.b) / 10).toFixed(1)
               )
-              // 补偿，算出最终的实时中心距
-              if (spacingOriginal >= 0 && spacingOriginal < 4) {
-                this.spacingActual = parseFloat(
-                  (spacingOriginal + 0.1).toFixed(1)
-                )
-              } else {
-                this.spacingActual = spacingOriginal
+
+              /* 补偿，算出最终的实时中心距 */
+              if (spacingOriginal >= -1 && spacingOriginal <= 0.9) {
+                // 0
+                spacingOriginal = spacingOriginal - 0
+              } else if (spacingOriginal >= -3 && spacingOriginal <= -1.1) {
+                // +2
+                spacingOriginal = spacingOriginal - 0.1
+              } else if (spacingOriginal >= -5.3 && spacingOriginal <= -3.1) {
+                // +4
+                spacingOriginal = spacingOriginal + 0.7
+              } else if (spacingOriginal >= -7.0 && spacingOriginal <= -5.4) {
+                // +6
+                spacingOriginal = spacingOriginal + 0.5
+              } else if (spacingOriginal >= -9.5 && spacingOriginal <= -7.1) {
+                // +8
+                spacingOriginal = spacingOriginal + 0.6
+              } else if (spacingOriginal >= 1.0 && spacingOriginal <= 2.9) {
+                // -2
+                spacingOriginal = spacingOriginal - 0.5
+              } else if (spacingOriginal >= 3.0 && spacingOriginal <= 4.9) {
+                // -4
+                spacingOriginal = spacingOriginal - 0.4
+              } else if (spacingOriginal >= 5.0 && spacingOriginal <= 6.9) {
+                // -6
+                spacingOriginal = spacingOriginal + 0.1
+              } else if (spacingOriginal >= 7.0 && spacingOriginal <= 8.3) {
+                // -8
+                spacingOriginal = spacingOriginal + 0.2
+              } else if (spacingOriginal >= 8.4 && spacingOriginal <= 20) {
+                //
+                spacingOriginal = 0
               }
+
+              this.spacingActual = spacingOriginal
 
               this.spacingShow = parseFloat(
                 (this.spacingActual - this.spacingReference).toFixed(1)

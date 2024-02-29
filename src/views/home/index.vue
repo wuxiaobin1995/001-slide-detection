@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 15:05:37
- * @LastEditTime: 2024-02-26 16:58:24
+ * @LastEditTime: 2024-02-29 11:02:10
  * @Description : 首页
 -->
 <template>
@@ -150,6 +150,8 @@ export default {
           const slideBenchmark = JSON.parse(
             window.sessionStorage.getItem('slideBenchmark')
           )
+            ? JSON.parse(window.sessionStorage.getItem('slideBenchmark'))
+            : []
           if (slideBenchmark.length === 0) {
             this.$alert(
               `您好，请先进行标准滑块基准测量，点击“确 认”按钮`,

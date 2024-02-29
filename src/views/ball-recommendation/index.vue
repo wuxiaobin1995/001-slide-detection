@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-21 14:18:34
- * @LastEditTime: 2024-02-23 15:39:07
+ * @LastEditTime: 2024-02-29 10:50:46
  * @Description : 球号推荐
 -->
 <template>
@@ -51,7 +51,8 @@
             </div>
             <el-divider></el-divider>
             <div class="item">
-              公式：最终中心距 = 实时中心距 - 缓存中心距(基准)
+              公式：最终中心距 = 实时中心距 - 缓存中心距(基准) +
+              常数C(这个C的值与型号有关)
             </div>
             <div class="item">
               最终中心距：{{ spacingResult > 0 ? '+' : '' }}{{ spacingResult }}
@@ -64,7 +65,7 @@
         <div class="item">
           <div class="text">球号</div>
           <div class="value">
-            {{ ballNumber > 0 ? '+' : '' }}{{ ballNumber }}
+            {{ ballNumber }}
           </div>
         </div>
       </div>
@@ -102,8 +103,8 @@ export default {
       scmBaudRate: 115200,
 
       source: '', // 下位机源数据
-      k: 0.16,
-      b: -5680,
+      k: 0.13019,
+      b: -4300,
       spacingReference: 0, // 基准中心距
       spacingActual: '', // 实时的中心距
       spacingResult: '', // 滑块最终的中心距
@@ -178,30 +179,121 @@ export default {
 
             this.parser = this.usbPort.pipe(new Readline({ delimiter: '\n' }))
             this.parser.on('data', data => {
-              // console.log(data) //  格式：'5,13,5,16,5,20,5,10,35568'
-              const adData = '5,13,5,16,5,20,5,10,35368'
-              this.source = adData
+              // console.log(data) //  格式：'1369,1379,1359,1359,1374,1391,1376,1357,33753'
+              this.source = data
 
-              const dataArray = adData.split(',') // 将原始数据以逗号作为分割符，组成一个数组
+              const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
               const pressureDigital = dataArray[dataArray.length - 1] // 取出最后一个压力数字量
 
               /* 计算 */
-              const spacingOriginal = parseFloat(
+              let spacingOriginal = parseFloat(
                 ((this.k * pressureDigital + this.b) / 10).toFixed(1)
               )
-              // 补偿，算出最终的实时中心距
-              if (spacingOriginal >= 0 && spacingOriginal < 4) {
-                this.spacingActual = parseFloat(
-                  (spacingOriginal + 0.1).toFixed(1)
-                )
-              } else {
-                this.spacingActual = spacingOriginal
+              /* 补偿，算出最终的实时中心距 */
+              if (spacingOriginal >= -1 && spacingOriginal <= 0.9) {
+                // 0
+                spacingOriginal = spacingOriginal - 0
+              } else if (spacingOriginal >= -3 && spacingOriginal <= -1.1) {
+                // +2
+                spacingOriginal = spacingOriginal - 0.1
+              } else if (spacingOriginal >= -5.3 && spacingOriginal <= -3.1) {
+                // +4
+                spacingOriginal = spacingOriginal + 0.7
+              } else if (spacingOriginal >= -7.0 && spacingOriginal <= -5.4) {
+                // +6
+                spacingOriginal = spacingOriginal + 0.5
+              } else if (spacingOriginal >= -9.5 && spacingOriginal <= -7.1) {
+                // +8
+                spacingOriginal = spacingOriginal + 0.6
+              } else if (spacingOriginal >= 1.0 && spacingOriginal <= 2.9) {
+                // -2
+                spacingOriginal = spacingOriginal - 0.5
+              } else if (spacingOriginal >= 3.0 && spacingOriginal <= 4.9) {
+                // -4
+                spacingOriginal = spacingOriginal - 0.4
+              } else if (spacingOriginal >= 5.0 && spacingOriginal <= 6.9) {
+                // -6
+                spacingOriginal = spacingOriginal + 0.1
+              } else if (spacingOriginal >= 7.0 && spacingOriginal <= 8.3) {
+                // -8
+                spacingOriginal = spacingOriginal + 0.2
+              } else if (spacingOriginal >= 8.4 && spacingOriginal <= 20) {
+                //
+                spacingOriginal = 0
               }
+
+              this.spacingActual = spacingOriginal
 
               this.spacingResult = parseFloat(
                 (this.spacingActual - this.spacingReference).toFixed(1)
               )
-              // 不同型号对应不同公式
+
+              /* 不同型号对应不同公式 */
+              const modelSelect = this.$store.state.model
+              switch (modelSelect) {
+                case 'AA':
+                  this.spacingResult = this.spacingResult + 1
+                  break
+                case 'EA':
+                  this.spacingResult = this.spacingResult + 1
+                  break
+                case 'HAA':
+                  this.spacingResult = this.spacingResult - 0
+                  break
+                case 'HEA':
+                  this.spacingResult = this.spacingResult - 0
+                  break
+                default:
+                  this.spacingResult = this.spacingResult - 0
+                  break
+              }
+
+              /* 选球区间 */
+              if (this.spacingResult >= -8.5 && this.spacingResult <= -7.1) {
+                this.ballNumber = '+8'
+              } else if (
+                this.spacingResult >= -7.0 &&
+                this.spacingResult <= -5.1
+              ) {
+                this.ballNumber = '+6'
+              } else if (
+                this.spacingResult >= -5.0 &&
+                this.spacingResult <= -3.1
+              ) {
+                this.ballNumber = '+4'
+              } else if (
+                this.spacingResult >= -3.0 &&
+                this.spacingResult <= -1.1
+              ) {
+                this.ballNumber = '+2'
+              } else if (
+                this.spacingResult >= -1.0 &&
+                this.spacingResult <= 0.9
+              ) {
+                this.ballNumber = '0'
+              } else if (
+                this.spacingResult >= 1.0 &&
+                this.spacingResult <= 2.9
+              ) {
+                this.ballNumber = '-2'
+              } else if (
+                this.spacingResult >= 3.0 &&
+                this.spacingResult <= 4.9
+              ) {
+                this.ballNumber = '-4'
+              } else if (
+                this.spacingResult >= 5.0 &&
+                this.spacingResult <= 6.9
+              ) {
+                this.ballNumber = '-6'
+              } else if (
+                this.spacingResult >= 7.0 &&
+                this.spacingResult <= 9.5
+              ) {
+                this.ballNumber = '-8'
+              } else {
+                this.ballNumber = '超出范围'
+              }
             })
           } else {
             this.$alert(

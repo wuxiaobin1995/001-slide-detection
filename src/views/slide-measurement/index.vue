@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-21 14:18:34
- * @LastEditTime: 2024-02-26 17:07:01
+ * @LastEditTime: 2024-02-29 11:04:24
  * @Description : 滑块数据测量
 -->
 <template>
@@ -168,11 +168,10 @@ export default {
 
             this.parser = this.usbPort.pipe(new Readline({ delimiter: '\n' }))
             this.parser.on('data', data => {
-              // console.log(data) //  格式：'5,13,5,16,5,20,5,10,35568'
-              const adData = '5,33,5,19,5,12,5,24,35568'
-              this.source = adData
+              // console.log(data) //  格式：'1369,1379,1359,1359,1374,1391,1376,1357,33753'
+              this.source = data
 
-              const dataArray = adData.split(',') // 将原始数据以逗号作为分割符，组成一个数组
+              const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
               const _1s = dataArray[0]
               const _1 = dataArray[1]
               const one = parseInt(Math.abs(_1s - _1).toFixed(0))
