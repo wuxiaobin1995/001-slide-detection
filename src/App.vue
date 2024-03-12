@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-02-22 10:34:11
+ * @LastEditTime: 2024-03-12 15:25:17
  * @Description : 根组件
 -->
 <template>
@@ -28,13 +28,9 @@ export default {
      * @description: 软件启动后，初始化sessionStorage的一些值
      */
     initSessionStorage() {
-      /* 初始化基准中心距 */
-      if (!window.sessionStorage.getItem('spacingReference')) {
-        window.sessionStorage.setItem('spacingReference', JSON.stringify(0))
-      }
       /* 初始化标准滑块的基准值 */
-      if (!window.sessionStorage.getItem('slideBenchmark')) {
-        window.sessionStorage.setItem('slideBenchmark', JSON.stringify([]))
+      if (!window.sessionStorage.getItem('standard_slider_value')) {
+        window.sessionStorage.setItem('standard_slider_value', JSON.stringify([]))
       }
     },
 

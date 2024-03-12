@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-02-23 11:30:32
+ * @LastEditTime: 2024-03-12 15:50:14
  * @Description : Vuex
  */
 import Vue from 'vue'
@@ -12,7 +12,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     // 规格
-    specifications: '',
+    spec: '',
 
     // 型号
     model: ''
@@ -20,8 +20,8 @@ export default new Vuex.Store({
 
   mutations: {
     // 规格
-    CHANGE_SPECIFICATIONS(state, specifications) {
-      state.specifications = specifications
+    CHANGE_SPEC(state, spec) {
+      state.spec = spec
     },
 
     // 型号
@@ -32,9 +32,9 @@ export default new Vuex.Store({
 
   actions: {
     // 规格
-    changeSpecifications({ commit }, specifications) {
+    changeSpec({ commit }, spec) {
       return new Promise((resolve, reject) => {
-        commit('CHANGE_SPECIFICATIONS', specifications)
+        commit('CHANGE_SPEC', spec)
         resolve()
       })
     },

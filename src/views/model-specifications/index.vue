@@ -1,18 +1,18 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-23 09:23:11
- * @LastEditTime: 2024-02-23 16:20:23
+ * @LastEditTime: 2024-03-12 17:12:34
  * @Description : 设置规格型号
 -->
 <template>
-  <div class="model-specifications">
+  <div class="model-spec">
     <!-- 标题 -->
     <div class="title">选择-规格型号</div>
 
     <div class="mian">
-      <div class="specifications">
+      <div class="spec">
         <div class="text">规格</div>
-        <el-radio-group class="radio radio-1" v-model="radioSpecifications">
+        <el-radio-group class="radio radio-1" v-model="radiospec">
           <div class="radio-item">
             <el-radio border label="15">15</el-radio>
             <el-radio border label="20">20</el-radio>
@@ -64,11 +64,11 @@
 
 <script>
 export default {
-  name: 'model-specifications',
+  name: 'model-spec',
 
   data() {
     return {
-      radioSpecifications: '', // 规格
+      radiospec: '', // 规格
       radioModel: '' // 型号
     }
   },
@@ -78,7 +78,7 @@ export default {
      * @description: 保存
      */
     handleSave() {
-      if (this.radioSpecifications === '' || this.radioModel === '') {
+      if (this.radiospec === '' || this.radioModel === '') {
         this.$alert(`您好，请选择规格型号`, `提示`, {
           type: 'warning',
           showClose: false,
@@ -88,7 +88,7 @@ export default {
         })
       } else {
         this.$store
-          .dispatch('changeSpecifications', this.radioSpecifications)
+          .dispatch('changespec', this.radiospec)
           .then(() => {
             this.$store.dispatch('changeModel', this.radioModel).then(() => {
               this.$message({
@@ -115,7 +115,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.model-specifications {
+.model-spec {
   width: 100%;
   height: 100%;
   padding: 20px 60px;
@@ -131,7 +131,7 @@ export default {
     @include flex(row, space-around, stretch);
     border: 3px solid black;
     border-radius: 30px;
-    .specifications,
+    .spec,
     .model {
       width: 50%;
       @include flex(column, stretch, center);

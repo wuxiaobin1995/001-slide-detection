@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-21 14:18:34
- * @LastEditTime: 2024-02-29 11:04:24
+ * @LastEditTime: 2024-03-12 15:49:14
  * @Description : 滑块数据测量
 -->
 <template>
@@ -10,12 +10,12 @@
     <div class="title">滑块数据测量-页面</div>
 
     <!-- 规格型号 -->
-    <div class="model-specifications">
+    <div class="model-spec">
       <div class="text">
         规格：{{
-          this.$store.state.specifications === ''
+          this.$store.state.spec === ''
             ? '未选择'
-            : this.$store.state.specifications
+            : this.$store.state.spec
         }}
       </div>
       <div class="text">
@@ -263,7 +263,7 @@ export default {
     margin-bottom: 10px;
   }
 
-  .model-specifications {
+  .model-spec {
     position: absolute;
     right: 2.5%;
     top: 30px;

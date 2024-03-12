@@ -1,220 +1,172 @@
 <!--
  * @Author      : Mr.bin
- * @Date        : 2024-02-07 15:05:37
- * @LastEditTime: 2024-02-29 11:02:10
- * @Description : 首页
+ * @Date        : 2024-03-12 15:11:07
+ * @LastEditTime: 2024-03-12 17:56:11
+ * @Description : home
 -->
 <template>
   <div class="home">
-    <div class="wrapper">
-      <!-- 软件名称 -->
-      <div class="title">滑块数据检测软件</div>
-
-      <!-- 设置规格型号 -->
-      <div class="model-specifications">
-        <el-button class="btn" type="danger" @click="handleModelSpecifications"
-          >选择 - 规格型号</el-button
-        >
-        <div class="text">
-          规格：{{
-            this.$store.state.specifications === ''
-              ? '未选择'
-              : this.$store.state.specifications
-          }}
+    <!-- 被测滑块部分 -->
+    <div class="slider">
+      <!-- 左侧数值显示 -->
+      <div class="main">
+        <!-- 规格型号选择 -->
+        <div class="gx">
+          <!-- 规格 -->
+          <div class="spec">
+            <div class="text">规格</div>
+            <el-select
+              v-model="specValue"
+              placeholder="请选择规格"
+              @change="specChange"
+            >
+              <el-option
+                v-for="item in specSelection"
+                :key="item.value"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <!-- 型号 -->
+          <div class="model">
+            <div class="text">型号</div>
+            <el-select
+              v-model="modelValue"
+              placeholder="请选择型号"
+              @change="modelChange"
+            >
+              <el-option
+                v-for="item in modelSelection"
+                :key="item.value"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
         </div>
-        <div class="text">
-          型号：{{
-            this.$store.state.model === '' ? '未选择' : this.$store.state.model
-          }}
+
+        <!-- 二维码 -->
+        <div class="QRCode">
+          <span class="text">二维码</span>
+          <div>
+            <el-input
+              ref="QRCodeInput"
+              placeholder=""
+              v-model="QRCode"
+            ></el-input>
+          </div>
+          <div class="btn">
+            <el-button class="btn-item" type="primary" @click="handleRescan"
+              >重 扫</el-button
+            >
+          </div>
         </div>
+
+        <!-- 来料检测 -->
+        <div></div>
+
+        <!-- 3次气压值 -->
+        <div></div>
+
+        <!-- 结果显示 -->
+        <div></div>
       </div>
 
-      <!-- 配置 -->
-      <div class="select-item">
-        <el-image
-          class="item"
-          :src="src1"
-          fit="scale-down"
-          @click.native="handleClick('src1')"
-        ></el-image>
-        <div class="text">配置</div>
-      </div>
-      <!-- 中心距调零 -->
-      <div class="select-item">
-        <el-image
-          class="item"
-          :src="src2"
-          fit="scale-down"
-          @click.native="handleClick('src2')"
-        ></el-image>
-        <div class="text">中心距调零</div>
-      </div>
-      <!-- 球号推荐 -->
-      <div class="select-item">
-        <el-image
-          class="item"
-          :src="src3"
-          fit="scale-down"
-          @click.native="handleClick('src3')"
-        ></el-image>
-        <div class="text">球号推荐</div>
-      </div>
-      <!-- 滑块数据测量 -->
-      <div class="select-item">
-        <el-image
-          class="item"
-          :src="src4"
-          fit="scale-down"
-          @click.native="handleClick('src4')"
-        ></el-image>
-        <div class="text">滑块数据测量</div>
-      </div>
-      <!-- 测基准 -->
-      <div class="select-item">
-        <el-image
-          class="item"
-          :src="src5"
-          fit="scale-down"
-          @click.native="handleClick('src5')"
-        ></el-image>
-        <div class="text">测基准(标准滑块)</div>
+      <!-- 右侧表格 -->
+      <div class="table">
+        <div>表格</div>
       </div>
     </div>
 
-    <!-- 打开控制台按钮 -->
-    <el-button
-      class="btn-control"
-      type="info"
-      size="mini"
-      @click="handleOpenDev"
-      >Open Dev</el-button
-    >
+    <!-- 标准滑块部分 -->
+    <div class="standard-slider">
+      <div>标准滑块部分</div>
+    </div>
   </div>
 </template>
 
 <script>
-/* 用于打开控制台 */
-import { remote } from 'electron'
-
 export default {
   name: 'home',
 
   data() {
     return {
-      src1: require('@/assets/img/Home/配置.png'),
-      src2: require('@/assets/img/Home/中心距调零.png'),
-      src3: require('@/assets/img/Home/球号推荐.png'),
-      src4: require('@/assets/img/Home/滑块数据测量.png'),
-      src5: require('@/assets/img/Home/测基准.png')
+      /* 规格 */
+      specValue: '15',
+      specSelection: [
+        {
+          value: '15'
+        },
+        {
+          value: '20'
+        },
+        {
+          value: '25'
+        },
+        {
+          value: '30'
+        },
+        {
+          value: '35'
+        },
+        {
+          value: '45'
+        }
+      ],
+      /* 型号 */
+      modelValue: 'AA',
+      modelSelection: [
+        {
+          value: 'AA'
+        },
+        {
+          value: 'EA'
+        },
+        {
+          value: 'AN'
+        },
+        {
+          value: 'HAA'
+        },
+        {
+          value: 'HEA'
+        },
+        {
+          value: 'HAN'
+        }
+      ],
+      /* 二维码编号（滑块的身份证） */
+      QRCode: ''
     }
+  },
+
+  created() {},
+  mounted() {
+    /* 进入页面时，二维码输入框获取鼠标焦点 */
+    this.$refs.QRCodeInput.focus()
   },
 
   methods: {
     /**
-     * @description: 页面跳转
-     * @param {String} src
+     * @description: 规格下拉框的选中值发生变化时触发
      */
-    handleClick(src) {
-      // 先判断规格型号是否选择了
-      const specifications = this.$store.state.specifications
-      const model = this.$store.state.model
-      if (specifications === '' || model === '') {
-        this.$alert(`您好，请先选择规格型号，点击“确 认”按钮`, `提示`, {
-          type: 'warning',
-          showClose: false,
-          center: true,
-          confirmButtonText: '确 认',
-          callback: () => {
-            this.handleModelSpecifications()
-          }
-        })
-      } else {
-        if (src === 'src1') {
-          // 配置
-          this.$router.push({
-            path: '/configuration'
-          })
-        } else if (src === 'src2') {
-          // 中心距调零
-          this.$router.push({
-            path: '/center-adjustment'
-          })
-        } else if (src === 'src3') {
-          // 球号推荐
-          this.$router.push({
-            path: '/ball-recommendation'
-          })
-        } else if (src === 'src4') {
-          // 滑块数据测量
-          // 先判断是否已经测了基准
-          const slideBenchmark = JSON.parse(
-            window.sessionStorage.getItem('slideBenchmark')
-          )
-            ? JSON.parse(window.sessionStorage.getItem('slideBenchmark'))
-            : []
-          if (slideBenchmark.length === 0) {
-            this.$alert(
-              `您好，请先进行标准滑块基准测量，点击“确 认”按钮`,
-              `提示`,
-              {
-                type: 'warning',
-                showClose: false,
-                center: true,
-                confirmButtonText: '确 认',
-                callback: () => {
-                  // 测基准
-                  this.$router.push({
-                    path: '/datum'
-                  })
-                }
-              }
-            )
-          } else {
-            this.$router.push({
-              path: '/slide-measurement'
-            })
-          }
-        } else if (src === 'src5') {
-          // 测基准
-          this.$router.push({
-            path: '/datum'
-          })
-        }
-      }
+    specChange() {
+      // console.log(this.specValue)
+    },
+    /**
+     * @description: 型号下拉框的选中值发生变化时触发
+     */
+    modelChange() {
+      // console.log(this.modelValue)
     },
 
     /**
-     * @description: 设置规格型号
+     * @description: 重扫二维码按钮
      */
-    handleModelSpecifications() {
-      this.$router.push({
-        path: '/model-specifications'
-      })
-    },
-
-    /**
-     * @description: 打开控制台
-     */
-    handleOpenDev() {
-      this.$prompt('请输入密码', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^htpm$/,
-        inputErrorMessage: '密码不正确',
-        showClose: true,
-        closeOnClickModal: false
-      })
-        .then(() => {
-          try {
-            remote.getCurrentWebContents().openDevTools()
-          } catch (err) {
-            this.$message({
-              type: 'error',
-              message: `打开控制台失败：${err}`
-            })
-          }
-        })
-        .catch(() => {})
+    handleRescan() {
+      this.QRCode = ''
+      this.$refs.QRCodeInput.focus() // 输入框获取鼠标焦点
     }
   }
 }
@@ -224,59 +176,52 @@ export default {
 .home {
   width: 100%;
   height: 100%;
-  @include flex(row, center, center);
+  padding: 5px 10px;
+  @include flex(column, stretch, stretch);
 
-  .wrapper {
-    width: 96%;
-    height: 90%;
-    border-radius: 34px;
-    background-color: #ffffff;
-    box-shadow: 0 0 10px #929292;
-    position: relative;
-    @include flex(row, space-around, center);
+  .slider {
+    flex: 1;
+    @include flex(row, stretch, stretch);
+    .main {
+      border: 1px solid black;
+      width: 50%;
+      .gx {
+        @include flex(row, stretch, stretch);
+        .spec,
+        .model {
+          @include flex(row, stretch, center);
+          margin-right: 20px;
+          .text {
+            margin-right: 10px;
+          }
+        }
+      }
 
-    .title {
-      position: absolute;
-      top: 15px;
-      font-size: 60px;
-      font-weight: 700;
+      .QRCode {
+        margin-top: 20px;
+        @include flex(row, stretch, center);
+        .text {
+          margin-right: 10px;
+        }
+        .btn {
+          margin-left: 20px;
+          .btn-item {
+            width: 100px;
+            font-size: 18px;
+          }
+        }
+      }
     }
 
-    .model-specifications {
-      position: absolute;
-      left: 25px;
-      top: 30px;
-      .btn {
-        font-size: 34px;
-      }
-      .text {
-        font-size: 24px;
-        font-weight: 700;
-        margin-top: 10px;
-      }
-    }
-
-    .select-item {
-      @include flex(column, center, center);
-      .item {
-        transform: scale(1.2);
-        box-shadow: 0 0 8px #1fc047;
-        padding: 5px;
-      }
-      .text {
-        color: green;
-        margin-top: 35px;
-        font-size: 30px;
-        font-weight: 700;
-      }
+    .table {
+      border: 1px solid black;
+      width: 50%;
     }
   }
 
-  /* 打开控制台按钮 */
-  .btn-control {
-    position: absolute;
-    right: 0;
-    bottom: 0;
+  .standard-slider {
+    height: 200px;
+    border: 1px solid black;
   }
 }
 </style>

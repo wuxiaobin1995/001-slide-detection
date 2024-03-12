@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-02-23 09:23:03
+ * @LastEditTime: 2024-03-12 15:18:09
  * @Description : 路由
  */
 import Vue from 'vue'
@@ -24,49 +24,13 @@ const routes = [
     meta: ['首页']
   },
 
-  // 设置规格型号
-  {
-    path: '/model-specifications',
-    name: 'model-specifications',
-    component: () => import('@/views/model-specifications'),
-    meta: ['设置规格型号']
-  },
-
   // 配置
-  {
-    path: '/configuration',
-    name: 'configuration',
-    component: () => import('@/views/configuration'),
-    meta: ['配置']
-  },
-  // 中心距调零
-  {
-    path: '/center-adjustment',
-    name: 'center-adjustment',
-    component: () => import('@/views/center-adjustment'),
-    meta: ['中心距调零']
-  },
-  // 球号推荐
-  {
-    path: '/ball-recommendation',
-    name: 'ball-recommendation',
-    component: () => import('@/views/ball-recommendation'),
-    meta: ['球号推荐']
-  },
-  // 滑块数据测量
-  {
-    path: '/slide-measurement',
-    name: 'slide-measurement',
-    component: () => import('@/views/slide-measurement'),
-    meta: ['滑块数据测量']
-  },
-  // 测基准
-  {
-    path: '/datum',
-    name: 'datum',
-    component: () => import('@/views/datum'),
-    meta: ['测基准']
-  },
+  // {
+  //   path: '/configuration',
+  //   name: 'configuration',
+  //   component: () => import('@/views/configuration'),
+  //   meta: ['配置']
+  // },
 
   {
     path: '/refresh',

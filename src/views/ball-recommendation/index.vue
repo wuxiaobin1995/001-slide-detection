@@ -10,12 +10,12 @@
     <div class="title">球号推荐-页面</div>
 
     <!-- 规格型号 -->
-    <div class="model-specifications">
+    <div class="model-spec">
       <div class="text">
         规格：{{
-          this.$store.state.specifications === ''
+          this.$store.state.spec === ''
             ? '未选择'
-            : this.$store.state.specifications
+            : this.$store.state.spec
         }}
       </div>
       <div class="text">
@@ -365,7 +365,7 @@ export default {
     margin-bottom: 10px;
   }
 
-  .model-specifications {
+  .model-spec {
     position: absolute;
     right: 2.5%;
     top: 30px;
