@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-12 17:56:11
+ * @LastEditTime: 2024-03-15 18:03:57
  * @Description : home
 -->
 <template>
@@ -57,17 +57,100 @@
             ></el-input>
           </div>
           <div class="btn">
-            <el-button class="btn-item" type="primary" @click="handleRescan"
+            <el-button class="btn-item" type="danger" @click="handleRescan"
               >重 扫</el-button
             >
           </div>
         </div>
 
         <!-- 来料检测 -->
-        <div></div>
+        <div class="check">
+          <div class="box">
+            <div class="title">.</div>
+            <div class="value">
+              {{ bArray.length === 0 ? '待测' : '已测' }}
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="title">中心距</div>
+            <div class="value">{{ spacing === '' ? '/' : spacing }}</div>
+          </div>
+
+          <div class="box">
+            <div class="title">区间</div>
+            <div class="value">
+              [{{ checkInterval[0] }} ~ {{ checkInterval[1] }}]
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="title">检测结果</div>
+            <div class="value">{{ checkResult === '' ? '/' : spacing }}</div>
+          </div>
+        </div>
 
         <!-- 3次气压值 -->
-        <div></div>
+        <div class="pressure">
+          <div class="box">
+            <div class="title">.</div>
+            <div class="value">{{ bArray.length >= 2 ? '已测' : '待测' }}</div>
+            <div class="value">{{ bArray.length >= 3 ? '已测' : '待测' }}</div>
+            <div class="value">{{ bArray.length >= 4 ? '已测' : '待测' }}</div>
+          </div>
+
+          <div class="box">
+            <div class="title">1号气嘴</div>
+            <div class="value">
+              {{ bArray.length >= 2 ? bArray[1][0] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 3 ? bArray[2][0] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 4 ? bArray[3][0] : '/' }}
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="title">2号气嘴</div>
+            <div class="value">
+              {{ bArray.length >= 2 ? bArray[1][1] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 3 ? bArray[2][1] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 4 ? bArray[3][1] : '/' }}
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="title">3号气嘴</div>
+            <div class="value">
+              {{ bArray.length >= 2 ? bArray[1][2] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 3 ? bArray[2][2] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 4 ? bArray[3][2] : '/' }}
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="title">4号气嘴</div>
+            <div class="value">
+              {{ bArray.length >= 1 ? bArray[1][3] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 2 ? bArray[2][3] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 3 ? bArray[3][3] : '/' }}
+            </div>
+          </div>
+        </div>
 
         <!-- 结果显示 -->
         <div></div>
@@ -81,19 +164,102 @@
 
     <!-- 标准滑块部分 -->
     <div class="standard-slider">
-      <div>标准滑块部分</div>
+      <div class="head-title">
+        <div>标准</div>
+        <div>滑块</div>
+      </div>
+
+      <div class="content">
+        <div class="box">
+          <div class="title">.</div>
+          <div class="item">{{ aArray.length >= 1 ? '已测' : '待测' }}</div>
+          <div class="item">{{ aArray.length >= 2 ? '已测' : '待测' }}</div>
+          <div class="item">{{ aArray.length >= 3 ? '已测' : '待测' }}</div>
+        </div>
+
+        <div class="box">
+          <div class="title">1号气嘴</div>
+          <div class="value">
+            {{ aArray.length >= 1 ? aArray[0][0] : '/' }}
+          </div>
+          <div class="value">
+            {{ aArray.length >= 2 ? aArray[1][0] : '/' }}
+          </div>
+          <div class="value">
+            {{ aArray.length >= 3 ? aArray[2][0] : '/' }}
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="title">2号气嘴</div>
+          <div class="value">
+            {{ aArray.length >= 1 ? aArray[0][1] : '/' }}
+          </div>
+          <div class="value">
+            {{ aArray.length >= 2 ? aArray[1][1] : '/' }}
+          </div>
+          <div class="value">
+            {{ aArray.length >= 3 ? aArray[2][1] : '/' }}
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="title">3号气嘴</div>
+          <div class="value">
+            {{ aArray.length >= 1 ? aArray[0][2] : '/' }}
+          </div>
+          <div class="value">
+            {{ aArray.length >= 2 ? aArray[1][2] : '/' }}
+          </div>
+          <div class="value">
+            {{ aArray.length >= 3 ? aArray[2][2] : '/' }}
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="title">4号气嘴</div>
+          <div class="value">
+            {{ aArray.length >= 1 ? aArray[0][3] : '/' }}
+          </div>
+          <div class="value">
+            {{ aArray.length >= 2 ? aArray[1][3] : '/' }}
+          </div>
+          <div class="value">
+            {{ aArray.length >= 3 ? aArray[2][3] : '/' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- 按钮组 -->
+      <div class="btn">
+        <el-button class="item" type="danger" @click="handleClearStandard"
+          >清 空 标 准 滑 块</el-button
+        >
+        <el-button class="item" type="danger" @click="handleRefresh"
+          >刷 新 页 面</el-button
+        >
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+/* 串口通信库 */
+import SerialPort from 'serialport'
+import Readline from '@serialport/parser-readline'
+
 export default {
   name: 'home',
 
   data() {
     return {
+      /* 串口相关 */
+      usbPort: null,
+      parser: null,
+      scmBaudRate: 115200,
+
       /* 规格 */
-      specValue: '15',
+      specValue: '',
       specSelection: [
         {
           value: '15'
@@ -115,7 +281,7 @@ export default {
         }
       ],
       /* 型号 */
-      modelValue: 'AA',
+      modelValue: '',
       modelSelection: [
         {
           value: 'AA'
@@ -136,29 +302,62 @@ export default {
           value: 'HAN'
         }
       ],
+
       /* 二维码编号（滑块的身份证） */
-      QRCode: ''
+      QRCode: '',
+
+      /* 来料检测 */
+      checkInterval: [-2, 2], // 来料检测区间
+      spacing: '', // 中心距值，用于判断是否在区间内
+      checkResult: '', // 来料检测结果
+
+      /* 标准滑块源数组，格式比如 [[气嘴1, 气嘴2, 气嘴3, 气嘴4], [......], [......]] */
+      aArray: [],
+      /* 来料检测和被测滑块源数组，格式比如 [[压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4], [......], [......]] */
+      bArray: [],
+
+      /* 最终保存数据库结果数组，格式比如 [二维码编号, 规格, 型号, ......] */
+      resultArray: []
     }
   },
 
-  created() {},
+  created() {
+    /* 从Vuex中获取规格、型号的初始值 */
+    this.specValue = this.$store.state.spec ? this.$store.state.spec : '15'
+    this.modelValue = this.$store.state.model ? this.$store.state.model : 'AA'
+
+    /* 从SessionStorage获取标准滑块源数组 */
+    this.aArray = JSON.parse(
+      window.sessionStorage.getItem('standard_slider_value')
+    )
+
+    /* 开启串口通信 */
+    this.initSerialPort()
+  },
   mounted() {
-    /* 进入页面时，二维码输入框获取鼠标焦点 */
-    this.$refs.QRCodeInput.focus()
+    /* 二维码输入框获取鼠标焦点 */
+    this.QRFocus()
+  },
+  beforeDestroy() {
+    if (this.usbPort) {
+      if (this.usbPort.isOpen) {
+        this.usbPort.close()
+      }
+    }
   },
 
   methods: {
     /**
-     * @description: 规格下拉框的选中值发生变化时触发
+     * @description: 刷新页面按钮
      */
-    specChange() {
-      // console.log(this.specValue)
-    },
-    /**
-     * @description: 型号下拉框的选中值发生变化时触发
-     */
-    modelChange() {
-      // console.log(this.modelValue)
+    handleRefresh() {
+      this.$router.push({
+        path: '/refresh',
+        query: {
+          routerName: JSON.stringify('/home'),
+          duration: JSON.stringify(300)
+        }
+      })
     },
 
     /**
@@ -166,7 +365,372 @@ export default {
      */
     handleRescan() {
       this.QRCode = ''
-      this.$refs.QRCodeInput.focus() // 输入框获取鼠标焦点
+      this.QRFocus() // 二维码输入框获取鼠标焦点
+    },
+
+    /**
+     * @description: 二维码输入框获取鼠标焦点函数
+     */
+    QRFocus() {
+      this.$refs.QRCodeInput.focus()
+    },
+
+    /**
+     * @description: 规格下拉框的选中值发生变化时触发
+     */
+    specChange() {
+      this.$store.dispatch('changeSpec', this.specValue).then(() => {
+        this.$message({
+          message: `规格选择成功，为：${this.specValue}`,
+          type: 'success',
+          duration: 2500
+        })
+
+        // 清空标准滑块源数组
+        this.aArray = []
+        window.sessionStorage.setItem(
+          'standard_slider_value',
+          JSON.stringify([])
+        )
+
+        // 清空来料检测和被测滑块源数组
+        this.bArray = []
+
+        // 二维码输入框获取鼠标焦点
+        this.QRFocus()
+      })
+    },
+    /**
+     * @description: 型号下拉框的选中值发生变化时触发
+     */
+    modelChange() {
+      this.$store.dispatch('changeModel', this.modelValue).then(() => {
+        this.$message({
+          message: `型号选择成功，为：${this.modelValue}`,
+          type: 'success',
+          duration: 2500
+        })
+
+        // 清空标准滑块源数组
+        this.aArray = []
+        window.sessionStorage.setItem(
+          'standard_slider_value',
+          JSON.stringify([])
+        )
+
+        // 清空来料检测和被测滑块源数组
+        this.bArray = []
+
+        // 二维码输入框获取鼠标焦点
+        this.QRFocus()
+      })
+    },
+
+    /**
+     * @description: 清空标准滑块源数组按钮
+     */
+    handleClearStandard() {
+      this.aArray = []
+      window.sessionStorage.setItem('standard_slider_value', JSON.stringify([]))
+      this.$message({
+        message: `标准滑块数据清空完成`,
+        type: 'success',
+        duration: 5000
+      })
+      this.QRFocus() // 二维码输入框获取鼠标焦点
+    },
+
+    /**
+     * @description: 串口通信
+     */
+    initSerialPort() {
+      SerialPort.list()
+        .then(ports => {
+          /* 遍历设备的USB串口，目标设备需安装驱动 */
+          let comPath = ''
+          for (const port of ports) {
+            if (/^USB/.test(port.pnpId)) {
+              comPath = port.path
+              break
+            }
+          }
+
+          /* 验证USB有没有连接到电脑，但不能验证有无数据发送给上位机 */
+          if (comPath) {
+            /**
+             * @description: 创建串口实例
+             * @param {String} comPath 串行端口的系统路径。例如：在Mac、Linux上的/dev/tty.XXX或Windows上的COM1
+             * @param {Object} 配置项
+             */
+            this.usbPort = new SerialPort(comPath, {
+              baudRate: this.scmBaudRate, // 默认波特率115200
+              autoOpen: true // 是否自动开启串口
+            })
+            /* 调用 this.usbPort.open() 成功时触发（开启串口成功） */
+            this.usbPort.on('open', () => {})
+            /* 调用 this.usbPort.open() 失败时触发（开启串口失败） */
+            this.usbPort.on('error', () => {
+              this.$alert(
+                `请重新连接USB线，然后点击"刷新页面"按钮！`,
+                '串口开启失败',
+                {
+                  type: 'error',
+                  showClose: false,
+                  center: true,
+                  confirmButtonText: '刷新页面',
+                  callback: () => {
+                    this.handleRefresh()
+                  }
+                }
+              )
+            })
+
+            this.parser = this.usbPort.pipe(new Readline({ delimiter: '\n' }))
+            this.parser.on('data', data => {
+              // console.log(data) //  格式：'a,1369,1379,1359,1359,1374,1391,1376,1357,33753'
+
+              /* 数据预处理 */
+              const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
+
+              const keyType = dataArray[0] // 机械按钮类型 a，b，c
+
+              const _1s = dataArray[1]
+              const _1 = dataArray[2]
+              const oneNozzle = parseInt(Math.abs(_1s - _1).toFixed(0)) // 1号喷嘴气压
+              const _2s = dataArray[3]
+              const _2 = dataArray[4]
+              const twoNozzle = parseInt(Math.abs(_2s - _2).toFixed(0)) // 2号喷嘴气压
+              const _3s = dataArray[5]
+              const _3 = dataArray[6]
+              const threeNozzle = parseInt(Math.abs(_3s - _3).toFixed(0)) // 3号喷嘴气压
+              const _4s = dataArray[7]
+              const _4 = dataArray[8]
+              const fourNozzle = parseInt(Math.abs(_4s - _4).toFixed(0)) // 4号喷嘴气压（在侧面）
+              const nozzleArray = [
+                oneNozzle,
+                twoNozzle,
+                threeNozzle,
+                fourNozzle
+              ]
+
+              const pressureDigital = dataArray[dataArray.length - 1] // 取出最后一个压力数字量
+
+              /* 判断a、b、c机械按钮触发 */
+              switch (keyType) {
+                /* 标准滑块机械按钮-触发 */
+                case 'a': {
+                  // console.log('标准滑块按钮-触发', data)
+
+                  if (this.aArray.length < 6) {
+                    // <6目的是防止数组一直push浪费内存而已
+                    this.aArray.push(nozzleArray)
+                  }
+                  /* 第3次按下瞬间，表示完成 */
+                  if (this.aArray.length === 3) {
+                    // 完成的逻辑
+                    window.sessionStorage.setItem(
+                      'standard_slider_value',
+                      JSON.stringify(this.aArray)
+                    )
+                    this.$message({
+                      message: `标准滑块测量完成`,
+                      type: 'success',
+                      duration: 5000
+                    })
+                  }
+                  break
+                }
+
+                /* 被测滑块机械按钮-触发 */
+                case 'b': {
+                  console.log('被测滑块按钮-触发', data)
+
+                  /* 1、来料检测（表示第1次按被测滑块机械按钮） */
+                  if (this.bArray.length === 0) {
+                    this.bArray.push([pressureDigital])
+                    /* 计算开始 */
+                    /* 根据规格的不同，选择不同的k、b（与型号无关） */
+                    let k = 0.13019
+                    let b = -4300
+                    if (this.specValue === this.specSelection[0].value) {
+                      // 15
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[1].value) {
+                      // 20
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[2].value) {
+                      // 25
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[3].value) {
+                      // 30
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[4].value) {
+                      // 35
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[5].value) {
+                      // 45
+                      k = 0.13019
+                      b = -4300
+                    }
+
+                    /* 未经过补偿的中心距 */
+                    const spacingTemporary = parseFloat(
+                      ((k * pressureDigital + b) / 10).toFixed(1)
+                    )
+                    /* 开始补偿，算出最终的中心距 */
+                    if (spacingTemporary >= -9.5 && spacingTemporary <= -7.1) {
+                      // +8
+                      this.spacing = spacingTemporary + 0.6
+                    } else if (
+                      spacingTemporary > -7.1 &&
+                      spacingTemporary <= -5.4
+                    ) {
+                      // +6
+                      this.spacing = spacingTemporary + 0.5
+                    } else if (
+                      spacingTemporary > -5.4 &&
+                      spacingTemporary <= -3.1
+                    ) {
+                      // +4
+                      this.spacing = spacingTemporary + 0.7
+                    } else if (
+                      spacingTemporary > -3.1 &&
+                      spacingTemporary <= -1.1
+                    ) {
+                      // +2
+                      this.spacing = spacingTemporary - 0.1
+                    } else if (
+                      spacingTemporary > -1.1 &&
+                      spacingTemporary <= 0.9
+                    ) {
+                      // 0
+                      this.spacing = spacingTemporary
+                    } else if (
+                      spacingTemporary > 0.9 &&
+                      spacingTemporary <= 2.9
+                    ) {
+                      // -2
+                      this.spacing = spacingTemporary - 0.5
+                    } else if (
+                      spacingTemporary > 2.9 &&
+                      spacingTemporary <= 4.9
+                    ) {
+                      // -4
+                      this.spacing = spacingTemporary - 0.4
+                    } else if (
+                      spacingTemporary > 4.9 &&
+                      spacingTemporary <= 6.9
+                    ) {
+                      // -6
+                      this.spacing = spacingTemporary + 0.1
+                    } else if (
+                      spacingTemporary > 6.9 &&
+                      spacingTemporary <= 8.3
+                    ) {
+                      // -8
+                      this.spacing = spacingTemporary + 0.2
+                    } else {
+                      // 其他情况
+                      this.spacing = spacingTemporary
+                    }
+                    /* 判断中心距是否在区间内 */
+                    if (
+                      this.spacing >= this.checkInterval[0] &&
+                      this.spacing <= this.checkInterval[1]
+                    ) {
+                      // 在区间内
+                      this.checkResult = '合格'
+                    } else {
+                      // 在区间外
+                      this.checkResult = '不合格'
+                    }
+                  } else {
+                  /* 2、被测滑块精度测量 */
+                    if (this.aArray.length < 6) {
+                      // <6目的是防止数组一直push浪费内存而已
+                      this.bArray.push(nozzleArray)
+                    }
+                    /* 第4次按下瞬间，表示完成 */
+                    if (this.bArray.length === 4) {
+                      // 完成的逻辑
+                      console.log(this.bArray)
+                    }
+                  }
+
+                  console.log(this.bArray)
+
+                  break
+                }
+
+                /* 清空机械按钮-触发 */
+                case 'c': {
+                  console.log('清空按钮-触发：', data)
+
+                  /* 只清空被测滑块数据 */
+                  // 中心距值，用于判断是否在区间内
+                  this.spacing = ''
+                  // 来料检测结果
+                  this.checkResult = ''
+                  // 清空来料检测和被测滑块源数组
+                  this.bArray = []
+
+                  break
+                }
+
+                /* 机械按钮类型异常 */
+                default:
+                  this.$alert(
+                    `下位机源数据为：【${data}】，请停止操作，然后联系技术人员来处理！`,
+                    '机械按钮类型异常',
+                    {
+                      type: 'error',
+                      showClose: false,
+                      center: true,
+                      confirmButtonText: '刷新页面',
+                      callback: () => {
+                        this.handleRefresh()
+                      }
+                    }
+                  )
+                  break
+              }
+            })
+          } else {
+            this.$alert(
+              `请重新连接USB线，然后点击"刷新页面"按钮！`,
+              `没有检测到USB连接`,
+              {
+                type: 'error',
+                showClose: false,
+                center: true,
+                confirmButtonText: '刷新页面',
+                callback: () => {
+                  this.handleRefresh()
+                }
+              }
+            )
+          }
+        })
+        .catch(err => {
+          this.$alert(
+            `${err}。请重新连接USB线，然后点击"刷新页面"按钮！`,
+            `初始化SerialPort.list失败`,
+            {
+              type: 'error',
+              showClose: false,
+              center: true,
+              confirmButtonText: '刷新页面',
+              callback: () => {
+                this.handleRefresh()
+              }
+            }
+          )
+        })
     }
   }
 }
@@ -179,12 +743,15 @@ export default {
   padding: 5px 10px;
   @include flex(column, stretch, stretch);
 
+  /* 被测滑块部分 */
   .slider {
     flex: 1;
     @include flex(row, stretch, stretch);
+    /* 左侧内容区域 */
     .main {
-      border: 1px solid black;
       width: 50%;
+      border-right: 2px solid black;
+      /* 规格型号 */
       .gx {
         @include flex(row, stretch, stretch);
         .spec,
@@ -196,7 +763,7 @@ export default {
           }
         }
       }
-
+      /* 二维码 */
       .QRCode {
         margin-top: 20px;
         @include flex(row, stretch, center);
@@ -211,17 +778,76 @@ export default {
           }
         }
       }
+      /* 来料检测 */
+      .check {
+        margin-top: 20px;
+        @include flex(row, space-between, stretch);
+        .box {
+          @include flex(column, space-around, center);
+          .title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+          }
+          .value {
+            font-size: 20px;
+          }
+        }
+      }
+      /* 3次气压值 */
+      .pressure {
+        margin-top: 20px;
+        @include flex(row, space-between, stretch);
+        .box {
+          @include flex(column, space-around, center);
+          .title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+          }
+          .value {
+            font-size: 20px;
+          }
+        }
+      }
+      /* 结果显示 */
     }
 
+    /* 表格区域 */
     .table {
-      border: 1px solid black;
       width: 50%;
     }
   }
 
+  /* 标准滑块部分 */
   .standard-slider {
-    height: 200px;
-    border: 1px solid black;
+    height: 22%;
+    border-top: 2px solid black;
+    @include flex(row, stretch, stretch);
+    .head-title {
+      width: 100px;
+      font-size: 30px;
+      @include flex(column, center, center);
+    }
+    .content {
+      width: 50%;
+      @include flex(row, space-around, stretch);
+      .box {
+        @include flex(column, space-around, center);
+        .title {
+          font-size: 24px;
+          font-weight: 700;
+          margin-bottom: 4px;
+        }
+        .value {
+          font-size: 20px;
+        }
+      }
+    }
+    .btn {
+      flex: 1;
+      @include flex(row, space-around, center);
+    }
   }
 }
 </style>

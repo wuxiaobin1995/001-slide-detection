@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-03-12 15:25:17
+ * @LastEditTime: 2024-03-15 10:45:03
  * @Description : 根组件
 -->
 <template>
@@ -20,6 +20,8 @@ export default {
   created() {
     this.initSessionStorage()
 
+    this.initVuex()
+
     this.initSerialPort() // 检测串口通信是否正常
   },
 
@@ -30,8 +32,34 @@ export default {
     initSessionStorage() {
       /* 初始化标准滑块的基准值 */
       if (!window.sessionStorage.getItem('standard_slider_value')) {
-        window.sessionStorage.setItem('standard_slider_value', JSON.stringify([]))
+        window.sessionStorage.setItem(
+          'standard_slider_value',
+          JSON.stringify([])
+        )
       }
+    },
+
+    /**
+     * @description: 软件启动后，初始化Vuex的一些值
+     */
+    initVuex() {
+      // 规格，默认是'15'
+      this.$store.dispatch('changeSpec', '15').then(() => {
+        this.$message({
+          message: `初始化 Vuex 规格成功，为：15`,
+          type: 'success',
+          duration: 5000
+        })
+      })
+      // 型号，默认是'AA'
+      this.$store.dispatch('changeModel', 'AA').then(() => {
+        this.$message({
+          message: `初始化 Vuex 型号成功，为：AA`,
+          type: 'success',
+          duration: 5000,
+          offset: 60
+        })
+      })
     },
 
     /**
@@ -56,7 +84,7 @@ export default {
               message: `连接到串口：${comPath}`,
               type: 'success',
               position: 'bottom-right',
-              duration: 6000
+              duration: 8000
             })
           } else {
             this.$alert(
