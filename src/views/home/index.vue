@@ -1,11 +1,11 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-15 18:03:57
+ * @LastEditTime: 2024-03-16 12:00:43
  * @Description : home
 -->
 <template>
-  <div class="home">
+  <div class="home" v-loading.fullscreen.lock="isSaveing">
     <!-- 被测滑块部分 -->
     <div class="slider">
       <!-- 左侧数值显示 -->
@@ -86,7 +86,9 @@
 
           <div class="box">
             <div class="title">检测结果</div>
-            <div class="value">{{ checkResult === '' ? '/' : spacing }}</div>
+            <div class="value">
+              {{ checkResult === '' ? '/' : checkResult }}
+            </div>
           </div>
         </div>
 
@@ -141,13 +143,13 @@
           <div class="box">
             <div class="title">4号气嘴</div>
             <div class="value">
-              {{ bArray.length >= 1 ? bArray[1][3] : '/' }}
+              {{ bArray.length >= 2 ? bArray[1][3] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 2 ? bArray[2][3] : '/' }}
+              {{ bArray.length >= 3 ? bArray[2][3] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 3 ? bArray[3][3] : '/' }}
+              {{ bArray.length >= 4 ? bArray[3][3] : '/' }}
             </div>
           </div>
         </div>
@@ -258,6 +260,9 @@ export default {
       parser: null,
       scmBaudRate: 115200,
 
+      /* 状态标志位 */
+      isSaveing: false, // 计算和调用api状态
+
       /* 规格 */
       specValue: '',
       specSelection: [
@@ -307,7 +312,7 @@ export default {
       QRCode: '',
 
       /* 来料检测 */
-      checkInterval: [-2, 2], // 来料检测区间
+      checkInterval: [-5, 2], // 来料检测区间
       spacing: '', // 中心距值，用于判断是否在区间内
       checkResult: '', // 来料检测结果
 
@@ -393,6 +398,10 @@ export default {
           JSON.stringify([])
         )
 
+        // 中心距值
+        this.spacing = ''
+        // 来料检测结果
+        this.checkResult = ''
         // 清空来料检测和被测滑块源数组
         this.bArray = []
 
@@ -418,6 +427,10 @@ export default {
           JSON.stringify([])
         )
 
+        // 中心距值
+        this.spacing = ''
+        // 来料检测结果
+        this.checkResult = ''
         // 清空来料检测和被测滑块源数组
         this.bArray = []
 
@@ -430,13 +443,26 @@ export default {
      * @description: 清空标准滑块源数组按钮
      */
     handleClearStandard() {
-      this.aArray = []
-      window.sessionStorage.setItem('standard_slider_value', JSON.stringify([]))
-      this.$message({
-        message: `标准滑块数据清空完成`,
-        type: 'success',
-        duration: 5000
+      this.$confirm('是否要清空标准滑块的基准数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        center: true,
+        type: 'warning'
       })
+        .then(() => {
+          this.aArray = []
+          window.sessionStorage.setItem(
+            'standard_slider_value',
+            JSON.stringify([])
+          )
+          this.$message({
+            message: `标准滑块数据清空完成`,
+            type: 'success',
+            duration: 5000
+          })
+        })
+        .catch(() => {})
+
       this.QRFocus() // 二维码输入框获取鼠标焦点
     },
 
@@ -533,7 +559,7 @@ export default {
                       JSON.stringify(this.aArray)
                     )
                     this.$message({
-                      message: `标准滑块测量完成`,
+                      message: `标准滑块测量基准完成`,
                       type: 'success',
                       duration: 5000
                     })
@@ -543,7 +569,7 @@ export default {
 
                 /* 被测滑块机械按钮-触发 */
                 case 'b': {
-                  console.log('被测滑块按钮-触发', data)
+                  // console.log('被测滑块按钮-触发', data)
 
                   /* 1、来料检测（表示第1次按被测滑块机械按钮） */
                   if (this.bArray.length === 0) {
@@ -638,6 +664,8 @@ export default {
                       // 其他情况
                       this.spacing = spacingTemporary
                     }
+                    /* 中心距保留1位小数 */
+                    this.spacing = parseFloat(this.spacing.toFixed(1))
                     /* 判断中心距是否在区间内 */
                     if (
                       this.spacing >= this.checkInterval[0] &&
@@ -650,34 +678,35 @@ export default {
                       this.checkResult = '不合格'
                     }
                   } else {
-                  /* 2、被测滑块精度测量 */
-                    if (this.aArray.length < 6) {
+                    /* 2、被测滑块精度测量 */
+                    if (this.bArray.length < 6) {
                       // <6目的是防止数组一直push浪费内存而已
                       this.bArray.push(nozzleArray)
                     }
                     /* 第4次按下瞬间，表示完成 */
                     if (this.bArray.length === 4) {
                       // 完成的逻辑
-                      console.log(this.bArray)
+                      this.save()
                     }
                   }
-
-                  console.log(this.bArray)
 
                   break
                 }
 
                 /* 清空机械按钮-触发 */
                 case 'c': {
-                  console.log('清空按钮-触发：', data)
+                  // console.log('清空按钮-触发：', data)
 
-                  /* 只清空被测滑块数据 */
-                  // 中心距值，用于判断是否在区间内
-                  this.spacing = ''
-                  // 来料检测结果
-                  this.checkResult = ''
-                  // 清空来料检测和被测滑块源数组
-                  this.bArray = []
+                  /* 如果处于计算和调用后端api状态，就不触发这个清空功能，防止出bug */
+                  if (this.isSaveing === false) {
+                    /* 只清空被测滑块数据 */
+                    // 中心距值
+                    this.spacing = ''
+                    // 来料检测结果
+                    this.checkResult = ''
+                    // 清空来料检测和被测滑块源数组
+                    this.bArray = []
+                  }
 
                   break
                 }
@@ -731,6 +760,146 @@ export default {
             }
           )
         })
+    },
+
+    /**
+     * @description: 计算和调用api函数逻辑
+     */
+    save() {
+      console.log('二维码编号', this.QRCode)
+      console.log('规格', this.specValue)
+      console.log('型号', this.modelValue)
+      console.log('基准气压', this.aArray)
+      console.log('被测滑块气压', this.bArray)
+      console.log('中心距', this.spacing)
+      console.log('是否合格', this.checkResult)
+      console.log('最终结果', this.resultArray)
+
+      /* 判断一下数据 */
+      if (this.QRCode === '') {
+        if (this.aArray.length === 0) {
+          if (this.resultArray.length === 0) {
+            /* 1、根据公式，计算等高、到A、到B、A平行、B平行、滑块精度等 */
+
+            /* 2、调用API插入数据 */
+            const ip = window.localStorage.getItem('ip')
+            const api = `http://${ip}/xxx/public/index.php/setData`
+            console.log(api)
+
+            this.isSaveing = true // 开始计算和调用api操作
+            this.$axios
+              .post(api, {
+                QRCode: this.QRCode,
+                specValue: this.specValue
+              })
+              .then(res => {
+                console.log(res)
+                const data = res.data
+
+                if (data.status === 1) {
+                  /* 上传成功 */
+                  this.$message({
+                    message: `数据上传成。`,
+                    type: 'success',
+                    duration: 2000
+                  })
+                } else if (data.status === 0) {
+                  /* 上传失败 */
+                  this.$alert(
+                    `数据上传失败，请点击“刷新页面”按钮！`,
+                    `状态码[${data.status}]`,
+                    {
+                      type: 'error',
+                      showClose: false,
+                      center: true,
+                      confirmButtonText: '刷新页面',
+                      callback: () => {
+                        this.handleRefresh()
+                      }
+                    }
+                  )
+                } else if (data.status === -9) {
+                  /* 参数有误 */
+                  this.$alert(
+                    `参数有误，请点击“刷新页面”按钮！`,
+                    `状态码[${data.status}]`,
+                    {
+                      type: 'error',
+                      showClose: false,
+                      center: true,
+                      confirmButtonText: '刷新页面',
+                      callback: () => {
+                        this.handleRefresh()
+                      }
+                    }
+                  )
+                }
+              })
+              .catch(err => {
+                this.$alert(
+                  `[增-环节] ${err}。请确保网络连接正常！`,
+                  '网络请求错误',
+                  {
+                    type: 'error',
+                    center: false, // 是否居中布局
+                    showClose: false, // 是否显示右上角关闭按钮
+                    confirmButtonText: '重 试', // 确定按钮的文本内容
+                    callback: () => {
+                      this.handleRefresh()
+                    }
+                  }
+                )
+              })
+              .finally(() => {
+                setTimeout(() => {
+                  this.isSaveing = false // 完成
+                }, 1000)
+              })
+          } else {
+            this.$alert(
+              `结果数组为空，请点击"刷新页面"按钮，重新测量一次！`,
+              '警告',
+              {
+                type: 'error',
+                showClose: false,
+                center: true,
+                confirmButtonText: '刷新页面',
+                callback: () => {
+                  this.handleRefresh()
+                }
+              }
+            )
+          }
+        } else {
+          this.$alert(
+            `标准滑块的基准数据为空，请点击"刷新页面"按钮，重新测量"标准滑块"的值！`,
+            '警告',
+            {
+              type: 'error',
+              showClose: false,
+              center: true,
+              confirmButtonText: '刷新页面',
+              callback: () => {
+                this.handleRefresh()
+              }
+            }
+          )
+        }
+      } else {
+        this.$alert(
+          `二维码为空，请点击"刷新页面"按钮，重新测量一次！`,
+          '警告',
+          {
+            type: 'error',
+            showClose: false,
+            center: true,
+            confirmButtonText: '刷新页面',
+            callback: () => {
+              this.handleRefresh()
+            }
+          }
+        )
+      }
     }
   }
 }

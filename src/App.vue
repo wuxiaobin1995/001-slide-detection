@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-03-15 10:45:03
+ * @LastEditTime: 2024-03-16 11:51:47
  * @Description : 根组件
 -->
 <template>
@@ -36,6 +36,16 @@ export default {
           'standard_slider_value',
           JSON.stringify([])
         )
+      }
+    },
+
+    /**
+     * @description: 软件启动后，初始化localStorage的一些值
+     */
+    initLocalStorage() {
+      /* 初始化API的IP地址 */
+      if (!window.localStorage.getItem('ip')) {
+        window.localStorage.setItem('ip', '192.168.1.150')
       }
     },
 

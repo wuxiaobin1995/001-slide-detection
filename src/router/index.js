@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-03-12 15:18:09
+ * @LastEditTime: 2024-03-16 11:53:26
  * @Description : 路由
  */
 import Vue from 'vue'
@@ -24,13 +24,13 @@ const routes = [
     meta: ['首页']
   },
 
-  // 配置
-  // {
-  //   path: '/configuration',
-  //   name: 'configuration',
-  //   component: () => import('@/views/configuration'),
-  //   meta: ['配置']
-  // },
+  // 开发者
+  {
+    path: '/set-developer',
+    name: 'set-developer',
+    component: () => import('@/views/set/set-developer'),
+    meta: ['开发者']
+  },
 
   {
     path: '/refresh',
