@@ -1,11 +1,11 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-19 14:40:03
+ * @LastEditTime: 2024-03-19 14:50:37
  * @Description : home
 -->
 <template>
-  <div class="home">
+  <div class="home" v-loading.fullscreen.lock="isSaveing">
     <!-- 被测滑块部分 -->
     <div class="slider">
       <!-- 左侧数值显示 -->
