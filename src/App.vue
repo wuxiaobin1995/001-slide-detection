@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-03-16 11:51:47
+ * @LastEditTime: 2024-03-18 09:25:19
  * @Description : 根组件
 -->
 <template>
@@ -19,6 +19,8 @@ export default {
 
   created() {
     this.initSessionStorage()
+
+    this.initLocalStorage()
 
     this.initVuex()
 

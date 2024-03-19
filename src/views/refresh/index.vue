@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2022-10-17 17:37:25
- * @LastEditTime: 2024-02-07 15:08:21
+ * @LastEditTime: 2024-03-18 15:14:57
  * @Description : 刷新中转页
 -->
 <template>
@@ -19,7 +19,7 @@ export default {
       /* 路由传参 */
       routerName: JSON.parse(this.$route.query.routerName),
       duration: JSON.parse(
-        this.$route.query.duration ? this.$route.query.duration : 500
+        this.$route.query.duration ? this.$route.query.duration : 100
       ) // 刷新时长
     }
   },
