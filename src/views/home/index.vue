@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-19 14:50:37
+ * @LastEditTime: 2024-03-20 17:55:23
  * @Description : home
 -->
 <template>
@@ -1241,8 +1241,25 @@ export default {
           // console.log('中心距', this.spacing)
           // console.log('是否合格', this.checkResult)
 
-          // 等高
+          const k = 0.09643
+          const CS1 = 0
+          const CS2 = 0
+          const CS3 = 0
+          let n = 2
+          if (this.modelValue === 'EA' || this.modelValue === 'HEA') {
+            n = 3
+          }
+          // 等高（um微米，1um=0.001mm）
+          this.dg = parseInt(
+            (
+              (k * (this.bArray[2][2] - this.bArray[2][0]) -
+                k * (this.aArray[1][2] - this.aArray[1][0])) /
+                n +
+              CS1
+            ).toFixed(0)
+          )
           // 到A
+
           // 到B
           // A平行
           // B平行
