@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-20 17:55:23
+ * @LastEditTime: 2024-03-21 10:30:33
  * @Description : home
 -->
 <template>
@@ -48,7 +48,7 @@
 
         <!-- 二维码 -->
         <div class="QRCode">
-          <span class="text">二维码</span>
+          <span class="text">二维码：</span>
           <div>
             <el-input
               ref="QRCodeInput"
@@ -68,7 +68,18 @@
           <div class="box">
             <div class="title">.</div>
             <div class="value">
-              {{ bArray.length === 0 ? '待测' : '已测' }}
+              <el-image
+                class="bit"
+                :src="srcNo"
+                fit="scale-down"
+                v-if="bArray.length === 0"
+              ></el-image>
+              <el-image
+                class="bit"
+                :src="srcYes"
+                fit="scale-down"
+                v-else
+              ></el-image>
             </div>
           </div>
 
@@ -96,9 +107,48 @@
         <div class="pressure">
           <div class="box">
             <div class="title">.</div>
-            <div class="value">{{ bArray.length >= 2 ? '已测' : '待测' }}</div>
-            <div class="value">{{ bArray.length >= 3 ? '已测' : '待测' }}</div>
-            <div class="value">{{ bArray.length >= 4 ? '已测' : '待测' }}</div>
+            <div class="value">
+              <el-image
+                class="bit"
+                :src="srcYes"
+                fit="scale-down"
+                v-if="bArray.length >= 2"
+              ></el-image>
+              <el-image
+                class="bit"
+                :src="srcNo"
+                fit="scale-down"
+                v-else
+              ></el-image>
+            </div>
+            <div class="value">
+              <el-image
+                class="bit"
+                :src="srcYes"
+                fit="scale-down"
+                v-if="bArray.length >= 3"
+              ></el-image>
+              <el-image
+                class="bit"
+                :src="srcNo"
+                fit="scale-down"
+                v-else
+              ></el-image>
+            </div>
+            <div class="value">
+              <el-image
+                class="bit"
+                :src="srcYes"
+                fit="scale-down"
+                v-if="bArray.length >= 4"
+              ></el-image>
+              <el-image
+                class="bit"
+                :src="srcNo"
+                fit="scale-down"
+                v-else
+              ></el-image>
+            </div>
           </div>
 
           <div class="box">
@@ -154,11 +204,11 @@
           </div>
         </div>
 
-        <!-- 滑块精度 -->
+        <!-- 滑块精度结果 -->
         <div class="sliderAccuracy">
           <div class="box">
             <div class="title">.</div>
-            <div class="value">精度结果</div>
+            <div class="value">结果</div>
           </div>
 
           <div class="box">
@@ -226,14 +276,14 @@
             align="center"
             prop="create_time"
             label="测量时间"
-            width="220"
+            width="190"
           />
           <!-- 规格 -->
           <el-table-column
             align="center"
             prop="specValue"
             label="规格"
-            width="80"
+            width="60"
           />
           <!-- 型号 -->
           <el-table-column
@@ -243,24 +293,24 @@
             width="80"
           />
           <!-- 等高 -->
-          <el-table-column align="center" prop="dg" label="等高" width="100" />
+          <el-table-column align="center" prop="dg" label="等高" width="80" />
           <!-- 到A -->
-          <el-table-column align="center" prop="toA" label="到A" width="100" />
+          <el-table-column align="center" prop="toA" label="到A" width="80" />
           <!-- 到B -->
-          <el-table-column align="center" prop="toB" label="到B" width="100" />
+          <el-table-column align="center" prop="toB" label="到B" width="80" />
           <!-- A平行 -->
           <el-table-column
             align="center"
             prop="aParallel"
             label="A平行"
-            width="100"
+            width="80"
           />
           <!-- B平行 -->
           <el-table-column
             align="center"
             prop="bParallel"
             label="B平行"
-            width="100"
+            width="80"
           />
           <!-- 精度等级 -->
           <el-table-column
@@ -310,9 +360,48 @@
       <div class="content">
         <div class="box">
           <div class="title">.</div>
-          <div class="item">{{ aArray.length >= 1 ? '已测' : '待测' }}</div>
-          <div class="item">{{ aArray.length >= 2 ? '已测' : '待测' }}</div>
-          <div class="item">{{ aArray.length >= 3 ? '已测' : '待测' }}</div>
+          <div class="item">
+            <el-image
+              class="bit"
+              :src="srcYes"
+              fit="scale-down"
+              v-if="aArray.length >= 1"
+            ></el-image>
+            <el-image
+              class="bit"
+              :src="srcNo"
+              fit="scale-down"
+              v-else
+            ></el-image>
+          </div>
+          <div class="item">
+            <el-image
+              class="bit"
+              :src="srcYes"
+              fit="scale-down"
+              v-if="aArray.length >= 2"
+            ></el-image>
+            <el-image
+              class="bit"
+              :src="srcNo"
+              fit="scale-down"
+              v-else
+            ></el-image>
+          </div>
+          <div class="item">
+            <el-image
+              class="bit"
+              :src="srcYes"
+              fit="scale-down"
+              v-if="aArray.length >= 3"
+            ></el-image>
+            <el-image
+              class="bit"
+              :src="srcNo"
+              fit="scale-down"
+              v-else
+            ></el-image>
+          </div>
         </div>
 
         <div class="box">
@@ -419,6 +508,10 @@ export default {
       /* 状态标志位 */
       isSaveing: false, // 计算和调用api状态
 
+      /* 标记是否已测 */
+      srcYes: require('@/assets/img/Home/已测.png'),
+      srcNo: require('@/assets/img/Home/待测.png'),
+
       /* 服务器地址ip */
       ip: '',
 
@@ -475,7 +568,7 @@ export default {
       QRCode: '',
 
       /* 来料检测 */
-      checkInterval: [-5, 2], // 来料检测区间
+      checkInterval: [-8, 8], // 来料检测区间
       spacing: '', // 中心距值，用于判断是否在区间内
       checkResult: '', // 来料检测结果
 
@@ -534,7 +627,7 @@ export default {
         path: '/refresh',
         query: {
           routerName: JSON.stringify('/'),
-          duration: JSON.stringify(100)
+          duration: JSON.stringify(300)
         }
       })
     },
@@ -1233,19 +1326,11 @@ export default {
       if (this.QRCode !== '') {
         if (this.aArray.length === 3) {
           /* 1、根据公式，计算等高、到A、到B、A平行、B平行、滑块精度等 */
-          // console.log('二维码编号', this.QRCode)
-          // console.log('规格', this.specValue)
-          // console.log('型号', this.modelValue)
-          // console.log('基准气压', this.aArray)
-          // console.log('被测滑块气压', this.bArray)
-          // console.log('中心距', this.spacing)
-          // console.log('是否合格', this.checkResult)
-
           const k = 0.09643
-          const CS1 = 0
-          const CS2 = 0
-          const CS3 = 0
-          let n = 2
+          const CS1 = 0 // 等高的常数
+          const CS2 = 0 // 到A的常数
+          const CS3 = 0 // 到B的常数
+          let n = 2 // 法兰型n=3，矩型n=2
           if (this.modelValue === 'EA' || this.modelValue === 'HEA') {
             n = 3
           }
@@ -1259,10 +1344,49 @@ export default {
             ).toFixed(0)
           )
           // 到A
-
+          this.toA = parseInt(
+            (k * (this.bArray[2][1] - this.aArray[1][1]) + CS2).toFixed(0)
+          )
           // 到B
+          this.toB = parseInt(
+            (k * (this.bArray[2][3] - this.aArray[1][3]) + CS3).toFixed(0)
+          )
           // A平行
+          this.aParallel = parseInt(
+            (
+              k *
+              (Math.max(
+                ...[this.bArray[1][1], this.bArray[2][1], this.bArray[3][1]]
+              ) -
+                Math.min(
+                  ...[this.bArray[1][1], this.bArray[2][1], this.bArray[3][1]]
+                ))
+            ).toFixed(0)
+          )
           // B平行
+          this.bParallel = parseInt(
+            (
+              k *
+              (Math.max(
+                ...[this.bArray[1][3], this.bArray[2][3], this.bArray[3][3]]
+              ) -
+                Math.min(
+                  ...[this.bArray[1][3], this.bArray[2][3], this.bArray[3][3]]
+                ))
+            ).toFixed(0)
+          )
+          // 精度等级
+          if (
+            Math.abs(this.dg) <= 20 &&
+            Math.abs(this.toA) <= 30 &&
+            Math.abs(this.toB) <= 30 &&
+            this.aParallel <= 10 &&
+            this.bParallel <= 15
+          ) {
+            this.accuracyClass = 'E'
+          } else {
+            this.accuracyClass = 'N'
+          }
 
           /* 2、调用API插入数据 */
           const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/setData`
@@ -1390,10 +1514,15 @@ export default {
     @include flex(row, stretch, stretch);
     /* 左侧内容区域 */
     .main {
-      width: 50%;
+      width: 55%;
       border-right: 2px solid black;
+      /* 是否已测标志 */
+      .bit {
+        width: 40px;
+      }
       /* 规格型号 */
       .gx {
+        margin-top: 10px;
         @include flex(row, stretch, stretch);
         .spec,
         .model {
@@ -1406,7 +1535,9 @@ export default {
       }
       /* 二维码 */
       .QRCode {
+        border-bottom: 2px solid black;
         margin-top: 20px;
+        padding-bottom: 20px;
         @include flex(row, stretch, center);
         .text {
           margin-right: 10px;
@@ -1421,14 +1552,15 @@ export default {
       }
       /* 来料检测 */
       .check {
-        margin-top: 20px;
+        margin-top: 10px;
+        margin-right: 20px;
         @include flex(row, space-between, stretch);
         .box {
           @include flex(column, space-around, center);
           .title {
             font-size: 24px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 10px;
           }
           .value {
             font-size: 20px;
@@ -1437,14 +1569,15 @@ export default {
       }
       /* 3次气压值 */
       .pressure {
-        margin-top: 20px;
+        margin-top: 40px;
+        margin-right: 20px;
         @include flex(row, space-between, stretch);
         .box {
           @include flex(column, space-around, center);
           .title {
             font-size: 24px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 10px;
           }
           .value {
             font-size: 20px;
@@ -1453,14 +1586,15 @@ export default {
       }
       /* 滑块精度 */
       .sliderAccuracy {
-        margin-top: 50px;
+        margin-top: 60px;
+        margin-right: 20px;
         @include flex(row, space-between, stretch);
         .box {
           @include flex(column, space-around, center);
           .title {
             font-size: 24px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 15px;
           }
           .value {
             font-size: 20px;
@@ -1471,7 +1605,7 @@ export default {
 
     /* 表格区域 */
     .table {
-      width: 50%;
+      width: 45%;
     }
   }
 
@@ -1480,6 +1614,10 @@ export default {
     height: 22%;
     border-top: 2px solid black;
     @include flex(row, stretch, stretch);
+    /* 是否已测标志 */
+    .bit {
+      width: 35px;
+    }
     .head-title {
       width: 100px;
       font-size: 30px;
