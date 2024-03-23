@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-21 10:30:33
+ * @LastEditTime: 2024-03-22 09:25:04
  * @Description : home
 -->
 <template>
@@ -1326,7 +1326,10 @@ export default {
       if (this.QRCode !== '') {
         if (this.aArray.length === 3) {
           /* 1、根据公式，计算等高、到A、到B、A平行、B平行、滑块精度等 */
-          const k = 0.09643
+          const k1 = 0.098522 // 气嘴1
+          const k2 = 0.093457 // 气嘴2
+          const k3 = 0.092336 // 气嘴3
+          const k4 = 0.096805 // 气嘴4
           const CS1 = 0 // 等高的常数
           const CS2 = 0 // 到A的常数
           const CS3 = 0 // 到B的常数
@@ -1337,24 +1340,25 @@ export default {
           // 等高（um微米，1um=0.001mm）
           this.dg = parseInt(
             (
-              (k * (this.bArray[2][2] - this.bArray[2][0]) -
-                k * (this.aArray[1][2] - this.aArray[1][0])) /
+              (k3 * this.bArray[2][2] -
+                k1 * this.bArray[2][0] -
+                (k3 * this.aArray[1][2] - k1 * this.aArray[1][0])) /
                 n +
               CS1
             ).toFixed(0)
           )
           // 到A
           this.toA = parseInt(
-            (k * (this.bArray[2][1] - this.aArray[1][1]) + CS2).toFixed(0)
+            (k2 * (this.bArray[2][1] - this.aArray[1][1]) + CS2).toFixed(0)
           )
           // 到B
           this.toB = parseInt(
-            (k * (this.bArray[2][3] - this.aArray[1][3]) + CS3).toFixed(0)
+            (k4 * (this.bArray[2][3] - this.aArray[1][3]) + CS3).toFixed(0)
           )
           // A平行
           this.aParallel = parseInt(
             (
-              k *
+              k2 *
               (Math.max(
                 ...[this.bArray[1][1], this.bArray[2][1], this.bArray[3][1]]
               ) -
@@ -1366,7 +1370,7 @@ export default {
           // B平行
           this.bParallel = parseInt(
             (
-              k *
+              k4 *
               (Math.max(
                 ...[this.bArray[1][3], this.bArray[2][3], this.bArray[3][3]]
               ) -
