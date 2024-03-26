@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-26 08:45:46
+ * @LastEditTime: 2024-03-23 10:54:09
  * @Description : home
 -->
 <template>
@@ -70,13 +70,13 @@
             <div class="value">
               <el-image
                 class="bit"
-                :src="srcYes"
+                :src="srcNo"
                 fit="scale-down"
-                v-if="bArray.length >= 2"
+                v-if="bArray.length === 0"
               ></el-image>
               <el-image
                 class="bit"
-                :src="srcNo"
+                :src="srcYes"
                 fit="scale-down"
                 v-else
               ></el-image>
@@ -89,16 +89,9 @@
           </div>
 
           <div class="box">
-            <div class="title">合格区间</div>
+            <div class="title">区间</div>
             <div class="value">
               [{{ checkInterval[0] }} ~ {{ checkInterval[1] }}]
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">对标值</div>
-            <div class="value">
-              [{{ checkStandard - 0.2 }} ~ {{ checkStandard + 0.2 }}]
             </div>
           </div>
 
@@ -114,20 +107,6 @@
         <div class="pressure">
           <div class="box">
             <div class="title">.</div>
-            <div class="value">
-              <el-image
-                class="bit"
-                :src="srcYes"
-                fit="scale-down"
-                v-if="bArray.length >= 1"
-              ></el-image>
-              <el-image
-                class="bit"
-                :src="srcNo"
-                fit="scale-down"
-                v-else
-              ></el-image>
-            </div>
             <div class="value">
               <el-image
                 class="bit"
@@ -156,57 +135,71 @@
                 v-else
               ></el-image>
             </div>
+            <div class="value">
+              <el-image
+                class="bit"
+                :src="srcYes"
+                fit="scale-down"
+                v-if="bArray.length >= 4"
+              ></el-image>
+              <el-image
+                class="bit"
+                :src="srcNo"
+                fit="scale-down"
+                v-else
+              ></el-image>
+            </div>
           </div>
 
           <div class="box">
             <!-- <div class="title">1号气嘴</div>
             <div class="value">
-              {{ bArray.length >= 1 ? bArray[0][0] : '/' }}
-            </div>
-            <div class="value">
               {{ bArray.length >= 2 ? bArray[1][0] : '/' }}
             </div>
             <div class="value">
               {{ bArray.length >= 3 ? bArray[2][0] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 4 ? bArray[3][0] : '/' }}
             </div> -->
           </div>
 
           <div class="box">
             <!-- <div class="title">2号气嘴</div>
             <div class="value">
-              {{ bArray.length >= 1 ? bArray[0][1] : '/' }}
-            </div>
-            <div class="value">
               {{ bArray.length >= 2 ? bArray[1][1] : '/' }}
             </div>
             <div class="value">
               {{ bArray.length >= 3 ? bArray[2][1] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 4 ? bArray[3][1] : '/' }}
             </div> -->
           </div>
 
           <div class="box">
             <!-- <div class="title">3号气嘴</div>
             <div class="value">
-              {{ bArray.length >= 1 ? bArray[0][2] : '/' }}
-            </div>
-            <div class="value">
               {{ bArray.length >= 2 ? bArray[1][2] : '/' }}
             </div>
             <div class="value">
               {{ bArray.length >= 3 ? bArray[2][2] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 4 ? bArray[3][2] : '/' }}
             </div> -->
           </div>
 
           <div class="box">
             <!-- <div class="title">4号气嘴</div>
             <div class="value">
-              {{ bArray.length >= 1 ? bArray[0][3] : '/' }}
-            </div>
-            <div class="value">
               {{ bArray.length >= 2 ? bArray[1][3] : '/' }}
             </div>
             <div class="value">
               {{ bArray.length >= 3 ? bArray[2][3] : '/' }}
+            </div>
+            <div class="value">
+              {{ bArray.length >= 4 ? bArray[3][3] : '/' }}
             </div> -->
           </div>
         </div>
@@ -491,14 +484,6 @@
       @click="handleToDeveloper"
       >Developer</el-button
     >
-    <!-- 参数配置 -->
-    <el-button
-      class="btn-parameter"
-      type="info"
-      size="mini"
-      @click="handleParameter"
-      >参数配置</el-button
-    >
   </div>
 </template>
 
@@ -584,13 +569,12 @@ export default {
 
       /* 来料检测 */
       checkInterval: [-8, 8], // 来料检测区间
-      checkStandard: 0, // 对标值
       spacing: '', // 中心距值，用于判断是否在区间内
       checkResult: '', // 来料检测结果
 
-      /* 标准滑块源数组，格式比如 [[气嘴1, 气嘴2, 气嘴3, 气嘴4], [气嘴1, 气嘴2, 气嘴3, 气嘴4], [气嘴1, 气嘴2, 气嘴3, 气嘴4]] */
+      /* 标准滑块源数组，格式比如 [[气嘴1, 气嘴2, 气嘴3, 气嘴4], [......], [......]] */
       aArray: [],
-      /* 来料检测和被测滑块源数组，格式比如 [[气嘴1, 气嘴2, 气嘴3, 气嘴4], [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4]] */
+      /* 来料检测和被测滑块源数组，格式比如 [[压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4], [......], [......]] */
       bArray: [],
 
       /* 滑块的精度 */
@@ -924,25 +908,6 @@ export default {
         })
         .catch(() => {})
     },
-    /**
-     * @description: 前往参数配置
-     */
-    handleParameter() {
-      this.$prompt('请输入密码', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^123456$/,
-        inputErrorMessage: '密码不正确',
-        showClose: true,
-        closeOnClickModal: false
-      })
-        .then(() => {
-          this.$router.push({
-            path: '/set-parameter'
-          })
-        })
-        .catch(() => {})
-    },
 
     /**
      * @description: 重扫二维码按钮
@@ -1092,9 +1057,9 @@ export default {
 
             this.parser = this.usbPort.pipe(new Readline({ delimiter: '\n' }))
             this.parser.on('data', data => {
-              /* 如果处于计算和调用后端api保存状态，就不触发，防止出bug */
+              /* 如果处于计算和调用后端api状态，就不触发，防止出bug */
               if (this.isSaveing === false) {
-                // console.log(data) //  格式：'a,1369,1379,1359,1359,1374,1391,1376,1357,33753'
+                console.log(data) //  格式：'a,1369,1379,1359,1359,1374,1391,1376,1357,33753'
 
                 /* 数据预处理 */
                 const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
@@ -1151,9 +1116,9 @@ export default {
                   case 'b': {
                     // console.log('被测滑块按钮-触发', data)
 
-                    /* 1、来料检测（表示第2次按被测滑块机械按钮） */
-                    if (this.bArray.length === 1) {
-                      this.bArray.push([...nozzleArray, pressureDigital])
+                    /* 1、来料检测（表示第1次按被测滑块机械按钮） */
+                    if (this.bArray.length === 0) {
+                      this.bArray.push([pressureDigital])
                       /* 计算开始 */
                       /* 根据规格的不同，选择不同的k、b（与型号无关） */
                       let k = 0.13019
@@ -1272,11 +1237,11 @@ export default {
                       }
                     } else {
                       /* 2、被测滑块精度测量 */
-                      if (this.bArray.length !== 3) {
+                      if (this.bArray.length !== 4) {
                         this.bArray.push(nozzleArray)
                       }
-                      /* 第3次按下瞬间，表示完成 */
-                      if (this.bArray.length === 3) {
+                      /* 第4次按下瞬间，表示完成 */
+                      if (this.bArray.length === 4) {
                         // 完成的逻辑
                         this.save()
                       }
@@ -1365,19 +1330,18 @@ export default {
           const k2 = 0.093457 // 气嘴2
           const k3 = 0.092336 // 气嘴3
           const k4 = 0.096805 // 气嘴4
-          const CS1 = 0 // 等高的常数（不同规格、不同型号，就不同）
-          const CS2 = 6 // 到A的常数（不同规格、不同型号，就不同）
-          const CS3 = 2 // 到B的常数（不同规格、不同型号，就不同）
+          const CS1 = 0 // 等高的常数
+          const CS2 = 0 // 到A的常数
+          const CS3 = 0 // 到B的常数
           let n = 2 // 法兰型n=3，矩型n=2
           if (this.modelValue === 'EA' || this.modelValue === 'HEA') {
             n = 3
           }
-
           // 等高（um微米，1um=0.001mm）
           this.dg = parseInt(
             (
-              (k3 * this.bArray[1][2] -
-                k1 * this.bArray[1][0] -
+              (k3 * this.bArray[2][2] -
+                k1 * this.bArray[2][0] -
                 (k3 * this.aArray[1][2] - k1 * this.aArray[1][0])) /
                 n +
               CS1
@@ -1385,21 +1349,21 @@ export default {
           )
           // 到A
           this.toA = parseInt(
-            (k2 * (this.bArray[1][1] - this.aArray[1][1]) + CS2).toFixed(0)
+            (k2 * (this.bArray[2][1] - this.aArray[1][1]) + CS2).toFixed(0)
           )
           // 到B
           this.toB = parseInt(
-            (k4 * (this.bArray[1][3] - this.aArray[1][3]) + CS3).toFixed(0)
+            (k4 * (this.bArray[2][3] - this.aArray[1][3]) + CS3).toFixed(0)
           )
           // A平行
           this.aParallel = parseInt(
             (
               k2 *
               (Math.max(
-                ...[this.bArray[0][1], this.bArray[1][1], this.bArray[2][1]]
+                ...[this.bArray[1][1], this.bArray[2][1], this.bArray[3][1]]
               ) -
                 Math.min(
-                  ...[this.bArray[0][1], this.bArray[1][1], this.bArray[2][1]]
+                  ...[this.bArray[1][1], this.bArray[2][1], this.bArray[3][1]]
                 ))
             ).toFixed(0)
           )
@@ -1408,10 +1372,10 @@ export default {
             (
               k4 *
               (Math.max(
-                ...[this.bArray[0][3], this.bArray[1][3], this.bArray[2][3]]
+                ...[this.bArray[1][3], this.bArray[2][3], this.bArray[3][3]]
               ) -
                 Math.min(
-                  ...[this.bArray[0][3], this.bArray[1][3], this.bArray[2][3]]
+                  ...[this.bArray[1][3], this.bArray[2][3], this.bArray[3][3]]
                 ))
             ).toFixed(0)
           )
@@ -1694,12 +1658,6 @@ export default {
   .btn-developer {
     position: absolute;
     right: 100px;
-    bottom: 0;
-  }
-  /* 参数配置 */
-  .btn-parameter {
-    position: absolute;
-    right: 200px;
     bottom: 0;
   }
 }

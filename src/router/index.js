@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-03-18 09:19:10
+ * @LastEditTime: 2024-03-26 08:37:37
  * @Description : 路由
  */
 import Vue from 'vue'
@@ -30,6 +30,14 @@ const routes = [
     name: 'set-developer',
     component: () => import('@/views/set/set-developer'),
     meta: ['开发者']
+  },
+
+  // 参数配置
+  {
+    path: '/set-parameter',
+    name: 'set-parameter',
+    component: () => import('@/views/set/set-parameter'),
+    meta: ['参数配置']
   },
 
   {
