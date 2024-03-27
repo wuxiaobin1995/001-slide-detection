@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-26 08:45:46
+ * @LastEditTime: 2024-03-26 15:45:35
  * @Description : home
 -->
 <template>
@@ -583,8 +583,8 @@ export default {
       QRCode: '',
 
       /* 来料检测 */
-      checkInterval: [-8, 8], // 来料检测区间
-      checkStandard: 0, // 对标值
+      checkInterval: [-8, 8], // 来料检测区间（只有两种，标准长度和加长）
+      checkStandard: 0, // 对标值（不同规格、不同型号，就不同）
       spacing: '', // 中心距值，用于判断是否在区间内
       checkResult: '', // 来料检测结果
 
@@ -1424,6 +1424,14 @@ export default {
             this.bParallel <= 15
           ) {
             this.accuracyClass = 'E'
+          } else if (
+            Math.abs(this.dg) > 50 ||
+            Math.abs(this.toA) > 100 ||
+            Math.abs(this.toB) > 120 ||
+            this.aParallel > 40 ||
+            this.bParallel > 40
+          ) {
+            this.accuracyClass = '报废'
           } else {
             this.accuracyClass = 'N'
           }

@@ -1331,8 +1331,8 @@ export default {
           const k3 = 0.092336 // 气嘴3
           const k4 = 0.096805 // 气嘴4
           const CS1 = 0 // 等高的常数
-          const CS2 = 0 // 到A的常数
-          const CS3 = 0 // 到B的常数
+          const CS2 = 6 // 到A的常数
+          const CS3 = 2 // 到B的常数
           let n = 2 // 法兰型n=3，矩型n=2
           if (this.modelValue === 'EA' || this.modelValue === 'HEA') {
             n = 3
@@ -1388,6 +1388,14 @@ export default {
             this.bParallel <= 15
           ) {
             this.accuracyClass = 'E'
+          } else if (
+            Math.abs(this.dg) > 50 ||
+            Math.abs(this.toA) > 100 ||
+            Math.abs(this.toB) > 120 ||
+            this.aParallel > 40 ||
+            this.bParallel > 40
+          ) {
+            this.accuracyClass = '报废'
           } else {
             this.accuracyClass = 'N'
           }
