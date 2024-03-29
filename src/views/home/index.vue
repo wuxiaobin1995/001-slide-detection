@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-26 15:45:35
+ * @LastEditTime: 2024-03-29 08:45:27
  * @Description : home
 -->
 <template>
@@ -534,6 +534,554 @@ export default {
       tableData: [],
       tableLoading: false, // 表格加载动画
 
+      /* 配置参数 */
+      arg: [
+        {
+          gx: '15DA', // 规格型号
+          QRCode: '', // 滑块二维码编号
+          dgCS: 0, // 等高常数
+          toACS: 0, // 到A常数
+          toBCS: 0, // 到B常数
+          checkIntervalUp: 0, // 中心距上限
+          checkIntervalDown: 0, // 中心距下限
+          checkStandard: 0 // 对标值
+        },
+        {
+          gx: '15AA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '15EA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '15FA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '15AN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '15HAA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '15HEA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '15HFA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '15HAN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '20DA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '20AA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '20EA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '20FA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '20AN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '20HAA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '20HEA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '20HFA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '20HAN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '25DA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '25AA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '25EA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '25FA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '25AN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '25HAA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '25HEA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '25HFA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '25HAN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '30DA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '30AA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '30EA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '30FA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '30AN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '30HAA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '30HEA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '30HFA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '30HAN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '35DA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '35AA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '35EA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '35FA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '35AN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '35HAA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '35HEA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '35HFA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '35HAN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '45DA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '45AA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '45EA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '45FA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '45AN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '45HAA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '45HEA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '45HFA',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        },
+        {
+          gx: '45HAN',
+          QRCode: '',
+          dgCS: 0,
+          toACS: 0,
+          toBCS: 0,
+          checkIntervalUp: 0,
+          checkIntervalDown: 0,
+          checkStandard: 0
+        }
+      ],
+
+      dgCS: 0, // 等高常数
+      toACS: 0, // 到A常数
+      toBCS: 0, // 到B常数
+
       /* 规格 */
       specValue: '',
       specSelection: [
@@ -583,7 +1131,7 @@ export default {
       QRCode: '',
 
       /* 来料检测 */
-      checkInterval: [-8, 8], // 来料检测区间（只有两种，标准长度和加长）
+      checkInterval: [0, 0], // 来料检测区间（只有两种，标准长度和加长）
       checkStandard: 0, // 对标值（不同规格、不同型号，就不同）
       spacing: '', // 中心距值，用于判断是否在区间内
       checkResult: '', // 来料检测结果
@@ -617,7 +1165,10 @@ export default {
     this.ip = window.localStorage.getItem('ip')
 
     /* 开启串口通信 */
-    this.initSerialPort()
+    // this.initSerialPort()
+
+    /* 获取配置参数页的参数 */
+    this.getArg()
 
     /* 获取表格数据 */
     this.getTableData()
@@ -649,6 +1200,61 @@ export default {
     },
 
     /**
+     * @description: 获取配置参数页的参数
+     */
+    getArg() {
+      const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/getArg`
+      this.$axios
+        .post(api, {})
+        .then(res => {
+          const data = res.data
+          if (data.status === 1) {
+            /* 成功 */
+            if (this.arg.length === 0) {
+              // 顺便增添到数据库里
+              const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/setArg`
+              this.$axios.post(api, {
+                arg: JSON.stringify(this.arg)
+              })
+            } else {
+              this.arg = JSON.parse(data.result[0].arg)
+              console.log(this.arg)
+            }
+          } else if (data.status === 0) {
+            /* 失败 */
+            this.$message({
+              message: `获取配置参数页的参数失败`,
+              type: 'error',
+              duration: 2500
+            })
+          }
+        })
+        .finally(() => {
+          this.countArg()
+        })
+    },
+
+    /**
+     * @description: 根据不同的规格、型号，计算对应的参数
+     */
+    countArg() {
+      const gx = `${this.specValue}${this.modelValue}`
+      for (let i = 0; i < this.arg.length; i++) {
+        const element = this.arg[i]
+        if (element.gx === gx) {
+          this.dgCS = element.dgCS
+          this.toACS = element.toACS
+          this.toBCS = element.toBCS
+          this.checkInterval = [
+            element.checkIntervalDown,
+            element.checkIntervalUp
+          ]
+          this.checkStandard = element.checkStandard
+        }
+      }
+    },
+
+    /**
      * @description: 获取表格数据
      */
     getTableData() {
@@ -672,21 +1278,21 @@ export default {
             })
           }
         })
-        .catch(err => {
-          this.$alert(
-            `[查-环节] ${err}。请确保网络连接正常！`,
-            '网络请求错误',
-            {
-              type: 'error',
-              showClose: false, // 是否显示右上角关闭按钮
-              center: false, // 是否居中布局
-              confirmButtonText: '刷新页面', // 确定按钮的文本内容
-              callback: () => {
-                this.handleRefresh()
-              }
-            }
-          )
-        })
+        // .catch(err => {
+        //   this.$alert(
+        //     `[查-环节] ${err}。请确保网络连接正常！`,
+        //     '网络请求错误',
+        //     {
+        //       type: 'error',
+        //       showClose: false, // 是否显示右上角关闭按钮
+        //       center: false, // 是否居中布局
+        //       confirmButtonText: '刷新页面', // 确定按钮的文本内容
+        //       callback: () => {
+        //         this.handleRefresh()
+        //       }
+        //     }
+        //   )
+        // })
         .finally(() => {
           this.tableLoading = false
         })
@@ -1365,9 +1971,7 @@ export default {
           const k2 = 0.093457 // 气嘴2
           const k3 = 0.092336 // 气嘴3
           const k4 = 0.096805 // 气嘴4
-          const CS1 = 0 // 等高的常数（不同规格、不同型号，就不同）
-          const CS2 = 6 // 到A的常数（不同规格、不同型号，就不同）
-          const CS3 = 2 // 到B的常数（不同规格、不同型号，就不同）
+
           let n = 2 // 法兰型n=3，矩型n=2
           if (this.modelValue === 'EA' || this.modelValue === 'HEA') {
             n = 3
@@ -1380,16 +1984,20 @@ export default {
                 k1 * this.bArray[1][0] -
                 (k3 * this.aArray[1][2] - k1 * this.aArray[1][0])) /
                 n +
-              CS1
+              this.dgCS
             ).toFixed(0)
           )
           // 到A
           this.toA = parseInt(
-            (k2 * (this.bArray[1][1] - this.aArray[1][1]) + CS2).toFixed(0)
+            (k2 * (this.bArray[1][1] - this.aArray[1][1]) + this.toACS).toFixed(
+              0
+            )
           )
           // 到B
           this.toB = parseInt(
-            (k4 * (this.bArray[1][3] - this.aArray[1][3]) + CS3).toFixed(0)
+            (k4 * (this.bArray[1][3] - this.aArray[1][3]) + this.toBCS).toFixed(
+              0
+            )
           )
           // A平行
           this.aParallel = parseInt(
