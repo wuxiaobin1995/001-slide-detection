@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-03-29 08:45:27
+ * @LastEditTime: 2024-03-29 16:09:59
  * @Description : home
 -->
 <template>
@@ -98,7 +98,7 @@
           <div class="box">
             <div class="title">对标值</div>
             <div class="value">
-              [{{ checkStandard - 0.2 }} ~ {{ checkStandard + 0.2 }}]
+              {{ checkStandard }}
             </div>
           </div>
 
@@ -1111,7 +1111,13 @@ export default {
           value: 'AA'
         },
         {
+          value: 'DA'
+        },
+        {
           value: 'EA'
+        },
+        {
+          value: 'FA'
         },
         {
           value: 'AN'
@@ -1121,6 +1127,9 @@ export default {
         },
         {
           value: 'HEA'
+        },
+        {
+          value: 'HFA'
         },
         {
           value: 'HAN'
@@ -1165,7 +1174,7 @@ export default {
     this.ip = window.localStorage.getItem('ip')
 
     /* 开启串口通信 */
-    // this.initSerialPort()
+    this.initSerialPort()
 
     /* 获取配置参数页的参数 */
     this.getArg()
@@ -1203,22 +1212,21 @@ export default {
      * @description: 获取配置参数页的参数
      */
     getArg() {
-      const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/getArg`
+      const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/config/getArg`
       this.$axios
         .post(api, {})
         .then(res => {
           const data = res.data
           if (data.status === 1) {
             /* 成功 */
-            if (this.arg.length === 0) {
+            if (data.result.length === 0) {
               // 顺便增添到数据库里
-              const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/setArg`
+              const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/config/setArg`
               this.$axios.post(api, {
                 arg: JSON.stringify(this.arg)
               })
             } else {
               this.arg = JSON.parse(data.result[0].arg)
-              console.log(this.arg)
             }
           } else if (data.status === 0) {
             /* 失败 */
@@ -1537,7 +1545,7 @@ export default {
       this.$prompt('请输入密码', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        inputPattern: /^123456$/,
+        inputPattern: /^ST$/,
         inputErrorMessage: '密码不正确',
         showClose: true,
         closeOnClickModal: false
@@ -1590,6 +1598,8 @@ export default {
         // 清空来料检测和被测滑块源数组
         this.bArray = []
 
+        this.countArg()
+
         // 二维码输入框获取鼠标焦点
         this.QRFocus()
       })
@@ -1618,6 +1628,8 @@ export default {
         this.checkResult = ''
         // 清空来料检测和被测滑块源数组
         this.bArray = []
+
+        this.countArg()
 
         // 二维码输入框获取鼠标焦点
         this.QRFocus()

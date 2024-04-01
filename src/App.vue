@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-03-28 14:57:58
+ * @LastEditTime: 2024-03-29 16:08:26
  * @Description : 根组件
 -->
 <template>
@@ -24,7 +24,7 @@ export default {
 
     this.initVuex()
 
-    // this.initSerialPort() // 检测串口通信是否正常
+    this.initSerialPort() // 检测串口通信是否正常
   },
 
   methods: {

@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-26 08:38:14
- * @LastEditTime: 2024-03-28 15:43:13
+ * @LastEditTime: 2024-03-29 10:15:04
  * @Description : 参数配置
 -->
 <template>
@@ -168,7 +168,7 @@ export default {
      * @description: 获取配置参数页的参数
      */
     getArg() {
-      const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/getArg`
+      const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/config/getArg`
       this.$axios.post(api, {}).then(res => {
         const data = res.data
         if (data.status === 1) {
@@ -190,7 +190,7 @@ export default {
      */
     handleSave() {
       this.loading = true
-      const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/updateArg`
+      const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/config/updateArg`
       this.$axios
         .post(api, {
           arg: JSON.stringify(this.arg)
