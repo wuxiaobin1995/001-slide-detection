@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-04-12 08:26:39
+ * @LastEditTime: 2024-04-12 08:22:31
  * @Description : home
 -->
 <template>
@@ -63,14 +63,8 @@
           </div>
         </div>
 
-        <div>
-          {{ this.q_1 }}，{{ this.q_1s }}，{{ this.q_2 }}，{{ this.q_2s }}，{{
-            this.q_3
-          }}，{{ this.q_3s }}，{{ this.q_4 }}，{{ this.q_4s }}
-        </div>
-
         <!-- 来料检测 -->
-        <div :style="{ display: 'none' }" class="check">
+        <div class="check">
           <div class="box">
             <div class="title">.</div>
             <div class="value">
@@ -117,7 +111,7 @@
         </div>
 
         <!-- 3次气压值 -->
-        <div :style="{ display: 'none' }" class="pressure">
+        <div class="pressure">
           <div class="box">
             <div class="title">.</div>
             <div class="value">
@@ -242,7 +236,7 @@
         </div>
 
         <!-- 滑块精度结果 -->
-        <div :style="{ display: 'none' }" class="sliderAccuracy">
+        <div class="sliderAccuracy">
           <div class="box">
             <div class="title">.</div>
             <div class="value">结果</div>
@@ -388,7 +382,7 @@
     </div>
 
     <!-- 标准滑块部分 -->
-    <div :style="{ display: 'none' }" class="standard-slider">
+    <div class="standard-slider">
       <div class="head-title">
         <div>标准</div>
         <div>滑块</div>
@@ -1190,16 +1184,7 @@ export default {
       toB: '', // 到B
       aParallel: '', // A平行
       bParallel: '', // B平行
-      accuracyClass: '', // 精度等级
-
-      q_1s: 0,
-      q_1: 0,
-      q_2s: 0,
-      q_2: 0,
-      q_3s: 0,
-      q_3: 0,
-      q_4s: 0,
-      q_4: 0
+      accuracyClass: '' // 精度等级
     }
   },
 
@@ -1223,7 +1208,7 @@ export default {
     this.getArg()
 
     /* 获取表格数据 */
-    // this.getTableData()
+    this.getTableData()
   },
   mounted() {
     /* 二维码输入框获取鼠标焦点 */
@@ -1754,35 +1739,232 @@ export default {
             this.parser = this.usbPort.pipe(new Readline({ delimiter: '\n' }))
             this.parser.on('data', data => {
               /* 如果处于计算和调用后端api保存状态，就不触发，防止出bug */
+              if (this.isSaveing === false) {
+                // console.log(data) //  格式：'a,1369,1379,1359,1359,1374,1391,1376,1357,33753'
 
-              // 前一个是出口值，后一个是入口值（即基准）
+                // 前一个是出口值，后一个是入口值（即基准）
 
-              // console.log(data) //  格式：'a,1369,1379,1359,1359,1374,1391,1376,1357,33753'
+                /* 数据预处理 */
+                const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
 
-              /* 数据预处理 */
-              const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
+                const keyType = dataArray[0] // 机械按钮类型 a，b，c
 
-              // const _1sr = Math.floor(Math.random() * (40 + 40 + 1)) - 40
-              // const _2sr = Math.floor(Math.random() * (90 + 90 + 1)) - 130
-              // const _3sr = Math.floor(Math.random() * (120 + 120 + 1)) - 120
-              // const _4sr = Math.floor(Math.random() * (110 + 110 + 1)) - 110
+                const _1 = dataArray[1] // 出口
+                const _1s = dataArray[2] // 入口（经测试，它的值比出口更大）
+                const oneNozzle = parseInt(Math.abs(_1s - _1).toFixed(0)) // 1号喷嘴气压
+                const _2 = dataArray[3]
+                const _2s = dataArray[4]
+                const twoNozzle = parseInt(Math.abs(_2s - _2).toFixed(0)) // 2号喷嘴气压
+                const _3 = dataArray[5]
+                const _3s = dataArray[6]
+                const threeNozzle = parseInt(Math.abs(_3s - _3).toFixed(0)) // 3号喷嘴气压
+                const _4 = dataArray[7]
+                const _4s = dataArray[8]
+                const fourNozzle = parseInt(Math.abs(_4s - _4).toFixed(0)) // 4号喷嘴气压（在侧面）
+                const nozzleArray = [
+                  oneNozzle,
+                  twoNozzle,
+                  threeNozzle,
+                  fourNozzle
+                ]
 
-              // const _1sr = Math.floor(Math.random() * (40 + 40 + 1)) - 40
-              // const _2sr = Math.floor(Math.random() * (90 + 90 + 1)) - 90
-              // const _3sr = Math.floor(Math.random() * (100 + 100 + 1)) - 100
-              // const _4sr = Math.floor(Math.random() * (90 + 90 + 1)) - 90
+                const pressureDigital = dataArray[dataArray.length - 1] // 取出最后一个压力数字量
 
-              this.q_1 = parseInt(dataArray[1])
-              this.q_1s = parseInt(dataArray[2])
+                /* 判断a、b、c机械按钮触发 */
+                switch (keyType) {
+                  /* 标准滑块机械按钮-触发 */
+                  case 'a': {
+                    // console.log('标准滑块按钮-触发', data)
 
-              this.q_2 = parseInt(dataArray[3])
-              this.q_2s = parseInt(dataArray[4])
+                    if (this.aArray.length !== 3) {
+                      this.aArray.push(nozzleArray)
+                    }
+                    /* 第3次按下瞬间，表示完成 */
+                    if (this.aArray.length === 3) {
+                      // 完成的逻辑
+                      window.sessionStorage.setItem(
+                        'standard_slider_value',
+                        JSON.stringify(this.aArray)
+                      )
+                      this.$message({
+                        message: `标准滑块测量基准完成`,
+                        type: 'success',
+                        duration: 5000
+                      })
+                    }
+                    break
+                  }
 
-              this.q_3 = parseInt(dataArray[5])
-              this.q_3s = parseInt(dataArray[6])
+                  /* 被测滑块机械按钮-触发 */
+                  case 'b': {
+                    // console.log('被测滑块按钮-触发', data)
 
-              this.q_4 = parseInt(dataArray[7])
-              this.q_4s = parseInt(dataArray[8])
+                    /* 1、来料检测（表示第2次按被测滑块机械按钮） */
+                    if (this.bArray.length === 1) {
+                      this.bArray.push([...nozzleArray, pressureDigital])
+                      /* 计算开始 */
+                      /* 根据规格的不同，选择不同的k、b（与型号无关） */
+                      let k = 0.13019
+                      let b = -4300
+                      if (this.specValue === this.specSelection[0].value) {
+                        // 15
+                        k = 0.13019
+                        b = -4300
+                      } else if (
+                        this.specValue === this.specSelection[1].value
+                      ) {
+                        // 20
+                        k = 0.13019
+                        b = -4300
+                      } else if (
+                        this.specValue === this.specSelection[2].value
+                      ) {
+                        // 25
+                        k = 0.13019
+                        b = -4300
+                      } else if (
+                        this.specValue === this.specSelection[3].value
+                      ) {
+                        // 30
+                        k = 0.13019
+                        b = -4300
+                      } else if (
+                        this.specValue === this.specSelection[4].value
+                      ) {
+                        // 35
+                        k = 0.13019
+                        b = -4300
+                      } else if (
+                        this.specValue === this.specSelection[5].value
+                      ) {
+                        // 45
+                        k = 0.13019
+                        b = -4300
+                      }
+
+                      /* 未经过补偿的中心距 */
+                      const spacingTemporary = parseFloat(
+                        ((k * pressureDigital + b) / 10).toFixed(1)
+                      )
+                      /* 开始补偿，算出最终的中心距 */
+                      if (
+                        spacingTemporary >= -9.5 &&
+                        spacingTemporary <= -7.1
+                      ) {
+                        // +8
+                        this.spacing = spacingTemporary + 0.6
+                      } else if (
+                        spacingTemporary > -7.1 &&
+                        spacingTemporary <= -5.4
+                      ) {
+                        // +6
+                        this.spacing = spacingTemporary + 0.5
+                      } else if (
+                        spacingTemporary > -5.4 &&
+                        spacingTemporary <= -3.1
+                      ) {
+                        // +4
+                        this.spacing = spacingTemporary + 0.7
+                      } else if (
+                        spacingTemporary > -3.1 &&
+                        spacingTemporary <= -1.1
+                      ) {
+                        // +2
+                        this.spacing = spacingTemporary - 0.1
+                      } else if (
+                        spacingTemporary > -1.1 &&
+                        spacingTemporary <= 0.9
+                      ) {
+                        // 0
+                        this.spacing = spacingTemporary
+                      } else if (
+                        spacingTemporary > 0.9 &&
+                        spacingTemporary <= 2.9
+                      ) {
+                        // -2
+                        this.spacing = spacingTemporary - 0.5
+                      } else if (
+                        spacingTemporary > 2.9 &&
+                        spacingTemporary <= 4.9
+                      ) {
+                        // -4
+                        this.spacing = spacingTemporary - 0.4
+                      } else if (
+                        spacingTemporary > 4.9 &&
+                        spacingTemporary <= 6.9
+                      ) {
+                        // -6
+                        this.spacing = spacingTemporary + 0.1
+                      } else if (
+                        spacingTemporary > 6.9 &&
+                        spacingTemporary <= 8.3
+                      ) {
+                        // -8
+                        this.spacing = spacingTemporary + 0.2
+                      } else {
+                        // 其他情况
+                        this.spacing = spacingTemporary
+                      }
+                      /* 中心距保留1位小数 */
+                      this.spacing = parseFloat(this.spacing.toFixed(1))
+                      /* 判断中心距是否在区间内 */
+                      if (
+                        this.spacing >= this.checkInterval[0] &&
+                        this.spacing <= this.checkInterval[1]
+                      ) {
+                        // 在区间内
+                        this.checkResult = '合格'
+                      } else {
+                        // 在区间外
+                        this.checkResult = '不合格'
+                      }
+                    } else {
+                      /* 2、被测滑块精度测量 */
+                      if (this.bArray.length !== 3) {
+                        this.bArray.push(nozzleArray)
+                      }
+                      /* 第3次按下瞬间，表示完成 */
+                      if (this.bArray.length === 3) {
+                        // 完成的逻辑
+                        this.save()
+                      }
+                    }
+                    break
+                  }
+
+                  /* 清空机械按钮-触发 */
+                  case 'c': {
+                    // console.log('清空按钮-触发：', data)
+
+                    /* 只清空被测滑块数据 */
+                    // 中心距值
+                    this.spacing = ''
+                    // 来料检测结果
+                    this.checkResult = ''
+                    // 清空来料检测和被测滑块源数组
+                    this.bArray = []
+
+                    break
+                  }
+
+                  /* 机械按钮类型异常 */
+                  default:
+                    this.$alert(
+                      `下位机源数据为：【${data}】，请停止操作，然后联系技术人员来处理！`,
+                      '机械按钮类型异常',
+                      {
+                        type: 'error',
+                        showClose: false,
+                        center: true,
+                        confirmButtonText: '刷新页面',
+                        callback: () => {
+                          this.handleRefresh()
+                        }
+                      }
+                    )
+                    break
+                }
+              }
             })
           } else {
             this.$alert(
