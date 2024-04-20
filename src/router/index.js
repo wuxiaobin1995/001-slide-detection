@@ -40,7 +40,7 @@ const routes = [
     meta: ['参数配置']
   },
 
-  // 原始数据显示（用于求a、b、c、d）
+  // 原始数据显示（用于求a、b、c、d）（也用于扯皮时保留证据）
   {
     path: '/set-rawData',
     name: 'set-rawData',
@@ -48,7 +48,7 @@ const routes = [
     meta: ['原始数据显示']
   },
 
-  // 设置abcd常数
+  // 设置4组abcd常数
   {
     path: '/set-abcd',
     name: 'set-abcd',

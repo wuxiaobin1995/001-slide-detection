@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-04-17 08:40:29
+ * @LastEditTime: 2024-04-20 11:59:11
  * @Description : home
 -->
 <template>
@@ -61,6 +61,14 @@
               >重 扫</el-button
             >
           </div>
+        </div>
+
+        <!-- 实时距离 -->
+        <div>
+          <div>{{ h1 }}</div>
+          <div>{{ h2 }}</div>
+          <div>{{ h3 }}</div>
+          <div>{{ h4 }}</div>
         </div>
 
         <!-- 来料检测 -->
@@ -161,76 +169,52 @@
           <div class="box">
             <div class="title">1号气嘴</div>
             <div class="value">
-              {{
-                bArray.length >= 1 ? (this.k1 * bArray[0][0]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 1 ? h1 : '/' }}
             </div>
             <div class="value">
-              {{
-                bArray.length >= 2 ? (this.k1 * bArray[1][0]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 2 ? h1 : '/' }}
             </div>
             <div class="value">
-              {{
-                bArray.length >= 3 ? (this.k1 * bArray[2][0]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 3 ? h1 : '/' }}
             </div>
           </div>
 
           <div class="box">
             <div class="title">2号气嘴</div>
             <div class="value">
-              {{
-                bArray.length >= 1 ? (this.k2 * bArray[0][1]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 1 ? h2 : '/' }}
             </div>
             <div class="value">
-              {{
-                bArray.length >= 2 ? (this.k2 * bArray[1][1]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 2 ? h2 : '/' }}
             </div>
             <div class="value">
-              {{
-                bArray.length >= 3 ? (this.k2 * bArray[2][1]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 3 ? h2 : '/' }}
             </div>
           </div>
 
           <div class="box">
             <div class="title">3号气嘴</div>
             <div class="value">
-              {{
-                bArray.length >= 1 ? (this.k3 * bArray[0][2]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 1 ? h3 : '/' }}
             </div>
             <div class="value">
-              {{
-                bArray.length >= 2 ? (this.k3 * bArray[1][2]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 2 ? h3 : '/' }}
             </div>
             <div class="value">
-              {{
-                bArray.length >= 3 ? (this.k3 * bArray[2][2]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 3 ? h3 : '/' }}
             </div>
           </div>
 
           <div class="box">
             <div class="title">4号气嘴</div>
             <div class="value">
-              {{
-                bArray.length >= 1 ? (this.k4 * bArray[0][3]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 1 ? h4 : '/' }}
             </div>
             <div class="value">
-              {{
-                bArray.length >= 2 ? (this.k4 * bArray[1][3]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 2 ? h4 : '/' }}
             </div>
             <div class="value">
-              {{
-                bArray.length >= 3 ? (this.k4 * bArray[2][3]).toFixed(1) : '/'
-              }}
+              {{ bArray.length >= 3 ? h4 : '/' }}
             </div>
           </div>
         </div>
@@ -396,35 +380,7 @@
               class="bit"
               :src="srcYes"
               fit="scale-down"
-              v-if="aArray.length >= 1"
-            ></el-image>
-            <el-image
-              class="bit"
-              :src="srcNo"
-              fit="scale-down"
-              v-else
-            ></el-image>
-          </div>
-          <div class="item">
-            <el-image
-              class="bit"
-              :src="srcYes"
-              fit="scale-down"
-              v-if="aArray.length >= 2"
-            ></el-image>
-            <el-image
-              class="bit"
-              :src="srcNo"
-              fit="scale-down"
-              v-else
-            ></el-image>
-          </div>
-          <div class="item">
-            <el-image
-              class="bit"
-              :src="srcYes"
-              fit="scale-down"
-              v-if="aArray.length >= 3"
+              v-if="aArray.length === 1"
             ></el-image>
             <el-image
               class="bit"
@@ -438,52 +394,28 @@
         <div class="box">
           <div class="title">1号气嘴</div>
           <div class="value">
-            {{ aArray.length >= 1 ? (this.k1 * aArray[0][0]).toFixed(1) : '/' }}
-          </div>
-          <div class="value">
-            {{ aArray.length >= 2 ? (this.k1 * aArray[1][0]).toFixed(1) : '/' }}
-          </div>
-          <div class="value">
-            {{ aArray.length >= 3 ? (this.k1 * aArray[2][0]).toFixed(1) : '/' }}
+            {{ aArray.length === 1 ? h1 : '/' }}
           </div>
         </div>
 
         <div class="box">
           <div class="title">2号气嘴</div>
           <div class="value">
-            {{ aArray.length >= 1 ? (this.k2 * aArray[0][1]).toFixed(1) : '/' }}
-          </div>
-          <div class="value">
-            {{ aArray.length >= 2 ? (this.k2 * aArray[1][1]).toFixed(1) : '/' }}
-          </div>
-          <div class="value">
-            {{ aArray.length >= 3 ? (this.k2 * aArray[2][1]).toFixed(1) : '/' }}
+            {{ aArray.length === 1 ? h2 : '/' }}
           </div>
         </div>
 
         <div class="box">
           <div class="title">3号气嘴</div>
           <div class="value">
-            {{ aArray.length >= 1 ? (this.k3 * aArray[0][2]).toFixed(1) : '/' }}
-          </div>
-          <div class="value">
-            {{ aArray.length >= 2 ? (this.k3 * aArray[1][2]).toFixed(1) : '/' }}
-          </div>
-          <div class="value">
-            {{ aArray.length >= 3 ? (this.k3 * aArray[2][2]).toFixed(1) : '/' }}
+            {{ aArray.length === 1 ? h3 : '/' }}
           </div>
         </div>
 
         <div class="box">
           <div class="title">4号气嘴</div>
           <div class="value">
-            {{ aArray.length >= 1 ? (this.k4 * aArray[0][3]).toFixed(1) : '/' }}
-          </div>
-          <div class="value">
-            {{ aArray.length >= 2 ? (this.k4 * aArray[1][3]).toFixed(1) : '/' }}
-          </div>
-          <div class="value">
-            {{ aArray.length >= 3 ? (this.k4 * aArray[2][3]).toFixed(1) : '/' }}
+            {{ aArray.length === 1 ? h4 : '/' }}
           </div>
         </div>
       </div>
@@ -524,16 +456,12 @@
       >参数配置</el-button
     >
     <!-- 设置abcd -->
-    <el-button
-      class="btn-parameter"
-      type="info"
-      size="mini"
-      @click="handleSetABCD"
+    <el-button class="btn-abcd" type="info" size="mini" @click="handleSetABCD"
       >设置abcd</el-button
     >
     <!-- 原始数据显示 -->
     <el-button
-      class="btn-parameter"
+      class="btn-rawdata"
       type="info"
       size="mini"
       @click="handleRawData"
@@ -569,6 +497,9 @@ export default {
 
       /* 服务器地址ip */
       ip: '',
+
+      /* 4组abcd常数数组 */
+      abcdArrs: [],
 
       /* 表格 */
       tableData: [],
@@ -1118,10 +1049,6 @@ export default {
         }
       ],
 
-      k1: 0.098522, // 气嘴1
-      k2: 0.093457, // 气嘴2
-      k3: 0.092336, // 气嘴3
-      k4: 0.096805, // 气嘴4
       dgCS: 0, // 等高常数
       toACS: 0, // 到A常数
       toBCS: 0, // 到B常数
@@ -1194,6 +1121,12 @@ export default {
       /* 来料检测和被测滑块源数组，格式比如 [[气嘴1, 气嘴2, 气嘴3, 气嘴4], [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4]] */
       bArray: [],
 
+      /* 滑块表面到喷嘴的距离 */
+      h1: 0,
+      h2: 0,
+      h3: 0,
+      h4: 0,
+
       /* 滑块的精度 */
       dg: '', // 等高
       toA: '', // 到A
@@ -1217,6 +1150,9 @@ export default {
     /* 获取服务器地址IP */
     this.ip = window.localStorage.getItem('ip')
 
+    /* 获取4组abcd常数数组 */
+    this.abcdArrs = JSON.parse(window.localStorage.getItem('abcdArrs'))
+
     /* 开启串口通信 */
     this.initSerialPort()
 
@@ -1224,7 +1160,7 @@ export default {
     this.getArg()
 
     /* 获取表格数据 */
-    this.getTableData()
+    // this.getTableData()
   },
   mounted() {
     /* 二维码输入框获取鼠标焦点 */
@@ -1624,20 +1560,9 @@ export default {
      * @description: 前往原始数据显示页
      */
     handleRawData() {
-      this.$prompt('请输入密码', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^st$/,
-        inputErrorMessage: '密码不正确',
-        showClose: true,
-        closeOnClickModal: false
+      this.$router.push({
+        path: '/set-rawData'
       })
-        .then(() => {
-          this.$router.push({
-            path: '/set-rawData'
-          })
-        })
-        .catch(() => {})
     },
 
     /**
@@ -1796,219 +1721,76 @@ export default {
               if (this.isSaveing === false) {
                 // console.log(data)
 
-                /* 数据预处理 */
-                const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
+                if (data === 'a') {
+                  console.log('a')
+                } else if (data === 'b') {
+                  console.log('b')
+                } else if (data === 'c') {
+                  console.log('c')
+                } else {
+                  /* 数据预处理 */
+                  const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
 
-                const keyType = dataArray[0] // 机械按钮类型 a，b，c
+                  /* 前一个是出口值，后一个是入口值（即基准） */
+                  const qz_1 = dataArray[0]
+                  const qz_1s = dataArray[1]
+                  const qz_2 = dataArray[2]
+                  const qz_2s = dataArray[3]
+                  const qz_3 = dataArray[4]
+                  const qz_3s = dataArray[5]
+                  const qz_4 = dataArray[6]
+                  const qz_4s = dataArray[7]
 
-                // 前一个是出口值，后一个是入口值（即基准）
-                const qz_1 = dataArray[0] // 出口
-                const qz_1s = dataArray[1] // 入口
+                  /* 5位压力数字量 */
+                  // const pressureDigital = dataArray[8]
 
-                const qz_2 = dataArray[2]
-                const qz_2s = dataArray[3]
+                  /* 4个气嘴的x，公式：出口÷入口 */
+                  const x1 = qz_1 / qz_1s
+                  const x2 = qz_2 / qz_2s
+                  const x3 = qz_3 / qz_3s
+                  const x4 = qz_4 / qz_4s
 
-                const qz_3 = dataArray[4]
-                const qz_3s = dataArray[5]
+                  /* 4组abcd常数，在abcd页面输入 */
+                  const a1 = this.abcdArrs[0][0]
+                  const b1 = this.abcdArrs[0][1]
+                  const c1 = this.abcdArrs[0][2]
+                  const d1 = this.abcdArrs[0][3]
 
-                const qz_4 = dataArray[6]
-                const qz_4s = dataArray[7]
+                  const a2 = this.abcdArrs[1][0]
+                  const b2 = this.abcdArrs[1][1]
+                  const c2 = this.abcdArrs[1][2]
+                  const d2 = this.abcdArrs[1][3]
 
-                const pressureDigital = dataArray[dataArray.length - 1] // 取出最后一个压力数字量
+                  const a3 = this.abcdArrs[2][0]
+                  const b3 = this.abcdArrs[2][1]
+                  const c3 = this.abcdArrs[2][2]
+                  const d3 = this.abcdArrs[2][3]
 
-                /* 判断a、b、c机械按钮触发 */
-                switch (keyType) {
-                  /* 标准滑块机械按钮-触发 */
-                  case 'a': {
-                    // console.log('标准滑块按钮-触发', data)
+                  const a4 = this.abcdArrs[3][0]
+                  const b4 = this.abcdArrs[3][1]
+                  const c4 = this.abcdArrs[3][2]
+                  const d4 = this.abcdArrs[3][3]
 
-                    if (this.aArray.length !== 3) {
-                      this.aArray.push(nozzleArray)
-                    }
-                    /* 第3次按下瞬间，表示完成 */
-                    if (this.aArray.length === 3) {
-                      // 完成的逻辑
-                      window.sessionStorage.setItem(
-                        'standard_slider_value',
-                        JSON.stringify(this.aArray)
-                      )
-                      this.$message({
-                        message: `标准滑块测量基准完成`,
-                        type: 'success',
-                        duration: 5000
-                      })
-                    }
-                    break
-                  }
-
-                  /* 被测滑块机械按钮-触发 */
-                  case 'b': {
-                    // console.log('被测滑块按钮-触发', data)
-
-                    /* 1、来料检测（表示第2次按被测滑块机械按钮） */
-                    if (this.bArray.length === 1) {
-                      this.bArray.push([...nozzleArray, pressureDigital])
-                      /* 计算开始 */
-                      /* 根据规格的不同，选择不同的k、b（与型号无关） */
-                      let k = 0.13019
-                      let b = -4300
-                      if (this.specValue === this.specSelection[0].value) {
-                        // 15
-                        k = 0.13019
-                        b = -4300
-                      } else if (
-                        this.specValue === this.specSelection[1].value
-                      ) {
-                        // 20
-                        k = 0.13019
-                        b = -4300
-                      } else if (
-                        this.specValue === this.specSelection[2].value
-                      ) {
-                        // 25
-                        k = 0.13019
-                        b = -4300
-                      } else if (
-                        this.specValue === this.specSelection[3].value
-                      ) {
-                        // 30
-                        k = 0.13019
-                        b = -4300
-                      } else if (
-                        this.specValue === this.specSelection[4].value
-                      ) {
-                        // 35
-                        k = 0.13019
-                        b = -4300
-                      } else if (
-                        this.specValue === this.specSelection[5].value
-                      ) {
-                        // 45
-                        k = 0.13019
-                        b = -4300
-                      }
-
-                      /* 未经过补偿的中心距 */
-                      const spacingTemporary = parseFloat(
-                        ((k * pressureDigital + b) / 10).toFixed(1)
-                      )
-                      /* 开始补偿，算出最终的中心距 */
-                      if (
-                        spacingTemporary >= -9.5 &&
-                        spacingTemporary <= -7.1
-                      ) {
-                        // +8
-                        this.spacing = spacingTemporary + 0.6
-                      } else if (
-                        spacingTemporary > -7.1 &&
-                        spacingTemporary <= -5.4
-                      ) {
-                        // +6
-                        this.spacing = spacingTemporary + 0.5
-                      } else if (
-                        spacingTemporary > -5.4 &&
-                        spacingTemporary <= -3.1
-                      ) {
-                        // +4
-                        this.spacing = spacingTemporary + 0.7
-                      } else if (
-                        spacingTemporary > -3.1 &&
-                        spacingTemporary <= -1.1
-                      ) {
-                        // +2
-                        this.spacing = spacingTemporary - 0.1
-                      } else if (
-                        spacingTemporary > -1.1 &&
-                        spacingTemporary <= 0.9
-                      ) {
-                        // 0
-                        this.spacing = spacingTemporary
-                      } else if (
-                        spacingTemporary > 0.9 &&
-                        spacingTemporary <= 2.9
-                      ) {
-                        // -2
-                        this.spacing = spacingTemporary - 0.5
-                      } else if (
-                        spacingTemporary > 2.9 &&
-                        spacingTemporary <= 4.9
-                      ) {
-                        // -4
-                        this.spacing = spacingTemporary - 0.4
-                      } else if (
-                        spacingTemporary > 4.9 &&
-                        spacingTemporary <= 6.9
-                      ) {
-                        // -6
-                        this.spacing = spacingTemporary + 0.1
-                      } else if (
-                        spacingTemporary > 6.9 &&
-                        spacingTemporary <= 8.3
-                      ) {
-                        // -8
-                        this.spacing = spacingTemporary + 0.2
-                      } else {
-                        // 其他情况
-                        this.spacing = spacingTemporary
-                      }
-                      /* 中心距保留1位小数 */
-                      this.spacing = parseFloat(this.spacing.toFixed(1))
-                      /* 判断中心距是否在区间内 */
-                      if (
-                        this.spacing >= this.checkInterval[0] &&
-                        this.spacing <= this.checkInterval[1]
-                      ) {
-                        // 在区间内
-                        this.checkResult = '合格'
-                      } else {
-                        // 在区间外
-                        this.checkResult = '不合格'
-                      }
-                    } else {
-                      /* 2、被测滑块精度测量 */
-                      if (this.bArray.length !== 3) {
-                        this.bArray.push(nozzleArray)
-                      }
-                      /* 第3次按下瞬间，表示完成 */
-                      if (this.bArray.length === 3) {
-                        // 完成的逻辑
-                        this.save()
-                      }
-                    }
-                    break
-                  }
-
-                  /* 清空机械按钮-触发 */
-                  case 'c': {
-                    // console.log('清空按钮-触发：', data)
-
-                    /* 只清空被测滑块数据 */
-                    // 中心距值
-                    this.spacing = ''
-                    // 来料检测结果
-                    this.checkResult = ''
-                    // 清空来料检测和被测滑块源数组
-                    this.bArray = []
-
-                    break
-                  }
-
-                  /* 机械按钮类型异常 */
-                  default:
-                    this.$alert(
-                      `下位机源数据为：【${data}】，请停止操作，然后联系技术人员来处理！`,
-                      '机械按钮类型异常',
-                      {
-                        type: 'error',
-                        showClose: false,
-                        center: true,
-                        confirmButtonText: '刷新页面',
-                        callback: () => {
-                          this.handleRefresh()
-                        }
-                      }
-                    )
-                    break
+                  /*
+                   * 计算公式，是一个传递函数，陈少新给的
+                   * h = a*(出口÷入口)^3 + b*(出口÷入口)^2 + c*(出口÷入口) + d
+                   */
+                  this.h1 = parseInt(
+                    a1 * x1 * x1 * x1 + b1 * x1 * x1 + c1 * x1 + d1
+                  )
+                  this.h2 = parseInt(
+                    a2 * x2 * x2 * x2 + b2 * x2 * x2 + c2 * x2 + d2
+                  )
+                  this.h3 = parseInt(
+                    a3 * x3 * x3 * x3 + b3 * x3 * x3 + c3 * x3 + d3
+                  )
+                  this.h4 = parseInt(
+                    a4 * x4 * x4 * x4 + b4 * x4 * x4 + c4 * x4 + d4
+                  )
+                  console.log(this.h1)
+                  console.log(this.h2)
+                  console.log(this.h3)
+                  console.log(this.h4)
                 }
               }
             })
@@ -2053,62 +1835,62 @@ export default {
 
       /* 判断一下数据 */
       if (this.QRCode !== '') {
-        if (this.aArray.length === 3) {
+        if (this.aArray.length === 1) {
           /* 1、根据公式，计算等高、到A、到B、A平行、B平行、滑块精度等 */
 
-          let n = 2 // 法兰型n=3，矩型n=2
-          if (this.modelValue === 'EA' || this.modelValue === 'HEA') {
-            n = 3
-          }
+          // let n = 2 // 法兰型n=3，矩型n=2
+          // if (this.modelValue === 'EA' || this.modelValue === 'HEA') {
+          //   n = 3
+          // }
 
-          // 等高（um微米，1um=0.001mm）
-          this.dg = parseInt(
-            (
-              (this.k3 * this.bArray[1][2] -
-                this.k1 * this.bArray[1][0] -
-                (this.k3 * this.aArray[1][2] - this.k1 * this.aArray[1][0])) /
-                n +
-              this.dgCS
-            ).toFixed(0)
-          )
-          // 到A
-          this.toA = parseInt(
-            (
-              this.k2 * (this.bArray[1][1] - this.aArray[1][1]) +
-              this.toACS
-            ).toFixed(0)
-          )
-          // 到B
-          this.toB = parseInt(
-            (
-              this.k4 * (this.bArray[1][3] - this.aArray[1][3]) +
-              this.toBCS
-            ).toFixed(0)
-          )
-          // A平行
-          this.aParallel = parseInt(
-            (
-              this.k2 *
-              (Math.max(
-                ...[this.bArray[0][1], this.bArray[1][1], this.bArray[2][1]]
-              ) -
-                Math.min(
-                  ...[this.bArray[0][1], this.bArray[1][1], this.bArray[2][1]]
-                ))
-            ).toFixed(0)
-          )
-          // B平行
-          this.bParallel = parseInt(
-            (
-              this.k4 *
-              (Math.max(
-                ...[this.bArray[0][3], this.bArray[1][3], this.bArray[2][3]]
-              ) -
-                Math.min(
-                  ...[this.bArray[0][3], this.bArray[1][3], this.bArray[2][3]]
-                ))
-            ).toFixed(0)
-          )
+          // // 等高（um微米，1um=0.001mm）
+          // this.dg = parseInt(
+          //   (
+          //     (this.k3 * this.bArray[1][2] -
+          //       this.k1 * this.bArray[1][0] -
+          //       (this.k3 * this.aArray[2] - this.k1 * this.aArray[0])) /
+          //       n +
+          //     this.dgCS
+          //   ).toFixed(0)
+          // )
+          // // 到A
+          // this.toA = parseInt(
+          //   (
+          //     this.k2 * (this.bArray[1][1] - this.aArray[1]) +
+          //     this.toACS
+          //   ).toFixed(0)
+          // )
+          // // 到B
+          // this.toB = parseInt(
+          //   (
+          //     this.k4 * (this.bArray[1][3] - this.aArray[3]) +
+          //     this.toBCS
+          //   ).toFixed(0)
+          // )
+          // // A平行
+          // this.aParallel = parseInt(
+          //   (
+          //     this.k2 *
+          //     (Math.max(
+          //       ...[this.bArray[0][1], this.bArray[1][1], this.bArray[2][1]]
+          //     ) -
+          //       Math.min(
+          //         ...[this.bArray[0][1], this.bArray[1][1], this.bArray[2][1]]
+          //       ))
+          //   ).toFixed(0)
+          // )
+          // // B平行
+          // this.bParallel = parseInt(
+          //   (
+          //     this.k4 *
+          //     (Math.max(
+          //       ...[this.bArray[0][3], this.bArray[1][3], this.bArray[2][3]]
+          //     ) -
+          //       Math.min(
+          //         ...[this.bArray[0][3], this.bArray[1][3], this.bArray[2][3]]
+          //       ))
+          //   ).toFixed(0)
+          // )
           // 精度等级
           if (
             Math.abs(this.dg) <= 20 &&
@@ -2402,6 +2184,18 @@ export default {
   .btn-parameter {
     position: absolute;
     right: 200px;
+    bottom: 0;
+  }
+  /* abcd */
+  .btn-abcd {
+    position: absolute;
+    right: 300px;
+    bottom: 0;
+  }
+  /* 原始数据显示 */
+  .btn-rawdata {
+    position: absolute;
+    right: 400px;
     bottom: 0;
   }
 }

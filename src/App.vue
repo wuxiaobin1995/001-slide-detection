@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-03-29 16:08:26
+ * @LastEditTime: 2024-04-20 10:56:15
  * @Description : 根组件
 -->
 <template>
@@ -24,7 +24,7 @@ export default {
 
     this.initVuex()
 
-    this.initSerialPort() // 检测串口通信是否正常
+    // this.initSerialPort() // 检测串口通信是否正常
   },
 
   methods: {
@@ -48,6 +48,19 @@ export default {
       /* 初始化API的IP地址 */
       if (!window.localStorage.getItem('ip')) {
         window.localStorage.setItem('ip', '192.168.1.150')
+      }
+
+      /* 初始化4组abcd值，分别对应4个气嘴，二维数组 */
+      if (!window.localStorage.getItem('abcdArrs')) {
+        window.localStorage.setItem(
+          'abcdArrs',
+          JSON.stringify([
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]
+          ])
+        )
       }
     },
 

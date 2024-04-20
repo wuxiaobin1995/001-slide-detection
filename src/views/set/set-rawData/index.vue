@@ -1,33 +1,49 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-04-12 15:18:34
- * @LastEditTime: 2024-04-13 08:35:27
- * @Description : 原始数据显示
+ * @LastEditTime: 2024-04-20 09:18:46
+ * @Description : 原始数据显示（用于求a、b、c、d）（也用于扯皮时保留证据）
 -->
 <template>
   <div class="set-rawData">
-    <div>
-      <div>气嘴1：</div>
-      <div>入口值：{{ this.qz_1s }}</div>
-      <div>出口值：{{ this.qz_1 }}</div>
+    <div class="main">
+      <div class="row">
+        <div>气嘴1（电压V）：</div>
+        <div class="val">入口值：{{ qz_1s }}</div>
+        <div class="val">出口值：{{ qz_1 }}</div>
+      </div>
+
+      <div class="row">
+        <div>气嘴2（电压V）：</div>
+        <div class="val">入口值：{{ qz_2s }}</div>
+        <div class="val">出口值：{{ qz_2 }}</div>
+      </div>
+
+      <div class="row">
+        <div>气嘴3（电压V）：</div>
+        <div class="val">入口值：{{ qz_3s }}</div>
+        <div class="val">出口值：{{ qz_3 }}</div>
+      </div>
+
+      <div class="row">
+        <div>气嘴4（电压V）：</div>
+        <div class="val">入口值：{{ qz_4s }}</div>
+        <div class="val">出口值：{{ qz_4 }}</div>
+      </div>
+
+      <div class="row">
+        <div>压力数字量（数字量）：</div>
+        <div class="val">{{ pressureDigital }}</div>
+      </div>
     </div>
 
-    <div>
-      <div>气嘴2：</div>
-      <div>入口值：{{ this.qz_2s }}</div>
-      <div>出口值：{{ this.qz_2 }}</div>
-    </div>
-
-    <div>
-      <div>气嘴3：</div>
-      <div>入口值：{{ this.qz_3s }}</div>
-      <div>出口值：{{ this.qz_3 }}</div>
-    </div>
-
-    <div>
-      <div>气嘴4：</div>
-      <div>入口值：{{ this.qz_4s }}</div>
-      <div>出口值：{{ this.qz_4 }}</div>
+    <div class="btn">
+      <el-button class="item" type="danger" @click="handleToHome"
+        >返回首页</el-button
+      >
+      <el-button class="item" type="primary" @click="handleRefresh"
+        >刷新页面</el-button
+      >
     </div>
   </div>
 </template>
@@ -57,7 +73,9 @@ export default {
       qz_3s: 0, // 3号气嘴-入口值
 
       qz_4: 0, // 4号气嘴-出口值
-      qz_4s: 0 // 4号气嘴-入口值
+      qz_4s: 0, // 4号气嘴-入口值
+
+      pressureDigital: 0 // 5位压力数字量
     }
   },
 
@@ -74,6 +92,15 @@ export default {
   },
 
   methods: {
+    /**
+     * @description: 回到首页
+     */
+    handleToHome() {
+      this.$router.push({
+        path: '/'
+      })
+    },
+
     /**
      * @description: 刷新页面按钮
      */
@@ -151,6 +178,9 @@ export default {
 
               this.qz_4 = parseFloat(dataArray[6])
               this.qz_4s = parseFloat(dataArray[7])
+
+              // 5位压力数字量
+              this.pressureDigital = parseFloat(dataArray[8])
             })
           } else {
             this.$alert(
@@ -192,8 +222,28 @@ export default {
 .set-rawData {
   width: 100%;
   height: 100%;
-  padding: 5px 10px;
-  position: relative;
+  padding: 20px;
   @include flex(column, stretch, stretch);
+
+  .main {
+    flex: 1;
+    @include flex(column, center, stretch);
+    .row {
+      margin-bottom: 50px;
+      margin-left: 200px;
+      font-size: 24px;
+      .val {
+        font-weight: 700;
+      }
+    }
+  }
+
+  .btn {
+    @include flex(row, center, center);
+    .item {
+      font-size: 28px;
+      margin: 0 40px;
+    }
+  }
 }
 </style>
