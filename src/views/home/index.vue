@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-04-20 11:59:11
+ * @LastEditTime: 2024-04-20 16:20:40
  * @Description : home
 -->
 <template>
@@ -64,11 +64,36 @@
         </div>
 
         <!-- 实时距离 -->
-        <div>
-          <div>{{ h1 }}</div>
-          <div>{{ h2 }}</div>
-          <div>{{ h3 }}</div>
-          <div>{{ h4 }}</div>
+        <div class="feelerGauge">
+          <div class="box">
+            <div class="title">.</div>
+            <div class="value">气嘴实时距离</div>
+          </div>
+
+          <div class="box">
+            <div class="title">1号气嘴</div>
+            <div class="value">
+              {{ h1 }}
+            </div>
+          </div>
+          <div class="box">
+            <div class="title">2号气嘴</div>
+            <div class="value">
+              {{ h2 }}
+            </div>
+          </div>
+          <div class="box">
+            <div class="title">3号气嘴</div>
+            <div class="value">
+              {{ h3 }}
+            </div>
+          </div>
+          <div class="box">
+            <div class="title">4号气嘴</div>
+            <div class="value">
+              {{ h4 }}
+            </div>
+          </div>
         </div>
 
         <!-- 来料检测 -->
@@ -169,58 +194,58 @@
           <div class="box">
             <div class="title">1号气嘴</div>
             <div class="value">
-              {{ bArray.length >= 1 ? h1 : '/' }}
+              {{ bArray.length >= 1 ? bArray[0][0] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 2 ? h1 : '/' }}
+              {{ bArray.length >= 2 ? bArray[1][0] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 3 ? h1 : '/' }}
+              {{ bArray.length >= 3 ? bArray[2][0] : '/' }}
             </div>
           </div>
 
           <div class="box">
             <div class="title">2号气嘴</div>
             <div class="value">
-              {{ bArray.length >= 1 ? h2 : '/' }}
+              {{ bArray.length >= 1 ? bArray[0][1] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 2 ? h2 : '/' }}
+              {{ bArray.length >= 2 ? bArray[1][1] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 3 ? h2 : '/' }}
+              {{ bArray.length >= 3 ? bArray[2][1] : '/' }}
             </div>
           </div>
 
           <div class="box">
             <div class="title">3号气嘴</div>
             <div class="value">
-              {{ bArray.length >= 1 ? h3 : '/' }}
+              {{ bArray.length >= 1 ? bArray[0][2] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 2 ? h3 : '/' }}
+              {{ bArray.length >= 2 ? bArray[1][2] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 3 ? h3 : '/' }}
+              {{ bArray.length >= 3 ? bArray[2][2] : '/' }}
             </div>
           </div>
 
           <div class="box">
             <div class="title">4号气嘴</div>
             <div class="value">
-              {{ bArray.length >= 1 ? h4 : '/' }}
+              {{ bArray.length >= 1 ? bArray[0][3] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 2 ? h4 : '/' }}
+              {{ bArray.length >= 2 ? bArray[1][3] : '/' }}
             </div>
             <div class="value">
-              {{ bArray.length >= 3 ? h4 : '/' }}
+              {{ bArray.length >= 3 ? bArray[2][3] : '/' }}
             </div>
           </div>
         </div>
 
         <!-- 滑块精度结果 -->
-        <div class="sliderAccuracy">
+        <!-- <div class="sliderAccuracy">
           <div class="box">
             <div class="title">.</div>
             <div class="value">结果</div>
@@ -267,7 +292,7 @@
               {{ accuracyClass !== '' ? accuracyClass : '/' }}
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- 右侧表格 -->
@@ -276,7 +301,7 @@
           :data="tableData"
           style="width: 100%"
           height="100%"
-          :default-sort="{ prop: 'create_time', order: 'ascending' }"
+          :default-sort="{ prop: 'create_time', order: 'descending' }"
           :stripe="false"
           :border="true"
           v-loading="tableLoading"
@@ -380,7 +405,7 @@
               class="bit"
               :src="srcYes"
               fit="scale-down"
-              v-if="aArray.length === 1"
+              v-if="aArray.length === 5"
             ></el-image>
             <el-image
               class="bit"
@@ -394,28 +419,28 @@
         <div class="box">
           <div class="title">1号气嘴</div>
           <div class="value">
-            {{ aArray.length === 1 ? h1 : '/' }}
+            {{ aArray.length === 5 ? aArray[0] : '/' }}
           </div>
         </div>
 
         <div class="box">
           <div class="title">2号气嘴</div>
           <div class="value">
-            {{ aArray.length === 1 ? h2 : '/' }}
+            {{ aArray.length === 5 ? aArray[1] : '/' }}
           </div>
         </div>
 
         <div class="box">
           <div class="title">3号气嘴</div>
           <div class="value">
-            {{ aArray.length === 1 ? h3 : '/' }}
+            {{ aArray.length === 5 ? aArray[2] : '/' }}
           </div>
         </div>
 
         <div class="box">
           <div class="title">4号气嘴</div>
           <div class="value">
-            {{ aArray.length === 1 ? h4 : '/' }}
+            {{ aArray.length === 5 ? aArray[3] : '/' }}
           </div>
         </div>
       </div>
@@ -1049,10 +1074,6 @@ export default {
         }
       ],
 
-      dgCS: 0, // 等高常数
-      toACS: 0, // 到A常数
-      toBCS: 0, // 到B常数
-
       /* 规格 */
       specValue: '',
       specSelection: [
@@ -1116,18 +1137,25 @@ export default {
       spacing: '', // 中心距值，用于判断是否在区间内
       checkResult: '', // 来料检测结果
 
-      /* 标准滑块源数组，中间位置按一下即可，格式比如 [气嘴1, 气嘴2, 气嘴3, 气嘴4] */
+      /* 标准滑块源数组，中间位置按一下即可，格式 [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量]，一维数组 */
       aArray: [],
-      /* 来料检测和被测滑块源数组，格式比如 [[气嘴1, 气嘴2, 气嘴3, 气嘴4], [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4]] */
+      /* 来料检测和被测滑块源数组，格式 [[气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量]]，二维数组 */
       bArray: [],
+      /* 缓存的数组，格式 [[气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], ......] */
+      cache: [],
 
-      /* 滑块表面到喷嘴的距离 */
+      /* 滑块表面到喷嘴的实时距离 */
       h1: 0,
       h2: 0,
       h3: 0,
       h4: 0,
 
-      /* 滑块的精度 */
+      /* 三个常数 */
+      dgCS: 0, // 等高常数
+      toACS: 0, // 到A常数
+      toBCS: 0, // 到B常数
+
+      /* 滑块的最终精度结果 */
       dg: '', // 等高
       toA: '', // 到A
       toB: '', // 到B
@@ -1160,7 +1188,7 @@ export default {
     this.getArg()
 
     /* 获取表格数据 */
-    // this.getTableData()
+    this.getTableData()
   },
   mounted() {
     /* 二维码输入框获取鼠标焦点 */
@@ -1250,7 +1278,7 @@ export default {
       const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/getData`
       this.$axios
         .post(api, {
-          num: 6
+          num: 30
         })
         .then(res => {
           const data = res.data
@@ -1721,13 +1749,7 @@ export default {
               if (this.isSaveing === false) {
                 // console.log(data)
 
-                if (data === 'a') {
-                  console.log('a')
-                } else if (data === 'b') {
-                  console.log('b')
-                } else if (data === 'c') {
-                  console.log('c')
-                } else {
+                if (data !== 'a' && data !== 'b' && data !== 'c') {
                   /* 数据预处理 */
                   const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
 
@@ -1742,7 +1764,7 @@ export default {
                   const qz_4s = dataArray[7]
 
                   /* 5位压力数字量 */
-                  // const pressureDigital = dataArray[8]
+                  const pressureDigital = dataArray[8]
 
                   /* 4个气嘴的x，公式：出口÷入口 */
                   const x1 = qz_1 / qz_1s
@@ -1787,10 +1809,160 @@ export default {
                   this.h4 = parseInt(
                     a4 * x4 * x4 * x4 + b4 * x4 * x4 + c4 * x4 + d4
                   )
-                  console.log(this.h1)
-                  console.log(this.h2)
-                  console.log(this.h3)
-                  console.log(this.h4)
+
+                  /* 10分钟清空一次缓存 */
+                  if (this.cache.length >= 50) {
+                    this.cache = []
+                  }
+                  /* 缓存进一个二维数组中 */
+                  this.cache.push([
+                    this.h1,
+                    this.h2,
+                    this.h3,
+                    this.h4,
+                    pressureDigital
+                  ])
+                } else if (data === 'a') {
+                  /* 标准滑块机械按钮-触发 */
+                  this.aArray = this.cache[this.cache.length - 1] // 取缓存数组最后一个数组
+                  if (this.aArray.length === 5) {
+                    // 完成的逻辑
+                    window.sessionStorage.setItem(
+                      'standard_slider_value',
+                      JSON.stringify(this.aArray)
+                    )
+                    this.$message({
+                      message: `标准滑块测量基准完成`,
+                      type: 'success',
+                      duration: 5000
+                    })
+                  }
+                } else if (data === 'b') {
+                  /* 被测滑块机械按钮-触发 */
+                  /* 1、来料检测（表示第2次按被测滑块机械按钮） */
+                  if (this.bArray.length === 1) {
+                    this.bArray.push(this.cache[this.cache.length - 1]) // 取缓存数组最后一个数组
+                    /* 计算开始 */
+                    /* 根据规格的不同，选择不同的k、b（与型号无关） */
+                    let k = 0.13019
+                    let b = -4300
+                    if (this.specValue === this.specSelection[0].value) {
+                      // 15
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[1].value) {
+                      // 20
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[2].value) {
+                      // 25
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[3].value) {
+                      // 30
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[4].value) {
+                      // 35
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[5].value) {
+                      // 45
+                      k = 0.13019
+                      b = -4300
+                    }
+
+                    /* 未经过补偿的中心距 */
+                    const spacingTemporary = parseFloat(
+                      ((k * this.bArray[1][4] + b) / 10).toFixed(1)
+                    )
+                    /* 开始补偿，算出最终的中心距 */
+                    if (spacingTemporary >= -9.5 && spacingTemporary <= -7.1) {
+                      // +8
+                      this.spacing = spacingTemporary + 0.6
+                    } else if (
+                      spacingTemporary > -7.1 &&
+                      spacingTemporary <= -5.4
+                    ) {
+                      // +6
+                      this.spacing = spacingTemporary + 0.5
+                    } else if (
+                      spacingTemporary > -5.4 &&
+                      spacingTemporary <= -3.1
+                    ) {
+                      // +4
+                      this.spacing = spacingTemporary + 0.7
+                    } else if (
+                      spacingTemporary > -3.1 &&
+                      spacingTemporary <= -1.1
+                    ) {
+                      // +2
+                      this.spacing = spacingTemporary - 0.1
+                    } else if (
+                      spacingTemporary > -1.1 &&
+                      spacingTemporary <= 0.9
+                    ) {
+                      // 0
+                      this.spacing = spacingTemporary
+                    } else if (
+                      spacingTemporary > 0.9 &&
+                      spacingTemporary <= 2.9
+                    ) {
+                      // -2
+                      this.spacing = spacingTemporary - 0.5
+                    } else if (
+                      spacingTemporary > 2.9 &&
+                      spacingTemporary <= 4.9
+                    ) {
+                      // -4
+                      this.spacing = spacingTemporary - 0.4
+                    } else if (
+                      spacingTemporary > 4.9 &&
+                      spacingTemporary <= 6.9
+                    ) {
+                      // -6
+                      this.spacing = spacingTemporary + 0.1
+                    } else if (
+                      spacingTemporary > 6.9 &&
+                      spacingTemporary <= 8.3
+                    ) {
+                      // -8
+                      this.spacing = spacingTemporary + 0.2
+                    } else {
+                      // 其他情况
+                      this.spacing = spacingTemporary
+                    }
+                    /* 中心距保留1位小数 */
+                    this.spacing = parseFloat(this.spacing.toFixed(1))
+                    /* 判断中心距是否在区间内 */
+                    if (
+                      this.spacing >= this.checkInterval[0] &&
+                      this.spacing <= this.checkInterval[1]
+                    ) {
+                      // 在区间内
+                      this.checkResult = '合格'
+                    } else {
+                      // 在区间外
+                      this.checkResult = '不合格'
+                    }
+                  } else {
+                    /* 2、被测滑块精度测量 */
+                    this.bArray.push(this.cache[this.cache.length - 1]) // 取缓存数组最后一个数组
+                    /* 第3次按下瞬间，表示完成 */
+                    if (this.bArray.length === 3) {
+                      // 完成的逻辑
+                      this.save()
+                    }
+                  }
+                } else if (data === 'c') {
+                  /* 清空机械按钮-触发 */
+                  /* PS：只清空被测滑块数据 */
+                  // 中心距值
+                  this.spacing = ''
+                  // 来料检测结果
+                  this.checkResult = ''
+                  // 清空来料检测和被测滑块源数组
+                  this.bArray = []
                 }
               }
             })
@@ -1835,62 +2007,56 @@ export default {
 
       /* 判断一下数据 */
       if (this.QRCode !== '') {
-        if (this.aArray.length === 1) {
+        if (this.aArray.length === 5) {
           /* 1、根据公式，计算等高、到A、到B、A平行、B平行、滑块精度等 */
+          let n = 2 // 法兰型n=3，矩型n=2
+          if (
+            this.modelValue === 'EA' ||
+            this.modelValue === 'HEA' ||
+            this.modelValue === 'FA' ||
+            this.modelValue === 'HFA'
+          ) {
+            n = 3
+          }
 
-          // let n = 2 // 法兰型n=3，矩型n=2
-          // if (this.modelValue === 'EA' || this.modelValue === 'HEA') {
-          //   n = 3
-          // }
-
-          // // 等高（um微米，1um=0.001mm）
-          // this.dg = parseInt(
-          //   (
-          //     (this.k3 * this.bArray[1][2] -
-          //       this.k1 * this.bArray[1][0] -
-          //       (this.k3 * this.aArray[2] - this.k1 * this.aArray[0])) /
-          //       n +
-          //     this.dgCS
-          //   ).toFixed(0)
-          // )
-          // // 到A
-          // this.toA = parseInt(
-          //   (
-          //     this.k2 * (this.bArray[1][1] - this.aArray[1]) +
-          //     this.toACS
-          //   ).toFixed(0)
-          // )
-          // // 到B
-          // this.toB = parseInt(
-          //   (
-          //     this.k4 * (this.bArray[1][3] - this.aArray[3]) +
-          //     this.toBCS
-          //   ).toFixed(0)
-          // )
-          // // A平行
-          // this.aParallel = parseInt(
-          //   (
-          //     this.k2 *
-          //     (Math.max(
-          //       ...[this.bArray[0][1], this.bArray[1][1], this.bArray[2][1]]
-          //     ) -
-          //       Math.min(
-          //         ...[this.bArray[0][1], this.bArray[1][1], this.bArray[2][1]]
-          //       ))
-          //   ).toFixed(0)
-          // )
-          // // B平行
-          // this.bParallel = parseInt(
-          //   (
-          //     this.k4 *
-          //     (Math.max(
-          //       ...[this.bArray[0][3], this.bArray[1][3], this.bArray[2][3]]
-          //     ) -
-          //       Math.min(
-          //         ...[this.bArray[0][3], this.bArray[1][3], this.bArray[2][3]]
-          //       ))
-          //   ).toFixed(0)
-          // )
+          // 等高（um微米，1um=0.001mm）
+          this.dg = parseInt(
+            (
+              (this.bArray[1][2] - this.bArray[1][0]) / n -
+              (this.aArray[2] - this.aArray[0]) / n +
+              this.dgCS
+            ).toFixed(0)
+          )
+          // 到A
+          this.toA = parseInt(
+            (this.bArray[1][1] - this.aArray[1] + this.toACS).toFixed(0)
+          )
+          // 到B
+          this.toB = parseInt(
+            (this.bArray[1][3] - this.aArray[3] + this.toBCS).toFixed(0)
+          )
+          // A平行
+          this.aParallel = parseInt(
+            (
+              Math.max(
+                this.bArray[0][1],
+                this.bArray[1][1],
+                this.bArray[2][1]
+              ) -
+              Math.min(this.bArray[0][1], this.bArray[1][1], this.bArray[2][1])
+            ).toFixed(0)
+          )
+          // B平行
+          this.bParallel = parseInt(
+            (
+              Math.max(
+                this.bArray[0][3],
+                this.bArray[1][3],
+                this.bArray[2][3]
+              ) -
+              Math.min(this.bArray[0][3], this.bArray[1][3], this.bArray[2][3])
+            ).toFixed(0)
+          )
           // 精度等级
           if (
             Math.abs(this.dg) <= 20 &&
@@ -2038,7 +2204,7 @@ export default {
     @include flex(row, stretch, stretch);
     /* 左侧内容区域 */
     .main {
-      width: 55%;
+      width: 45%;
       border-right: 2px solid black;
       /* 是否已测标志 */
       .bit {
@@ -2074,9 +2240,26 @@ export default {
           }
         }
       }
+      /* 塞尺 */
+      .feelerGauge {
+        border-bottom: 2px solid black;
+        padding: 10px 10px 20px 10px;
+        @include flex(row, space-between, stretch);
+        .box {
+          @include flex(column, space-around, center);
+          .title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+          }
+          .value {
+            font-size: 20px;
+          }
+        }
+      }
       /* 来料检测 */
       .check {
-        margin-top: 10px;
+        margin-top: 40px;
         margin-right: 20px;
         @include flex(row, space-between, stretch);
         .box {
@@ -2109,33 +2292,33 @@ export default {
         }
       }
       /* 滑块精度 */
-      .sliderAccuracy {
-        margin-top: 60px;
-        margin-right: 20px;
-        @include flex(row, space-between, stretch);
-        .box {
-          @include flex(column, space-around, center);
-          .title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 15px;
-          }
-          .value {
-            font-size: 20px;
-          }
-        }
-      }
+      // .sliderAccuracy {
+      //   margin-top: 60px;
+      //   margin-right: 20px;
+      //   @include flex(row, space-between, stretch);
+      //   .box {
+      //     @include flex(column, space-around, center);
+      //     .title {
+      //       font-size: 24px;
+      //       font-weight: 700;
+      //       margin-bottom: 15px;
+      //     }
+      //     .value {
+      //       font-size: 20px;
+      //     }
+      //   }
+      // }
     }
 
     /* 表格区域 */
     .table {
-      width: 45%;
+      width: 55%;
     }
   }
 
   /* 标准滑块部分 */
   .standard-slider {
-    height: 22%;
+    height: 15%;
     border-top: 2px solid black;
     @include flex(row, stretch, stretch);
     /* 是否已测标志 */
@@ -2155,7 +2338,6 @@ export default {
         .title {
           font-size: 24px;
           font-weight: 700;
-          margin-bottom: 4px;
         }
         .value {
           font-size: 20px;
