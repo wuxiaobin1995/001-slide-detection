@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-04-22 16:44:05
+ * @LastEditTime: 2024-04-22 11:38:48
  * @Description : home
 -->
 <template>
@@ -1134,7 +1134,7 @@ export default {
       /* 来料检测 */
       checkInterval: [0, 0], // 来料检测区间（只有两种，标准长度和加长）
       checkStandard: 0, // 对标值（不同规格、不同型号，就不同）
-      spacing: '', // 中心距值（压力数字量），用于判断是否在区间内
+      spacing: '', // 中心距值，用于判断是否在区间内
       checkResult: '', // 来料检测结果
 
       /* 标准滑块源数组，中间位置按一下即可，格式 [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量]，一维数组 */
@@ -1626,7 +1626,7 @@ export default {
           JSON.stringify([])
         )
 
-        // 中心距值（压力数字量）
+        // 中心距值
         this.spacing = ''
         // 来料检测结果
         this.checkResult = ''
@@ -1657,7 +1657,7 @@ export default {
           JSON.stringify([])
         )
 
-        // 中心距值（压力数字量）
+        // 中心距值
         this.spacing = ''
         // 来料检测结果
         this.checkResult = ''
@@ -1842,8 +1842,99 @@ export default {
                   /* 1、来料检测（表示第2次按被测滑块机械按钮） */
                   if (this.bArray.length === 1) {
                     this.bArray.push(this.cache[this.cache.length - 1]) // 取缓存数组最后一个数组
-                    /* 判断中心距（压力数字量）是否在区间内 */
-                    this.spacing = this.bArray[1][4]
+                    /* 计算开始 */
+                    /* 根据规格的不同，选择不同的k、b（与型号无关） */
+                    let k = 0.13019
+                    let b = -4300
+                    if (this.specValue === this.specSelection[0].value) {
+                      // 15
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[1].value) {
+                      // 20
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[2].value) {
+                      // 25
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[3].value) {
+                      // 30
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[4].value) {
+                      // 35
+                      k = 0.13019
+                      b = -4300
+                    } else if (this.specValue === this.specSelection[5].value) {
+                      // 45
+                      k = 0.13019
+                      b = -4300
+                    }
+
+                    /* 未经过补偿的中心距 */
+                    const spacingTemporary = parseFloat(
+                      ((k * this.bArray[1][4] + b) / 10).toFixed(1)
+                    )
+                    /* 开始补偿，算出最终的中心距 */
+                    if (spacingTemporary >= -9.5 && spacingTemporary <= -7.1) {
+                      // +8
+                      this.spacing = spacingTemporary + 0.6
+                    } else if (
+                      spacingTemporary > -7.1 &&
+                      spacingTemporary <= -5.4
+                    ) {
+                      // +6
+                      this.spacing = spacingTemporary + 0.5
+                    } else if (
+                      spacingTemporary > -5.4 &&
+                      spacingTemporary <= -3.1
+                    ) {
+                      // +4
+                      this.spacing = spacingTemporary + 0.7
+                    } else if (
+                      spacingTemporary > -3.1 &&
+                      spacingTemporary <= -1.1
+                    ) {
+                      // +2
+                      this.spacing = spacingTemporary - 0.1
+                    } else if (
+                      spacingTemporary > -1.1 &&
+                      spacingTemporary <= 0.9
+                    ) {
+                      // 0
+                      this.spacing = spacingTemporary
+                    } else if (
+                      spacingTemporary > 0.9 &&
+                      spacingTemporary <= 2.9
+                    ) {
+                      // -2
+                      this.spacing = spacingTemporary - 0.5
+                    } else if (
+                      spacingTemporary > 2.9 &&
+                      spacingTemporary <= 4.9
+                    ) {
+                      // -4
+                      this.spacing = spacingTemporary - 0.4
+                    } else if (
+                      spacingTemporary > 4.9 &&
+                      spacingTemporary <= 6.9
+                    ) {
+                      // -6
+                      this.spacing = spacingTemporary + 0.1
+                    } else if (
+                      spacingTemporary > 6.9 &&
+                      spacingTemporary <= 8.3
+                    ) {
+                      // -8
+                      this.spacing = spacingTemporary + 0.2
+                    } else {
+                      // 其他情况
+                      this.spacing = spacingTemporary
+                    }
+                    /* 中心距保留1位小数 */
+                    this.spacing = parseFloat(this.spacing.toFixed(1))
+                    /* 判断中心距是否在区间内 */
                     if (
                       this.spacing >= this.checkInterval[0] &&
                       this.spacing <= this.checkInterval[1]
@@ -1866,7 +1957,7 @@ export default {
                 } else if (data === 'c') {
                   /* 清空机械按钮-触发 */
                   /* PS：只清空被测滑块数据 */
-                  // 中心距（压力数字量）
+                  // 中心距值
                   this.spacing = ''
                   // 来料检测结果
                   this.checkResult = ''

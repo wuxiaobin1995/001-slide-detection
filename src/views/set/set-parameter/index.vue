@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-26 08:38:14
- * @LastEditTime: 2024-04-20 10:49:57
+ * @LastEditTime: 2024-04-22 11:47:23
  * @Description : 参数配置
 -->
 <template>
@@ -79,7 +79,7 @@
           <div class="item">
             <el-input-number
               v-model="item.checkIntervalUp"
-              :precision="1"
+              :precision="0"
               :min="item.checkIntervalDown"
             ></el-input-number>
           </div>
@@ -88,7 +88,7 @@
           <div class="item">
             <el-input-number
               v-model="item.checkIntervalDown"
-              :precision="1"
+              :precision="0"
               :max="item.checkIntervalUp"
             ></el-input-number>
           </div>
