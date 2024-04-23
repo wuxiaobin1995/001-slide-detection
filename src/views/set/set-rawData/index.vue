@@ -1,39 +1,72 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-04-12 15:18:34
- * @LastEditTime: 2024-04-20 09:18:46
+ * @LastEditTime: 2024-04-23 11:19:43
  * @Description : 原始数据显示（用于求a、b、c、d）（也用于扯皮时保留证据）
 -->
 <template>
   <div class="set-rawData">
     <div class="main">
-      <div class="row">
-        <div>气嘴1（电压V）：</div>
-        <div class="val">入口值：{{ qz_1s }}</div>
-        <div class="val">出口值：{{ qz_1 }}</div>
+      <div class="raw">
+        <div class="row">
+          <div>气嘴1（电压V）：</div>
+          <div class="val">入口值：{{ qz_1s }}</div>
+          <div class="val">出口值：{{ qz_1 }}</div>
+        </div>
+
+        <div class="row">
+          <div>气嘴2（电压V）：</div>
+          <div class="val">入口值：{{ qz_2s }}</div>
+          <div class="val">出口值：{{ qz_2 }}</div>
+        </div>
+
+        <div class="row">
+          <div>气嘴3（电压V）：</div>
+          <div class="val">入口值：{{ qz_3s }}</div>
+          <div class="val">出口值：{{ qz_3 }}</div>
+        </div>
+
+        <div class="row">
+          <div>气嘴4（电压V）：</div>
+          <div class="val">入口值：{{ qz_4s }}</div>
+          <div class="val">出口值：{{ qz_4 }}</div>
+        </div>
+
+        <div class="row">
+          <div>压力数字量（数字量）：</div>
+          <div class="val">{{ pressureDigital }}</div>
+        </div>
       </div>
 
-      <div class="row">
-        <div>气嘴2（电压V）：</div>
-        <div class="val">入口值：{{ qz_2s }}</div>
-        <div class="val">出口值：{{ qz_2 }}</div>
-      </div>
+      <!-- 只取小数点后1位 -->
+      <div class="test">
+        <div class="row">
+          <div>只取小数点后2位</div>
+        </div>
 
-      <div class="row">
-        <div>气嘴3（电压V）：</div>
-        <div class="val">入口值：{{ qz_3s }}</div>
-        <div class="val">出口值：{{ qz_3 }}</div>
-      </div>
+        <div class="row">
+          <div>气嘴1（电压V）：</div>
+          <div class="val">入口值：{{ qz_1s_test }}</div>
+          <div class="val">出口值：{{ qz_1_test }}</div>
+        </div>
 
-      <div class="row">
-        <div>气嘴4（电压V）：</div>
-        <div class="val">入口值：{{ qz_4s }}</div>
-        <div class="val">出口值：{{ qz_4 }}</div>
-      </div>
+        <div class="row">
+          <div>气嘴2（电压V）：</div>
+          <div class="val">入口值：{{ qz_2s_test }}</div>
+          <div class="val">出口值：{{ qz_2_test }}</div>
+        </div>
 
-      <div class="row">
-        <div>压力数字量（数字量）：</div>
-        <div class="val">{{ pressureDigital }}</div>
+        <div class="row">
+          <div>气嘴3（电压V）：</div>
+          <div class="val">入口值：{{ qz_3s_test }}</div>
+          <div class="val">出口值：{{ qz_3_test }}</div>
+        </div>
+
+        <div class="row">
+          <div>气嘴4（电压V）：</div>
+          <div class="val">入口值：{{ qz_4s_test }}</div>
+          <div class="val">出口值：{{ qz_4_test }}</div>
+        </div>
       </div>
     </div>
 
@@ -74,6 +107,19 @@ export default {
 
       qz_4: 0, // 4号气嘴-出口值
       qz_4s: 0, // 4号气嘴-入口值
+
+      // 只取小数点后1位
+      qz_1_test: 0,
+      qz_1s_test: 0,
+
+      qz_2_test: 0,
+      qz_2s_test: 0,
+
+      qz_3_test: 0,
+      qz_3s_test: 0,
+
+      qz_4_test: 0,
+      qz_4s_test: 0,
 
       pressureDigital: 0 // 5位压力数字量
     }
@@ -179,6 +225,19 @@ export default {
               this.qz_4 = parseFloat(dataArray[6])
               this.qz_4s = parseFloat(dataArray[7])
 
+              // 只取小数点后1位
+              this.qz_1_test = parseInt(dataArray[0] * 100) / 100
+              this.qz_1s_test = parseInt(dataArray[1] * 100) / 100
+
+              this.qz_2_test = parseInt(dataArray[2] * 100) / 100
+              this.qz_2s_test = parseInt(dataArray[3] * 100) / 100
+
+              this.qz_3_test = parseInt(dataArray[4] * 100) / 100
+              this.qz_3s_test = parseInt(dataArray[5] * 100) / 100
+
+              this.qz_4_test = parseInt(dataArray[6] * 100) / 100
+              this.qz_4s_test = parseInt(dataArray[7] * 100) / 100
+
               // 5位压力数字量
               this.pressureDigital = parseFloat(dataArray[8])
             })
@@ -227,10 +286,15 @@ export default {
 
   .main {
     flex: 1;
-    @include flex(column, center, stretch);
+    @include flex(row, space-around, stretch);
+    .raw {
+      @include flex(column, center, stretch);
+    }
+    .test {
+      @include flex(column, center, stretch);
+    }
     .row {
       margin-bottom: 50px;
-      margin-left: 200px;
       font-size: 24px;
       .val {
         font-weight: 700;

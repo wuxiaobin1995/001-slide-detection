@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-04-22 16:44:05
+ * @LastEditTime: 2024-04-23 11:20:09
  * @Description : home
 -->
 <template>
@@ -1754,14 +1754,14 @@ export default {
                   const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
 
                   /* 前一个是出口值，后一个是入口值（即基准） */
-                  const qz_1 = dataArray[0]
-                  const qz_1s = dataArray[1]
-                  const qz_2 = dataArray[2]
-                  const qz_2s = dataArray[3]
-                  const qz_3 = dataArray[4]
-                  const qz_3s = dataArray[5]
-                  const qz_4 = dataArray[6]
-                  const qz_4s = dataArray[7]
+                  const qz_1 = parseInt(dataArray[0] * 100) / 100 // 不进行四舍五入，只保留稳定的小数点后2位
+                  const qz_1s = parseInt(dataArray[1] * 100) / 100
+                  const qz_2 = parseInt(dataArray[2] * 100) / 100
+                  const qz_2s = parseInt(dataArray[3] * 100) / 100
+                  const qz_3 = parseInt(dataArray[4] * 100) / 100
+                  const qz_3s = parseInt(dataArray[5] * 100) / 100
+                  const qz_4 = parseInt(dataArray[6] * 100) / 100
+                  const qz_4s = parseInt(dataArray[7] * 100) / 100
 
                   /* 5位压力数字量 */
                   const pressureDigital = dataArray[8]
