@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2022-07-28 14:00:00
- * @LastEditTime: 2024-04-20 09:06:37
+ * @LastEditTime: 2024-07-25 17:49:22
  * @Description : 开发者
 -->
 <template>
@@ -13,12 +13,6 @@
         content="开发者"
         @back="handleToHome"
       ></el-page-header>
-
-      <div class="btn">
-        <el-button class="item" type="success" round @click="handleOpenDev"
-          >打开控制台</el-button
-        >
-      </div>
 
       <div class="ip">
         <el-input placeholder="请输入服务器的ip" v-model="ip">
@@ -33,9 +27,6 @@
 </template>
 
 <script>
-/* 用于打开控制台 */
-import { remote } from 'electron'
-
 export default {
   name: 'set-developer',
 
@@ -57,20 +48,6 @@ export default {
       this.$router.push({
         path: '/'
       })
-    },
-
-    /**
-     * @description: 打开控制台
-     */
-    handleOpenDev() {
-      try {
-        remote.getCurrentWebContents().openDevTools()
-      } catch (err) {
-        this.$message({
-          type: 'error',
-          message: `打开控制台失败：${err}`
-        })
-      }
     },
 
     /**
@@ -111,15 +88,7 @@ export default {
       left: 30px;
     }
 
-    .btn {
-      @include flex(column, center, center);
-      .item {
-        font-size: 28px;
-      }
-    }
-
     .ip {
-      margin-top: 60px;
       @include flex(row, center, center);
       .item {
         margin-left: 30px;

@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-04-23 11:20:09
+ * @LastEditTime: 2024-08-29 17:34:49
  * @Description : home
 -->
 <template>
@@ -58,241 +58,16 @@
           </div>
           <div class="btn">
             <el-button class="btn-item" type="primary" @click="handleRescan"
-              >重 扫</el-button
+              >清 空</el-button
             >
           </div>
         </div>
 
-        <!-- 实时距离 -->
-        <div class="feelerGauge">
-          <div class="box">
-            <div class="title">.</div>
-            <div class="value">气嘴实时距离</div>
-          </div>
+        <!-- 实时显示4个传感器的数字量 -->
+        <div>实时显示4个传感器的数据数组：{{ showSensorArray }}</div>
 
-          <div class="box">
-            <div class="title">1号气嘴</div>
-            <div class="value">
-              {{ h1 }}
-            </div>
-          </div>
-          <div class="box">
-            <div class="title">2号气嘴</div>
-            <div class="value">
-              {{ h2 }}
-            </div>
-          </div>
-          <div class="box">
-            <div class="title">3号气嘴</div>
-            <div class="value">
-              {{ h3 }}
-            </div>
-          </div>
-          <div class="box">
-            <div class="title">4号气嘴</div>
-            <div class="value">
-              {{ h4 }}
-            </div>
-          </div>
-        </div>
-
-        <!-- 来料检测 -->
-        <div class="check">
-          <div class="box">
-            <div class="title">.</div>
-            <div class="value">
-              <el-image
-                class="bit"
-                :src="srcYes"
-                fit="scale-down"
-                v-if="bArray.length >= 2"
-              ></el-image>
-              <el-image
-                class="bit"
-                :src="srcNo"
-                fit="scale-down"
-                v-else
-              ></el-image>
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">中心距</div>
-            <div class="value">{{ spacing === '' ? '/' : spacing }}</div>
-          </div>
-
-          <div class="box">
-            <div class="title">合格区间</div>
-            <div class="value">
-              [{{ checkInterval[0] }} ~ {{ checkInterval[1] }}]
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">对标值</div>
-            <div class="value">
-              {{ checkStandard }}
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">检测结果</div>
-            <div class="value">
-              {{ checkResult === '' ? '/' : checkResult }}
-            </div>
-          </div>
-        </div>
-
-        <!-- 3次气压值 -->
-        <div class="pressure">
-          <div class="box">
-            <div class="title">.</div>
-            <div class="value">
-              <el-image
-                class="bit"
-                :src="srcYes"
-                fit="scale-down"
-                v-if="bArray.length >= 1"
-              ></el-image>
-              <el-image
-                class="bit"
-                :src="srcNo"
-                fit="scale-down"
-                v-else
-              ></el-image>
-            </div>
-            <div class="value">
-              <el-image
-                class="bit"
-                :src="srcYes"
-                fit="scale-down"
-                v-if="bArray.length >= 2"
-              ></el-image>
-              <el-image
-                class="bit"
-                :src="srcNo"
-                fit="scale-down"
-                v-else
-              ></el-image>
-            </div>
-            <div class="value">
-              <el-image
-                class="bit"
-                :src="srcYes"
-                fit="scale-down"
-                v-if="bArray.length >= 3"
-              ></el-image>
-              <el-image
-                class="bit"
-                :src="srcNo"
-                fit="scale-down"
-                v-else
-              ></el-image>
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">1号气嘴</div>
-            <div class="value">
-              {{ bArray.length >= 1 ? bArray[0][0] : '/' }}
-            </div>
-            <div class="value">
-              {{ bArray.length >= 2 ? bArray[1][0] : '/' }}
-            </div>
-            <div class="value">
-              {{ bArray.length >= 3 ? bArray[2][0] : '/' }}
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">2号气嘴</div>
-            <div class="value">
-              {{ bArray.length >= 1 ? bArray[0][1] : '/' }}
-            </div>
-            <div class="value">
-              {{ bArray.length >= 2 ? bArray[1][1] : '/' }}
-            </div>
-            <div class="value">
-              {{ bArray.length >= 3 ? bArray[2][1] : '/' }}
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">3号气嘴</div>
-            <div class="value">
-              {{ bArray.length >= 1 ? bArray[0][2] : '/' }}
-            </div>
-            <div class="value">
-              {{ bArray.length >= 2 ? bArray[1][2] : '/' }}
-            </div>
-            <div class="value">
-              {{ bArray.length >= 3 ? bArray[2][2] : '/' }}
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">4号气嘴</div>
-            <div class="value">
-              {{ bArray.length >= 1 ? bArray[0][3] : '/' }}
-            </div>
-            <div class="value">
-              {{ bArray.length >= 2 ? bArray[1][3] : '/' }}
-            </div>
-            <div class="value">
-              {{ bArray.length >= 3 ? bArray[2][3] : '/' }}
-            </div>
-          </div>
-        </div>
-
-        <!-- 滑块精度结果 -->
-        <!-- <div class="sliderAccuracy">
-          <div class="box">
-            <div class="title">.</div>
-            <div class="value">结果</div>
-          </div>
-
-          <div class="box">
-            <div class="title">等高</div>
-            <div class="value">
-              {{ dg !== '' ? dg : '/' }}
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">到A</div>
-            <div class="value">
-              {{ toA !== '' ? toA : '/' }}
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">到B</div>
-            <div class="value">
-              {{ toB !== '' ? toB : '/' }}
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">A平行</div>
-            <div class="value">
-              {{ aParallel !== '' ? aParallel : '/' }}
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">B平行</div>
-            <div class="value">
-              {{ bParallel !== '' ? bParallel : '/' }}
-            </div>
-          </div>
-
-          <div class="box">
-            <div class="title">精度等级</div>
-            <div class="value">
-              {{ accuracyClass !== '' ? accuracyClass : '/' }}
-            </div>
-          </div>
-        </div> -->
+        <div>成品滑块数据数组：{{ finishSliderArray }}</div>
+        <div>标准滑块数据数组：{{ standardSliderArray }}</div>
       </div>
 
       <!-- 右侧表格 -->
@@ -332,6 +107,13 @@
             label="型号"
             width="80"
           />
+          <!-- 中心距 -->
+          <el-table-column
+            align="center"
+            prop="centerSpacing"
+            label="中心距评审结果"
+            width="100"
+          />
           <!-- 等高 -->
           <el-table-column align="center" prop="dg" label="等高" width="80" />
           <!-- 到A -->
@@ -359,19 +141,12 @@
             label="精度等级"
             width="50"
           />
-          <!-- 中心距 -->
+          <!-- 备注 -->
           <el-table-column
             align="center"
-            prop="spacing"
-            label="中心距"
+            prop="remark"
+            label="备注"
             width="100"
-          />
-          <!-- 是否合格 -->
-          <el-table-column
-            align="center"
-            prop="checkResult"
-            label="是否合格"
-            width="80"
           />
 
           <!-- 删除按钮 -->
@@ -390,79 +165,23 @@
       </div>
     </div>
 
-    <!-- 标准滑块部分 -->
-    <div class="standard-slider">
-      <div class="head-title">
-        <div>标准</div>
-        <div>滑块</div>
-      </div>
-
-      <div class="content">
-        <div class="box">
-          <div class="title">.</div>
-          <div class="item">
-            <el-image
-              class="bit"
-              :src="srcYes"
-              fit="scale-down"
-              v-if="aArray.length === 5"
-            ></el-image>
-            <el-image
-              class="bit"
-              :src="srcNo"
-              fit="scale-down"
-              v-else
-            ></el-image>
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="title">1号气嘴</div>
-          <div class="value">
-            {{ aArray.length === 5 ? aArray[0] : '/' }}
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="title">2号气嘴</div>
-          <div class="value">
-            {{ aArray.length === 5 ? aArray[1] : '/' }}
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="title">3号气嘴</div>
-          <div class="value">
-            {{ aArray.length === 5 ? aArray[2] : '/' }}
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="title">4号气嘴</div>
-          <div class="value">
-            {{ aArray.length === 5 ? aArray[3] : '/' }}
-          </div>
-        </div>
-      </div>
-
-      <!-- 按钮组 -->
-      <div class="btn">
-        <el-button class="item" type="primary" @click="handleClearStandard"
-          >清 空 标 准 滑 块</el-button
-        >
-        <el-button class="item" type="primary" @click="handleRefresh"
-          >刷 新 页 面</el-button
-        >
-      </div>
+    <!-- 按钮组 -->
+    <div class="btn">
+      <el-button class="item" type="primary" @click="handleClearStandard"
+        >清 空 标 定 值</el-button
+      >
+      <el-button class="item" type="primary" @click="handleBtnRefresh"
+        >刷 新 页 面</el-button
+      >
     </div>
 
-    <!-- 打开控制台按钮 -->
+    <!-- 参数配置页 -->
     <el-button
-      class="btn-control"
+      class="btn-parameter"
       type="info"
       size="mini"
-      @click="handleOpenDev"
-      >Open Dev</el-button
+      @click="handleParameter"
+      >参数配置页</el-button
     >
     <!-- 开发者页按钮 -->
     <el-button
@@ -472,25 +191,13 @@
       @click="handleToDeveloper"
       >Developer</el-button
     >
-    <!-- 参数配置 -->
+    <!-- 打开控制台按钮 -->
     <el-button
-      class="btn-parameter"
+      class="btn-control"
       type="info"
       size="mini"
-      @click="handleParameter"
-      >参数配置</el-button
-    >
-    <!-- 设置abcd -->
-    <el-button class="btn-abcd" type="info" size="mini" @click="handleSetABCD"
-      >设置abcd</el-button
-    >
-    <!-- 原始数据显示 -->
-    <el-button
-      class="btn-rawdata"
-      type="info"
-      size="mini"
-      @click="handleRawData"
-      >原始数据显示</el-button
+      @click="handleOpenDev"
+      >Open Dev</el-button
     >
   </div>
 </template>
@@ -516,563 +223,8 @@ export default {
       /* 状态标志位 */
       isSaveing: false, // 计算和调用api状态
 
-      /* 标记是否已测 */
-      srcYes: require('@/assets/img/Home/已测.png'),
-      srcNo: require('@/assets/img/Home/待测.png'),
-
       /* 服务器地址ip */
       ip: '',
-
-      /* 4组abcd常数数组 */
-      abcdArrs: [],
-
-      /* 表格 */
-      tableData: [],
-      tableLoading: false, // 表格加载动画
-
-      /* 配置参数 */
-      arg: [
-        {
-          gx: '15DA', // 规格型号
-          QRCode: '', // 滑块二维码编号
-          dgCS: 0, // 等高常数
-          toACS: 0, // 到A常数
-          toBCS: 0, // 到B常数
-          checkIntervalUp: 0, // 中心距上限
-          checkIntervalDown: 0, // 中心距下限
-          checkStandard: 0 // 对标值
-        },
-        {
-          gx: '15AA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '15EA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '15FA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '15AN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '15HAA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '15HEA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '15HFA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '15HAN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '20DA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '20AA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '20EA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '20FA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '20AN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '20HAA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '20HEA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '20HFA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '20HAN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '25DA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '25AA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '25EA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '25FA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '25AN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '25HAA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '25HEA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '25HFA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '25HAN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '30DA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '30AA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '30EA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '30FA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '30AN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '30HAA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '30HEA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '30HFA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '30HAN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '35DA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '35AA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '35EA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '35FA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '35AN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '35HAA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '35HEA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '35HFA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '35HAN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '45DA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '45AA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '45EA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '45FA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '45AN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '45HAA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '45HEA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '45HFA',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        },
-        {
-          gx: '45HAN',
-          QRCode: '',
-          dgCS: 0,
-          toACS: 0,
-          toBCS: 0,
-          checkIntervalUp: 0,
-          checkIntervalDown: 0,
-          checkStandard: 0
-        }
-      ],
 
       /* 规格 */
       specValue: '',
@@ -1103,13 +255,7 @@ export default {
           value: 'AA'
         },
         {
-          value: 'DA'
-        },
-        {
           value: 'EA'
-        },
-        {
-          value: 'FA'
         },
         {
           value: 'AN'
@@ -1121,74 +267,57 @@ export default {
           value: 'HEA'
         },
         {
-          value: 'HFA'
+          value: 'HAN'
         },
         {
-          value: 'HAN'
+          value: 'DA'
         }
       ],
 
       /* 二维码编号（滑块的身份证） */
       QRCode: '',
 
-      /* 来料检测 */
-      checkInterval: [0, 0], // 来料检测区间（只有两种，标准长度和加长）
-      checkStandard: 0, // 对标值（不同规格、不同型号，就不同）
-      spacing: '', // 中心距值（压力数字量），用于判断是否在区间内
-      checkResult: '', // 来料检测结果
+      /* 表格 */
+      tableData: [],
+      tableLoading: false, // 表格加载动画
 
-      /* 标准滑块源数组，中间位置按一下即可，格式 [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量]，一维数组 */
-      aArray: [],
-      /* 来料检测和被测滑块源数组，格式 [[气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量]]，二维数组 */
-      bArray: [],
-      /* 缓存的数组，格式 [[气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], [气嘴1, 气嘴2, 气嘴3, 气嘴4, 压力数字量], ......] */
-      cache: [],
-
-      /* 滑块表面到喷嘴的实时距离 */
-      h1: 0,
-      h2: 0,
-      h3: 0,
-      h4: 0,
-
-      /* 三个常数 */
-      dgCS: 0, // 等高常数
-      toACS: 0, // 到A常数
-      toBCS: 0, // 到B常数
+      /* 实时显示4个传感器的数据数组，一维数组 */
+      showSensorArray: [],
+      /* 标准滑块数据数组，二维数组 */
+      standardSliderArray: [],
+      /* 成品滑块数据数组，二维数组 */
+      finishSliderArray: [],
 
       /* 滑块的最终精度结果 */
-      dg: '', // 等高
-      toA: '', // 到A
-      toB: '', // 到B
-      aParallel: '', // A平行
-      bParallel: '', // B平行
-      accuracyClass: '' // 精度等级
+      centerSpacing: 0, // 中心距的评审结果（1：合格，0：不合格）
+      dg: 0, // 等高
+      toA: 0, // 沟槽到A
+      toB: 0, // 沟槽到B
+      aParallel: 0, // A平行
+      bParallel: 0, // B平行
+      accuracyClass: '', // 精度等级
+      remark: '' // 备注（互换、不发互换、报废）
     }
   },
 
   created() {
     /* 从Vuex中获取规格、型号的初始值 */
-    this.specValue = this.$store.state.spec ? this.$store.state.spec : '15'
-    this.modelValue = this.$store.state.model ? this.$store.state.model : 'AA'
+    this.specValue = this.$store.state.spec
+    this.modelValue = this.$store.state.model
 
-    /* 从SessionStorage获取标准滑块源数组 */
-    this.aArray = JSON.parse(
+    /* 获取标准滑块数据数组 */
+    this.standardSliderArray = JSON.parse(
       window.sessionStorage.getItem('standard_slider_value')
     )
 
     /* 获取服务器地址IP */
     this.ip = window.localStorage.getItem('ip')
 
-    /* 获取4组abcd常数数组 */
-    this.abcdArrs = JSON.parse(window.localStorage.getItem('abcdArrs'))
-
     /* 开启串口通信 */
     this.initSerialPort()
 
-    /* 获取配置参数页的参数 */
-    this.getArg()
-
     /* 获取表格数据 */
-    this.getTableData()
+    // this.getTableData()
   },
   mounted() {
     /* 二维码输入框获取鼠标焦点 */
@@ -1204,7 +333,7 @@ export default {
 
   methods: {
     /**
-     * @description: 刷新页面按钮
+     * @description: 刷新页面函数
      */
     handleRefresh() {
       this.$router.push({
@@ -1217,105 +346,60 @@ export default {
     },
 
     /**
-     * @description: 获取配置参数页的参数
+     * @description: 刷新页面按键（二次确认弹窗）
      */
-    getArg() {
-      const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/config/getArg`
-      this.$axios
-        .post(api, {})
-        .then(res => {
-          const data = res.data
-          if (data.status === 1) {
-            /* 成功 */
-            if (data.result.length === 0) {
-              // 顺便增添到数据库里
-              const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/config/setArg`
-              this.$axios.post(api, {
-                arg: JSON.stringify(this.arg)
-              })
-            } else {
-              this.arg = JSON.parse(data.result[0].arg)
-            }
-          } else if (data.status === 0) {
-            /* 失败 */
-            this.$message({
-              message: `获取配置参数页的参数失败`,
-              type: 'error',
-              duration: 2500
-            })
-          }
+    handleBtnRefresh() {
+      this.$confirm('是否要刷新页面?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        center: true,
+        type: 'warning'
+      })
+        .then(() => {
+          this.handleRefresh()
         })
-        .finally(() => {
-          this.countArg()
-        })
-    },
-
-    /**
-     * @description: 根据不同的规格、型号，计算对应的参数
-     */
-    countArg() {
-      const gx = `${this.specValue}${this.modelValue}`
-      for (let i = 0; i < this.arg.length; i++) {
-        const element = this.arg[i]
-        if (element.gx === gx) {
-          this.dgCS = element.dgCS
-          this.toACS = element.toACS
-          this.toBCS = element.toBCS
-          this.checkInterval = [
-            element.checkIntervalDown,
-            element.checkIntervalUp
-          ]
-          this.checkStandard = element.checkStandard
-        }
-      }
+        .catch(() => {})
     },
 
     /**
      * @description: 获取表格数据
      */
     getTableData() {
-      this.tableLoading = true
-      const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/getData`
-      this.$axios
-        .post(api, {
-          num: 30
+      if (this.ip !== '') {
+        this.tableLoading = true
+        const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/getData`
+        this.$axios
+          .post(api, {
+            num: 30 // 默认获取最新的30条，并且是T开头的才查询出来，因为凯特和双特共用同一个数据表
+          })
+          .then(res => {
+            const data = res.data
+            if (data.status === 1) {
+              /* 成功 */
+              this.tableData = data.result
+            } else if (data.status === 0) {
+              /* 失败 */
+              this.$message({
+                message: `表格数据获取失败`,
+                type: 'error',
+                duration: 5000
+              })
+            }
+          })
+          .finally(() => {
+            this.tableLoading = false
+          })
+      } else {
+        this.$message({
+          message: `ip为空，请先去设置。`,
+          type: 'error',
+          duration: 5000
         })
-        .then(res => {
-          const data = res.data
-          if (data.status === 1) {
-            /* 成功 */
-            this.tableData = data.result
-          } else if (data.status === 0) {
-            /* 失败 */
-            this.$message({
-              message: `表格数据获取失败`,
-              type: 'error',
-              duration: 2500
-            })
-          }
-        })
-        // .catch(err => {
-        //   this.$alert(
-        //     `[查-环节] ${err}。请确保网络连接正常！`,
-        //     '网络请求错误',
-        //     {
-        //       type: 'error',
-        //       showClose: false, // 是否显示右上角关闭按钮
-        //       center: false, // 是否居中布局
-        //       confirmButtonText: '刷新页面', // 确定按钮的文本内容
-        //       callback: () => {
-        //         this.handleRefresh()
-        //       }
-        //     }
-        //   )
-        // })
-        .finally(() => {
-          this.tableLoading = false
-        })
+      }
     },
 
     /**
-     * @description: 删除按钮
+     * @description: 删除数据按钮
      * @param {*} index
      * @param {*} row
      */
@@ -1346,75 +430,45 @@ export default {
                 this.$message({
                   message: `删除失败`,
                   type: 'error',
-                  duration: 2500
+                  duration: 5000
                 })
-              } else if (data.status === -2) {
-                /* 二维码不存在 */
-                this.$alert(
-                  `二维码不存在，请点击“刷新页面”按钮！`,
-                  `状态码[${data.status}]`,
-                  {
-                    type: 'error',
-                    showClose: false,
-                    center: true,
-                    confirmButtonText: '刷新页面',
-                    callback: () => {
-                      this.handleRefresh()
-                    }
-                  }
-                )
-              } else if (data.status === -11) {
-                /* 参数有误 */
-                this.$alert(
-                  `参数有误，请点击“刷新页面”按钮！`,
-                  `状态码[${data.status}]`,
-                  {
-                    type: 'error',
-                    showClose: false,
-                    center: true,
-                    confirmButtonText: '刷新页面',
-                    callback: () => {
-                      this.handleRefresh()
-                    }
-                  }
-                )
               }
             })
             .catch(err => {
-              this.$alert(
-                `[删-环节] ${err}。请确保网络连接正常！`,
-                '网络请求错误',
-                {
-                  type: 'error',
-                  showClose: false, // 是否显示右上角关闭按钮
-                  center: false, // 是否居中布局
-                  confirmButtonText: '刷新页面', // 确定按钮的文本内容
-                  callback: () => {
-                    this.handleRefresh()
-                  }
+              this.$alert(`[删除-环节] ${err}`, '断网了', {
+                type: 'error',
+                showClose: false, // 是否显示右上角关闭按钮
+                center: false, // 是否居中布局
+                confirmButtonText: '刷新页面', // 确定按钮的文本内容
+                callback: () => {
+                  this.handleRefresh()
                 }
-              )
+              })
             })
             .finally(() => {
-              this.getTableData()
+              this.getTableData() // 重新获取表格数据（也即刷新表格）
             })
         })
         .catch(() => {})
     },
 
     /**
-     * @description: 更新数据函数
+     * @description: 覆盖数据弹窗
      */
     updateTableData() {
-      this.$confirm('数据库中已存在这个二维码编号, 是否要覆盖旧数据?', '提示', {
-        confirmButtonText: '覆 盖',
-        cancelButtonText: '取 消',
-        type: 'warning',
-        center: true,
-        showClose: false,
-        closeOnClickModal: false,
-        closeOnPressEscape: false
-      })
+      this.$confirm(
+        '数据库中已存在这个二维码的滑块数据, 是否要覆盖旧数据?',
+        '提示',
+        {
+          confirmButtonText: '覆 盖',
+          cancelButtonText: '取 消',
+          type: 'warning',
+          center: true,
+          showClose: false,
+          closeOnClickModal: false,
+          closeOnPressEscape: false
+        }
+      )
         .then(() => {
           const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/updateData`
           this.$axios
@@ -1422,14 +476,14 @@ export default {
               QRCode: this.QRCode,
               specValue: this.specValue,
               modelValue: this.modelValue,
-              spacing: this.spacing,
-              checkResult: this.checkResult,
+              centerSpacing: this.centerSpacing,
               dg: this.dg,
               toA: this.toA,
               toB: this.toB,
               aParallel: this.aParallel,
               bParallel: this.bParallel,
-              accuracyClass: this.accuracyClass
+              accuracyClass: this.accuracyClass,
+              remark: this.remark
             })
             .then(res => {
               const data = res.data
@@ -1440,19 +494,10 @@ export default {
                   type: 'success',
                   duration: 2500
                 })
-                this.handleRefresh()
               } else if (data.status === 0) {
                 /* 失败 */
-                this.$message({
-                  message: `覆盖失败`,
-                  type: 'error',
-                  duration: 2500
-                })
-                this.handleRefresh()
-              } else if (data.status === -2) {
-                /* 二维码不存在 */
                 this.$alert(
-                  `二维码不存在，请点击“刷新页面”按钮，然后重新测量！`,
+                  `覆盖失败，请点击“刷新页面”按钮，然后重新覆盖！`,
                   `状态码[${data.status}]`,
                   {
                     type: 'error',
@@ -1464,10 +509,10 @@ export default {
                     }
                   }
                 )
-              } else if (data.status === -11) {
-                /* 参数有误 */
+              } else {
+                /* 其他错误 */
                 this.$alert(
-                  `参数有误，请点击“刷新页面”按钮，然后重新测量！`,
+                  `其他错误，请点击“刷新页面”按钮，然后重新覆盖！`,
                   `状态码[${data.status}]`,
                   {
                     type: 'error',
@@ -1482,25 +527,19 @@ export default {
               }
             })
             .catch(err => {
-              this.$alert(
-                `[改-环节] ${err}。请确保网络连接正常！`,
-                '网络请求错误',
-                {
-                  type: 'error',
-                  showClose: false, // 是否显示右上角关闭按钮
-                  center: false, // 是否居中布局
-                  confirmButtonText: '刷新页面', // 确定按钮的文本内容
-                  callback: () => {
-                    this.handleRefresh()
-                  }
+              this.$alert(`[覆盖-环节] ${err}`, '断网了', {
+                type: 'error',
+                showClose: false, // 是否显示右上角关闭按钮
+                center: false, // 是否居中布局
+                confirmButtonText: '刷新页面', // 确定按钮的文本内容
+                callback: () => {
+                  this.handleRefresh()
                 }
-              )
+              })
             })
             .finally(() => {})
         })
-        .catch(() => {
-          this.handleRefresh()
-        })
+        .catch(() => {})
     },
 
     /**
@@ -1565,33 +604,6 @@ export default {
         })
         .catch(() => {})
     },
-    /**
-     * @description: 前往设置abcd常数
-     */
-    handleSetABCD() {
-      this.$prompt('请输入密码', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^st$/,
-        inputErrorMessage: '密码不正确',
-        showClose: true,
-        closeOnClickModal: false
-      })
-        .then(() => {
-          this.$router.push({
-            path: '/set-abcd'
-          })
-        })
-        .catch(() => {})
-    },
-    /**
-     * @description: 前往原始数据显示页
-     */
-    handleRawData() {
-      this.$router.push({
-        path: '/set-rawData'
-      })
-    },
 
     /**
      * @description: 重扫二维码按钮
@@ -1612,90 +624,48 @@ export default {
      * @description: 规格下拉框的选中值发生变化时触发
      */
     specChange() {
-      this.$store.dispatch('changeSpec', this.specValue).then(() => {
-        this.$message({
-          message: `规格选择成功，为：${this.specValue}`,
-          type: 'success',
-          duration: 2500
-        })
+      // Vuex更新一下规格
+      this.$store.dispatch('changeSpec', this.specValue)
 
-        // 清空标准滑块源数组
-        this.aArray = []
-        window.sessionStorage.setItem(
-          'standard_slider_value',
-          JSON.stringify([])
-        )
-
-        // 中心距值（压力数字量）
-        this.spacing = ''
-        // 来料检测结果
-        this.checkResult = ''
-        // 清空来料检测和被测滑块源数组
-        this.bArray = []
-
-        this.countArg()
-
-        // 二维码输入框获取鼠标焦点
-        this.QRFocus()
-      })
+      // 清空标准滑块数据数组
+      this.standardSliderArray = []
+      window.sessionStorage.setItem('standard_slider_value', JSON.stringify([]))
     },
     /**
      * @description: 型号下拉框的选中值发生变化时触发
      */
     modelChange() {
-      this.$store.dispatch('changeModel', this.modelValue).then(() => {
-        this.$message({
-          message: `型号选择成功，为：${this.modelValue}`,
-          type: 'success',
-          duration: 2500
-        })
+      // Vuex更新一下型号
+      this.$store.dispatch('changeModel', this.modelValue)
 
-        // 清空标准滑块源数组
-        this.aArray = []
-        window.sessionStorage.setItem(
-          'standard_slider_value',
-          JSON.stringify([])
-        )
-
-        // 中心距值（压力数字量）
-        this.spacing = ''
-        // 来料检测结果
-        this.checkResult = ''
-        // 清空来料检测和被测滑块源数组
-        this.bArray = []
-
-        this.countArg()
-
-        // 二维码输入框获取鼠标焦点
-        this.QRFocus()
-      })
+      // 清空标准滑块数据数组
+      this.standardSliderArray = []
+      window.sessionStorage.setItem('standard_slider_value', JSON.stringify([]))
     },
 
     /**
-     * @description: 清空标准滑块源数组按钮
+     * @description: 清空标定值按钮（包括sessionStorage里面的）
      */
     handleClearStandard() {
-      this.$confirm('是否要清空标准滑块的基准数据?', '提示', {
+      this.$confirm('是否要清空标定值?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         center: true,
         type: 'warning'
       })
         .then(() => {
-          this.aArray = []
+          this.standardSliderArray = []
           window.sessionStorage.setItem(
             'standard_slider_value',
             JSON.stringify([])
           )
           this.$message({
-            message: `标准滑块数据清空完成`,
+            message: `标定值清空完成`,
             type: 'success',
             duration: 5000
           })
         })
         .catch(() => {})
-
-      this.QRFocus() // 二维码输入框获取鼠标焦点
     },
 
     /**
@@ -1704,7 +674,7 @@ export default {
     initSerialPort() {
       SerialPort.list()
         .then(ports => {
-          /* 遍历设备的USB串口，目标设备需安装驱动 */
+          /* 遍历设备的COM口，取第一个作为COM口，一般是COM口号小的那个 */
           let comPath = ''
           for (const port of ports) {
             if (/^USB/.test(port.pnpId)) {
@@ -1713,13 +683,15 @@ export default {
             }
           }
 
-          /* 验证USB有没有连接到电脑，但不能验证有无数据发送给上位机 */
           if (comPath) {
-            /**
-             * @description: 创建串口实例
-             * @param {String} comPath 串行端口的系统路径。例如：在Mac、Linux上的/dev/tty.XXX或Windows上的COM1
-             * @param {Object} 配置项
-             */
+            this.$notify({
+              title: '通知',
+              message: `连接到串口：${comPath}`,
+              type: 'success',
+              position: 'bottom-right',
+              duration: 2500
+            })
+
             this.usbPort = new SerialPort(comPath, {
               baudRate: this.scmBaudRate, // 默认波特率115200
               autoOpen: true // 是否自动开启串口
@@ -1745,133 +717,241 @@ export default {
 
             this.parser = this.usbPort.pipe(new Readline({ delimiter: '\n' }))
             this.parser.on('data', data => {
-              /* 如果处于计算和调用后端api保存状态，就不触发，防止出bug */
+              /* 第0步：如果save函数正在执行，就不进行下面的逻辑，防止出bug */
               if (this.isSaveing === false) {
-                // console.log(data)
+                /* 第1步：获取数据，并对数据进行预处理 */
+                console.log(data)
+                const dataArray = data.split(',')
+                for (let i = 0; i < dataArray.length; i++) {
+                  dataArray[i] = parseInt(dataArray[i]) // 字符串类型转成整数类型
+                }
+                // 按键的键值（0-没有按键，1-标定按键，2-测量按键，3-清空按键）
+                const keyNum = dataArray[0]
+                // 工位1（15或30）
+                const workstation_1 = [
+                  dataArray[1],
+                  dataArray[2],
+                  dataArray[3],
+                  dataArray[4]
+                ]
+                // 工位2（20或35）
+                const workstation_2 = [
+                  dataArray[5],
+                  dataArray[6],
+                  dataArray[7],
+                  dataArray[8]
+                ]
+                // 工位3（25或45）
+                const workstation_3 = [
+                  dataArray[9],
+                  dataArray[10],
+                  dataArray[11],
+                  dataArray[12]
+                ]
 
-                if (data !== 'a' && data !== 'b' && data !== 'c') {
-                  /* 数据预处理 */
-                  const dataArray = data.split(',') // 将原始数据以逗号作为分割符，组成一个数组
-
-                  /* 前一个是出口值，后一个是入口值（即基准） */
-                  const qz_1 = parseInt(dataArray[0] * 100) / 100 // 不进行四舍五入，只保留稳定的小数点后2位
-                  const qz_1s = parseInt(dataArray[1] * 100) / 100
-                  const qz_2 = parseInt(dataArray[2] * 100) / 100
-                  const qz_2s = parseInt(dataArray[3] * 100) / 100
-                  const qz_3 = parseInt(dataArray[4] * 100) / 100
-                  const qz_3s = parseInt(dataArray[5] * 100) / 100
-                  const qz_4 = parseInt(dataArray[6] * 100) / 100
-                  const qz_4s = parseInt(dataArray[7] * 100) / 100
-
-                  /* 5位压力数字量 */
-                  const pressureDigital = dataArray[8]
-
-                  /* 4个气嘴的x，公式：出口÷入口 */
-                  const x1 = qz_1 / qz_1s
-                  const x2 = qz_2 / qz_2s
-                  const x3 = qz_3 / qz_3s
-                  const x4 = qz_4 / qz_4s
-
-                  /* 4组abcd常数，在abcd页面输入 */
-                  const a1 = this.abcdArrs[0][0]
-                  const b1 = this.abcdArrs[0][1]
-                  const c1 = this.abcdArrs[0][2]
-                  const d1 = this.abcdArrs[0][3]
-
-                  const a2 = this.abcdArrs[1][0]
-                  const b2 = this.abcdArrs[1][1]
-                  const c2 = this.abcdArrs[1][2]
-                  const d2 = this.abcdArrs[1][3]
-
-                  const a3 = this.abcdArrs[2][0]
-                  const b3 = this.abcdArrs[2][1]
-                  const c3 = this.abcdArrs[2][2]
-                  const d3 = this.abcdArrs[2][3]
-
-                  const a4 = this.abcdArrs[3][0]
-                  const b4 = this.abcdArrs[3][1]
-                  const c4 = this.abcdArrs[3][2]
-                  const d4 = this.abcdArrs[3][3]
-
-                  /*
-                   * 计算公式，是一个传递函数，陈少新给的
-                   * h = a*(出口÷入口)^3 + b*(出口÷入口)^2 + c*(出口÷入口) + d
-                   */
-                  this.h1 = parseInt(
-                    a1 * x1 * x1 * x1 + b1 * x1 * x1 + c1 * x1 + d1
-                  )
-                  this.h2 = parseInt(
-                    a2 * x2 * x2 * x2 + b2 * x2 * x2 + c2 * x2 + d2
-                  )
-                  this.h3 = parseInt(
-                    a3 * x3 * x3 * x3 + b3 * x3 * x3 + c3 * x3 + d3
-                  )
-                  this.h4 = parseInt(
-                    a4 * x4 * x4 * x4 + b4 * x4 * x4 + c4 * x4 + d4
-                  )
-
-                  /* 10分钟清空一次缓存 */
-                  if (this.cache.length >= 6000) {
-                    this.cache = []
-                  }
-                  /* 缓存进一个二维数组中 */
-                  this.cache.push([
-                    this.h1,
-                    this.h2,
-                    this.h3,
-                    this.h4,
-                    pressureDigital
-                  ])
-                } else if (data === 'a') {
-                  /* 标准滑块机械按钮-触发 */
-                  this.aArray = this.cache[this.cache.length - 1] // 取缓存数组最后一个数组
-                  if (this.aArray.length === 5) {
-                    // 完成的逻辑
-                    window.sessionStorage.setItem(
-                      'standard_slider_value',
-                      JSON.stringify(this.aArray)
-                    )
-                    this.$message({
-                      message: `标准滑块测量基准完成`,
-                      type: 'success',
-                      duration: 5000
-                    })
-                  }
-                } else if (data === 'b') {
-                  /* 被测滑块机械按钮-触发 */
-                  /* 1、来料检测（表示第2次按被测滑块机械按钮） */
-                  if (this.bArray.length === 1) {
-                    this.bArray.push(this.cache[this.cache.length - 1]) // 取缓存数组最后一个数组
-                    /* 判断中心距（压力数字量）是否在区间内 */
-                    this.spacing = this.bArray[1][4]
-                    if (
-                      this.spacing >= this.checkInterval[0] &&
-                      this.spacing <= this.checkInterval[1]
-                    ) {
-                      // 在区间内
-                      this.checkResult = '合格'
-                    } else {
-                      // 在区间外
-                      this.checkResult = '不合格'
+                /* 第2步：根据不同工位进行后续处理 */
+                // 先判断是否选择了规格和型号，都选择了才进行后续处理
+                if (this.specValue === '' || this.modelValue === '') {
+                } else {
+                  if (this.specValue === '15' || this.specValue === '30') {
+                    /* 工位1或工位4（15或30） */
+                    if (keyNum === 0) {
+                      // 没有按键按下，此时就单纯在界面上实时显示4个传感器的数字量，一维数组
+                      this.showSensorArray = workstation_1
+                    } else if (keyNum === 1) {
+                      // 标定按键按下，此时就把数据存入到标准滑块数据数组，二维数组
+                      if (this.standardSliderArray.length <= 2) {
+                        // 按第1~3下
+                        this.standardSliderArray.push([
+                          workstation_1[0],
+                          workstation_1[1],
+                          workstation_1[2],
+                          workstation_1[3]
+                        ])
+                      } else if (this.standardSliderArray.length === 3) {
+                        // 按第4下
+                        this.standardSliderArray.push([
+                          workstation_1[0],
+                          workstation_1[1],
+                          workstation_1[2],
+                          workstation_1[3]
+                        ])
+                        // 标定完成，标定值保存到SessionStorage
+                        window.sessionStorage.setItem(
+                          'standard_slider_value',
+                          JSON.stringify(this.standardSliderArray)
+                        )
+                        this.$message({
+                          message: `标定完成`,
+                          type: 'success',
+                          duration: 5000
+                        })
+                      }
+                    } else if (keyNum === 2) {
+                      // 测量按键按下，此时就把数据存入到成品滑块数据数组，二维数组
+                      if (this.finishSliderArray.length <= 2) {
+                        // 按第1~3下
+                        this.finishSliderArray.push([
+                          workstation_1[0],
+                          workstation_1[1],
+                          workstation_1[2],
+                          workstation_1[3]
+                        ])
+                      } else if (this.finishSliderArray.length === 3) {
+                        // 按第4下
+                        this.finishSliderArray.push([
+                          workstation_1[0],
+                          workstation_1[1],
+                          workstation_1[2],
+                          workstation_1[3]
+                        ])
+                        // 测量完成，调用save函数，计算结果并调用后端API
+                        this.save()
+                      }
+                    } else if (keyNum === 3) {
+                      // 清空按键按下，此时就把成品滑块数据数组清空
+                      this.finishSliderArray = []
+                      this.$message({
+                        message: `清空成功`,
+                        type: 'success',
+                        duration: 2500
+                      })
                     }
-                  } else {
-                    /* 2、被测滑块精度测量 */
-                    this.bArray.push(this.cache[this.cache.length - 1]) // 取缓存数组最后一个数组
-                    /* 第3次按下瞬间，表示完成 */
-                    if (this.bArray.length === 3) {
-                      // 完成的逻辑
-                      this.save()
+                  } else if (
+                    this.specValue === '20' ||
+                    this.specValue === '35'
+                  ) {
+                    /* 工位2或工位5（20或35） */
+                    if (keyNum === 0) {
+                      // 没有按键按下，此时就单纯在界面上实时显示4个传感器的数字量，一维数组
+                      this.showSensorArray = workstation_2
+                    } else if (keyNum === 1) {
+                      // 标定按键按下，此时就把数据存入到标准滑块数据数组，二维数组
+                      if (this.standardSliderArray.length <= 2) {
+                        // 按第1~3下
+                        this.standardSliderArray.push([
+                          workstation_2[0],
+                          workstation_2[1],
+                          workstation_2[2],
+                          workstation_2[3]
+                        ])
+                      } else if (this.standardSliderArray.length === 3) {
+                        // 按第4下
+                        this.standardSliderArray.push([
+                          workstation_2[0],
+                          workstation_2[1],
+                          workstation_2[2],
+                          workstation_2[3]
+                        ])
+                        // 标定完成，标定值保存到SessionStorage
+                        window.sessionStorage.setItem(
+                          'standard_slider_value',
+                          JSON.stringify(this.standardSliderArray)
+                        )
+                        this.$message({
+                          message: `标定完成`,
+                          type: 'success',
+                          duration: 5000
+                        })
+                      }
+                    } else if (keyNum === 2) {
+                      // 测量按键按下，此时就把数据存入到成品滑块数据数组，二维数组
+                      if (this.finishSliderArray.length <= 2) {
+                        // 按第1~3下
+                        this.finishSliderArray.push([
+                          workstation_2[0],
+                          workstation_2[1],
+                          workstation_2[2],
+                          workstation_2[3]
+                        ])
+                      } else if (this.finishSliderArray.length === 3) {
+                        // 按第4下
+                        this.finishSliderArray.push([
+                          workstation_2[0],
+                          workstation_2[1],
+                          workstation_2[2],
+                          workstation_2[3]
+                        ])
+                        // 测量完成，调用save函数，计算结果并调用后端API
+                        this.save()
+                      }
+                    } else if (keyNum === 3) {
+                      // 清空按键按下，此时就把成品滑块数据数组清空
+                      this.finishSliderArray = []
+                      this.$message({
+                        message: `清空成功`,
+                        type: 'success',
+                        duration: 2500
+                      })
+                    }
+                  } else if (
+                    this.specValue === '25' ||
+                    this.specValue === '45'
+                  ) {
+                    /* 工位3或工位6（25或45） */
+                    if (keyNum === 0) {
+                      // 没有按键按下，此时就单纯在界面上实时显示4个传感器的数字量，一维数组
+                      this.showSensorArray = workstation_3
+                    } else if (keyNum === 1) {
+                      // 标定按键按下，此时就把数据存入到标准滑块数据数组，二维数组
+                      if (this.standardSliderArray.length <= 2) {
+                        // 按第1~3下
+                        this.standardSliderArray.push([
+                          workstation_3[0],
+                          workstation_3[1],
+                          workstation_3[2],
+                          workstation_3[3]
+                        ])
+                      } else if (this.standardSliderArray.length === 3) {
+                        // 按第4下
+                        this.standardSliderArray.push([
+                          workstation_3[0],
+                          workstation_3[1],
+                          workstation_3[2],
+                          workstation_3[3]
+                        ])
+                        // 标定完成，标定值保存到SessionStorage
+                        window.sessionStorage.setItem(
+                          'standard_slider_value',
+                          JSON.stringify(this.standardSliderArray)
+                        )
+                        this.$message({
+                          message: `标定完成`,
+                          type: 'success',
+                          duration: 5000
+                        })
+                      }
+                    } else if (keyNum === 2) {
+                      // 测量按键按下，此时就把数据存入到成品滑块数据数组，二维数组
+                      if (this.finishSliderArray.length <= 2) {
+                        // 按第1~3下
+                        this.finishSliderArray.push([
+                          workstation_3[0],
+                          workstation_3[1],
+                          workstation_3[2],
+                          workstation_3[3]
+                        ])
+                      } else if (this.finishSliderArray.length === 3) {
+                        // 按第4下
+                        this.finishSliderArray.push([
+                          workstation_3[0],
+                          workstation_3[1],
+                          workstation_3[2],
+                          workstation_3[3]
+                        ])
+                        // 测量完成，调用save函数，计算结果并调用后端API
+                        this.save()
+                      }
+                    } else if (keyNum === 3) {
+                      // 清空按键按下，此时就把成品滑块数据数组清空
+                      this.finishSliderArray = []
+                      this.$message({
+                        message: `清空成功`,
+                        type: 'success',
+                        duration: 2500
+                      })
                     }
                   }
-                } else if (data === 'c') {
-                  /* 清空机械按钮-触发 */
-                  /* PS：只清空被测滑块数据 */
-                  // 中心距（压力数字量）
-                  this.spacing = ''
-                  // 来料检测结果
-                  this.checkResult = ''
-                  // 清空来料检测和被测滑块源数组
-                  this.bArray = []
                 }
               }
             })
@@ -1909,164 +989,263 @@ export default {
     },
 
     /**
-     * @description: 计算和调用api函数逻辑
+     * @description: 计算结果并调用后端API
      */
     save() {
-      this.isSaveing = true // 开始计算和调用api操作
+      this.isSaveing = true // 状态标志
 
-      /* 判断一下数据 */
+      /* 判断一下二维码是否为空、标定值是否完整 */
       if (this.QRCode !== '') {
-        if (this.aArray.length === 5) {
-          /* 1、根据公式，计算等高、到A、到B、A平行、B平行、滑块精度等 */
-          let n = 2 // 法兰型n=3，矩型n=2
-          if (
-            this.modelValue === 'EA' ||
-            this.modelValue === 'HEA' ||
-            this.modelValue === 'FA' ||
-            this.modelValue === 'HFA'
-          ) {
+        if (this.standardSliderArray.length === 4) {
+          /* 第1步：计算结果 */
+          const specValue = this.specValue // 规格
+          const modelValue = this.modelValue // 型号
+          const standard_array = this.standardSliderArray // 标定值，二维数组
+          const finish_array = this.finishSliderArray // 测量值，二维数组
+
+          let k2 = 0 // 2号传感器K值
+          let k3 = 0 // 3号传感器K值
+          let k4 = 0 // 4号传感器K值
+
+          let centerSpacing_min = 0 // 中心距下限（5位压力数字量）
+          let centerSpacing_max = 0 // 中心距上限（5位压力数字量）
+          let dg_constant = 0 // 等高常数（μm）
+          let toA_constant = 0 // 到A常数（μm）
+          let toB_constant = 0 // 到B常数（μm）
+
+          let n = 2 // 矩形2，法兰型3
+          if (modelValue === 'EA' || modelValue === 'HEA') {
             n = 3
           }
 
-          // 等高（um微米，1um=0.001mm）
-          this.dg = parseInt(
-            (
-              (this.bArray[1][2] - this.bArray[1][0]) / n -
-              (this.aArray[2] - this.aArray[0]) / n +
-              this.dgCS
-            ).toFixed(0)
-          )
-          // 到A
-          this.toA = parseInt(
-            (this.bArray[1][1] - this.aArray[1] + this.toACS).toFixed(0)
-          )
-          // 到B
-          this.toB = parseInt(
-            (this.bArray[1][3] - this.aArray[3] + this.toBCS).toFixed(0)
-          )
-          // A平行
-          this.aParallel = parseInt(
-            (
-              Math.max(
-                this.bArray[0][1],
-                this.bArray[1][1],
-                this.bArray[2][1]
-              ) -
-              Math.min(this.bArray[0][1], this.bArray[1][1], this.bArray[2][1])
-            ).toFixed(0)
-          )
-          // B平行
-          this.bParallel = parseInt(
-            (
-              Math.max(
-                this.bArray[0][3],
-                this.bArray[1][3],
-                this.bArray[2][3]
-              ) -
-              Math.min(this.bArray[0][3], this.bArray[1][3], this.bArray[2][3])
-            ).toFixed(0)
-          )
-          // 精度等级
-          if (
-            Math.abs(this.dg) <= 20 &&
-            Math.abs(this.toA) <= 30 &&
-            Math.abs(this.toB) <= 30 &&
-            this.aParallel <= 10 &&
-            this.bParallel <= 15
-          ) {
-            this.accuracyClass = 'E'
-          } else if (
-            Math.abs(this.dg) > 50 ||
-            Math.abs(this.toA) > 100 ||
-            Math.abs(this.toB) > 120 ||
-            this.aParallel > 40 ||
-            this.bParallel > 40
-          ) {
-            this.accuracyClass = '报废'
-          } else {
-            this.accuracyClass = 'N'
+          // 中心距下限、中心距上限、2~4号传感器K值、等高常数、到A常数、到B常数
+
+          if (specValue === '15') {
+            /* K2~K4 */
+            k2 = 0
+            k3 = 0
+            k4 = 0
+            switch (modelValue) {
+              case 'AA':
+                centerSpacing_min = 0
+                centerSpacing_max = 0
+                dg_constant = 0
+                toA_constant = 0
+                toB_constant = 0
+                break
+              case 'EA':
+                break
+              case 'AN':
+                break
+              case 'DA':
+                break
+            }
+          } else if (specValue === '20') {
+            /* K2~K4 */
+            k2 = 0
+            k3 = 0
+            k4 = 0
+            switch (modelValue) {
+              case 'AA':
+                break
+              case 'EA':
+                break
+              case 'AN':
+                break
+              case 'HAA':
+                break
+              case 'HEA':
+                break
+              case 'HAN':
+                break
+            }
+          } else if (specValue === '25') {
+            /* K2~K4 */
+            k2 = 0
+            k3 = 0
+            k4 = 0
+            switch (modelValue) {
+              case 'AA':
+                break
+              case 'EA':
+                break
+              case 'AN':
+                break
+              case 'HAA':
+                break
+              case 'HEA':
+                break
+              case 'HAN':
+                break
+            }
+          } else if (specValue === '30') {
+            /* K2~K4 */
+            k2 = 0
+            k3 = 0
+            k4 = 0
+            switch (modelValue) {
+              case 'AA':
+                break
+              case 'EA':
+                break
+              case 'AN':
+                break
+              case 'HAA':
+                break
+              case 'HEA':
+                break
+              case 'HAN':
+                break
+            }
+          } else if (specValue === '35') {
+            /* K2~K4 */
+            k2 = 0
+            k3 = 0
+            k4 = 0
+            switch (modelValue) {
+              case 'AA':
+                break
+              case 'EA':
+                break
+              case 'AN':
+                break
+              case 'HAA':
+                break
+              case 'HEA':
+                break
+              case 'HAN':
+                break
+            }
+          } else if (specValue === '45') {
+            /* K2~K4 */
+            k2 = 0
+            k3 = 0
+            k4 = 0
+            switch (modelValue) {
+              case 'AA':
+                break
+              case 'EA':
+                break
+              case 'AN':
+                break
+              case 'HEA':
+                break
+              case 'HAN':
+                break
+            }
           }
 
-          /* 2、调用API插入数据 */
-          const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/setData`
-          this.$axios
-            .post(api, {
-              QRCode: this.QRCode,
-              specValue: this.specValue,
-              modelValue: this.modelValue,
-              spacing: this.spacing,
-              checkResult: this.checkResult,
-              dg: this.dg,
-              toA: this.toA,
-              toB: this.toB,
-              aParallel: this.aParallel,
-              bParallel: this.bParallel,
-              accuracyClass: this.accuracyClass
-            })
-            .then(res => {
-              const data = res.data
-              if (data.status === 1) {
-                /* 上传成功 */
-                this.$message({
-                  message: `数据上传成功。`,
-                  type: 'success',
-                  duration: 2000
-                })
-                this.handleRefresh()
-              } else if (data.status === 0) {
-                /* 上传失败 */
-                this.$alert(
-                  `数据上传失败，请点击“刷新页面”按钮，然后重新测量！`,
-                  `状态码[${data.status}]`,
-                  {
-                    type: 'error',
-                    showClose: false,
-                    center: true,
-                    confirmButtonText: '刷新页面',
-                    callback: () => {
-                      this.handleRefresh()
-                    }
-                  }
-                )
-              } else if (data.status === -4) {
-                /* 参数有误 */
-                this.$alert(
-                  `参数有误，请点击“刷新页面”按钮，然后重新测量！`,
-                  `状态码[${data.status}]`,
-                  {
-                    type: 'error',
-                    showClose: false,
-                    center: true,
-                    confirmButtonText: '刷新页面',
-                    callback: () => {
-                      this.handleRefresh()
-                    }
-                  }
-                )
-              } else if (data.status === -5) {
-                /* 二维码已存在 */
-                this.updateTableData()
-              }
-            })
-            .catch(err => {
-              this.$alert(
-                `[增-环节] ${err}。请确保网络连接正常！`,
-                '网络请求错误',
-                {
-                  type: 'error',
-                  showClose: false, // 是否显示右上角关闭按钮
-                  center: false, // 是否居中布局
-                  confirmButtonText: '刷新页面', // 确定按钮的文本内容
-                  callback: () => {
-                    this.handleRefresh()
-                  }
-                }
-              )
-            })
-            .finally(() => {})
+          /* 中心距的评审结果 */
+          if (
+            finish_array[0][0] >= centerSpacing_min &&
+            finish_array[0][0] <= centerSpacing_max
+          ) {
+            this.centerSpacing = 1
+          } else {
+            this.centerSpacing = 0
+          }
+
+          /* 等高 */
+          // this.dg =
+
+          /* 到A */
+          // this.toA =
+
+          /* 到B */
+          // this.toB =
+
+          /* A平行 */
+          // this.aParallel =
+
+          /* B平行 */
+          // this.bParallel =
+
+          /* 精度等级 */
+          // this.accuracyClass = 
+
+          /* 备注评审：互换、不发互换、报废 */
+          // this.remark = 
+
+          this.isSaveing = false // 状态标志
+
+          /* 第2步：新增数据到后端数据库 */
+          // const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/setData`
+          // this.$axios
+          //   .post(api, {
+          //     QRCode: this.QRCode,
+          //     specValue: this.specValue,
+          //     modelValue: this.modelValue,
+          //     centerSpacing: this.centerSpacing,
+          //     dg: this.dg,
+          //     toA: this.toA,
+          //     toB: this.toB,
+          //     aParallel: this.aParallel,
+          //     bParallel: this.bParallel,
+          //     accuracyClass: this.accuracyClass,
+          //     remark: this.remark
+          //   })
+          //   .then(res => {
+          //     const data = res.data
+          //     if (data.status === 1) {
+          //       /* 上传成功 */
+          //       this.$message({
+          //         message: `数据上传成功。`,
+          //         type: 'success',
+          //         duration: 2000
+          //       })
+          //       // 成品滑块数据数组清空
+          //       this.finishSliderArray = []
+          //       // 二维码自增
+          //     } else if (data.status === 0) {
+          //       /* 上传失败 */
+          //       this.$alert(
+          //         `数据上传失败，请点击“刷新页面”按钮，然后重新测量！`,
+          //         `状态码[${data.status}]`,
+          //         {
+          //           type: 'error',
+          //           showClose: false,
+          //           center: true,
+          //           confirmButtonText: '刷新页面',
+          //           callback: () => {
+          //             this.handleRefresh()
+          //           }
+          //         }
+          //       )
+          //     } else if (data.status === -5) {
+          //       /* 二维码已存在，弹出是否要覆盖的弹窗 */
+          //       this.updateTableData()
+          //     } else {
+          //       /* 其他错误 */
+          //       this.$alert(
+          //         `其他错误，请点击“刷新页面”按钮，然后重新测量！`,
+          //         `状态码[${data.status}]`,
+          //         {
+          //           type: 'error',
+          //           showClose: false,
+          //           center: true,
+          //           confirmButtonText: '刷新页面',
+          //           callback: () => {
+          //             this.handleRefresh()
+          //           }
+          //         }
+          //       )
+          //     }
+          //   })
+          //   .catch(err => {
+          //     this.$alert(`[新增-环节] ${err}`, '断网了', {
+          //       type: 'error',
+          //       showClose: false, // 是否显示右上角关闭按钮
+          //       center: false, // 是否居中布局
+          //       confirmButtonText: '刷新页面', // 确定按钮的文本内容
+          //       callback: () => {
+          //         this.handleRefresh()
+          //       }
+          //     })
+          //   })
+          //   .finally(() => {})
         } else {
           this.$alert(
-            `标准滑块的基准数据为空，请点击"刷新页面"按钮，重新测量"标准滑块"的值！`,
+            `标定值不能为空，请点击"刷新页面"按钮，重新测量标定值！`,
             '警告',
             {
               type: 'error',
@@ -2081,7 +1260,7 @@ export default {
         }
       } else {
         this.$alert(
-          `二维码为空，请点击"刷新页面"按钮，重新测量一次！`,
+          `二维码不能为空，请点击"刷新页面"按钮，重新扫码测量！`,
           '警告',
           {
             type: 'error',
@@ -2149,74 +1328,6 @@ export default {
           }
         }
       }
-      /* 塞尺 */
-      .feelerGauge {
-        border-bottom: 2px solid black;
-        padding: 10px 10px 20px 10px;
-        @include flex(row, space-between, stretch);
-        .box {
-          @include flex(column, space-around, center);
-          .title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-          }
-          .value {
-            font-size: 20px;
-          }
-        }
-      }
-      /* 来料检测 */
-      .check {
-        margin-top: 40px;
-        margin-right: 20px;
-        @include flex(row, space-between, stretch);
-        .box {
-          @include flex(column, space-around, center);
-          .title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-          }
-          .value {
-            font-size: 20px;
-          }
-        }
-      }
-      /* 3次气压值 */
-      .pressure {
-        margin-top: 40px;
-        margin-right: 20px;
-        @include flex(row, space-between, stretch);
-        .box {
-          @include flex(column, space-around, center);
-          .title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-          }
-          .value {
-            font-size: 20px;
-          }
-        }
-      }
-      /* 滑块精度 */
-      // .sliderAccuracy {
-      //   margin-top: 60px;
-      //   margin-right: 20px;
-      //   @include flex(row, space-between, stretch);
-      //   .box {
-      //     @include flex(column, space-around, center);
-      //     .title {
-      //       font-size: 24px;
-      //       font-weight: 700;
-      //       margin-bottom: 15px;
-      //     }
-      //     .value {
-      //       font-size: 20px;
-      //     }
-      //   }
-      // }
     }
 
     /* 表格区域 */
@@ -2225,44 +1336,10 @@ export default {
     }
   }
 
-  /* 标准滑块部分 */
-  .standard-slider {
-    height: 15%;
-    border-top: 2px solid black;
-    @include flex(row, stretch, stretch);
-    /* 是否已测标志 */
-    .bit {
-      width: 35px;
-    }
-    .head-title {
-      width: 100px;
-      font-size: 30px;
-      @include flex(column, center, center);
-    }
-    .content {
-      width: 50%;
-      @include flex(row, space-around, stretch);
-      .box {
-        @include flex(column, space-around, center);
-        .title {
-          font-size: 24px;
-          font-weight: 700;
-        }
-        .value {
-          font-size: 20px;
-        }
-      }
-    }
-    .btn {
-      flex: 1;
-      @include flex(row, space-around, center);
-    }
-  }
-
-  /* 打开控制台按钮 */
-  .btn-control {
+  /* 参数配置 */
+  .btn-parameter {
     position: absolute;
-    right: 0;
+    right: 200px;
     bottom: 0;
   }
   /* 开发者页按钮 */
@@ -2271,22 +1348,10 @@ export default {
     right: 100px;
     bottom: 0;
   }
-  /* 参数配置 */
-  .btn-parameter {
+  /* 打开控制台按钮 */
+  .btn-control {
     position: absolute;
-    right: 200px;
-    bottom: 0;
-  }
-  /* abcd */
-  .btn-abcd {
-    position: absolute;
-    right: 300px;
-    bottom: 0;
-  }
-  /* 原始数据显示 */
-  .btn-rawdata {
-    position: absolute;
-    right: 400px;
+    right: 0;
     bottom: 0;
   }
 }

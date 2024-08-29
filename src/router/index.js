@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-04-12 16:21:32
+ * @LastEditTime: 2024-07-25 15:20:09
  * @Description : 路由
  */
 import Vue from 'vue'
@@ -38,22 +38,6 @@ const routes = [
     name: 'set-parameter',
     component: () => import('@/views/set/set-parameter'),
     meta: ['参数配置']
-  },
-
-  // 原始数据显示（用于求a、b、c、d）（也用于扯皮时保留证据）
-  {
-    path: '/set-rawData',
-    name: 'set-rawData',
-    component: () => import('@/views/set/set-rawData'),
-    meta: ['原始数据显示']
-  },
-
-  // 设置4组abcd常数
-  {
-    path: '/set-abcd',
-    name: 'set-abcd',
-    component: () => import('@/views/set/set-abcd'),
-    meta: ['设置abcd常数']
   },
 
   {
