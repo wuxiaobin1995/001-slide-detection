@@ -1,14 +1,14 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-08-29 17:34:49
+ * @LastEditTime: 2024-08-30 17:41:22
  * @Description : home
 -->
 <template>
   <div class="home" v-loading.fullscreen.lock="isSaveing">
     <!-- 被测滑块部分 -->
     <div class="slider">
-      <!-- 左侧数值显示 -->
+      <!-- 上侧数值显示 -->
       <div class="main">
         <!-- 规格型号选择 -->
         <div class="gx">
@@ -70,7 +70,7 @@
         <div>标准滑块数据数组：{{ standardSliderArray }}</div>
       </div>
 
-      <!-- 右侧表格 -->
+      <!-- 下侧表格 -->
       <div class="table">
         <el-table
           :data="tableData"
@@ -166,7 +166,7 @@
     </div>
 
     <!-- 按钮组 -->
-    <div class="btn">
+    <div class="btn-bom">
       <el-button class="item" type="primary" @click="handleClearStandard"
         >清 空 标 定 值</el-button
       >
@@ -494,6 +494,10 @@ export default {
                   type: 'success',
                   duration: 2500
                 })
+                // 成品滑块数据数组清空
+                this.finishSliderArray = []
+                // 二维码编号自增
+                this.QRCodeAdd()
               } else if (data.status === 0) {
                 /* 失败 */
                 this.$alert(
@@ -666,6 +670,65 @@ export default {
           })
         })
         .catch(() => {})
+    },
+
+    /**
+     * @description: 二维码编号自增（方便操作工不用每次都扫码）
+     */
+    QRCodeAdd() {
+      const QRCodeArray = this.QRCode.split('')
+      if (QRCodeArray[0] !== 'T' || QRCodeArray.length !== 8) {
+        // 首位不是T，或者总长度不是8位，表示出错了
+        this.QRCode = ''
+      } else {
+        if (QRCodeArray[1] !== '0') {
+          const num =
+            QRCodeArray[1] +
+            QRCodeArray[2] +
+            QRCodeArray[3] +
+            QRCodeArray[4] +
+            QRCodeArray[5] +
+            QRCodeArray[6] +
+            QRCodeArray[7]
+          const num_res = parseInt(num) + 1
+          if (num_res === 10000000) {
+            this.QRCode = '' // 溢出
+          } else {
+            this.QRCode = `T${num_res}`
+          }
+        } else if (QRCodeArray[1] === '0') {
+          if (QRCodeArray[2] !== '0') {
+            const num =
+              QRCodeArray[2] +
+              QRCodeArray[3] +
+              QRCodeArray[4] +
+              QRCodeArray[5] +
+              QRCodeArray[6] +
+              QRCodeArray[7]
+            const num_res = parseInt(num) + 1
+            if (num_res === 1000000) {
+              this.QRCode = `T${num_res}`
+            } else {
+              this.QRCode = `T0${num_res}`
+            }
+          } else if (QRCodeArray[2] === '0') {
+            if (QRCodeArray[3] !== '0') {
+              const num =
+                QRCodeArray[3] +
+                QRCodeArray[4] +
+                QRCodeArray[5] +
+                QRCodeArray[6] +
+                QRCodeArray[7]
+              const num_res = parseInt(num) + 1
+              if (num_res === 100000) {
+                this.QRCode = `T0${num_res}`
+              } else {
+                this.QRCode = `T00${num_res}`
+              }
+            }
+          }
+        }
+      }
     },
 
     /**
@@ -1019,7 +1082,6 @@ export default {
           }
 
           // 中心距下限、中心距上限、2~4号传感器K值、等高常数、到A常数、到B常数
-
           if (specValue === '15') {
             /* K2~K4 */
             k2 = 0
@@ -1161,10 +1223,14 @@ export default {
           // this.bParallel =
 
           /* 精度等级 */
-          // this.accuracyClass = 
+          // 调用API直接返回结果
+          // 先判等高报废，再判断其他报废，再判断A平行和B平行的N，再判断F->E->D->C->B
+          // this.accuracyClass =
 
-          /* 备注评审：互换、不发互换、报废 */
-          // this.remark = 
+          /* 备注评审：E级互换、N级互换、不发互换、报废 */
+          // 先判断报废、再判断不发互换、再判断N级互换、再判断E级互换
+          // 如果是互换：先判断等高
+          // this.remark =
 
           this.isSaveing = false // 状态标志
 
@@ -1195,7 +1261,8 @@ export default {
           //       })
           //       // 成品滑块数据数组清空
           //       this.finishSliderArray = []
-          //       // 二维码自增
+          //       // 二维码编号自增
+          //       this.QRCodeAdd()
           //     } else if (data.status === 0) {
           //       /* 上传失败 */
           //       this.$alert(
@@ -1289,11 +1356,10 @@ export default {
   /* 被测滑块部分 */
   .slider {
     flex: 1;
-    @include flex(row, stretch, stretch);
-    /* 左侧内容区域 */
+    @include flex(column, stretch, stretch);
+    /* 上侧内容区域 */
     .main {
-      width: 45%;
-      border-right: 2px solid black;
+      border-bottom: 2px solid black;
       /* 是否已测标志 */
       .bit {
         width: 40px;
@@ -1313,7 +1379,6 @@ export default {
       }
       /* 二维码 */
       .QRCode {
-        border-bottom: 2px solid black;
         margin-top: 20px;
         padding-bottom: 20px;
         @include flex(row, stretch, center);
@@ -1332,7 +1397,15 @@ export default {
 
     /* 表格区域 */
     .table {
-      width: 55%;
+      height: 100%;
+    }
+  }
+
+  /* 按钮组 */
+  .btn-bom {
+    margin-top: 20px;
+    .item {
+      margin-right: 40px;
     }
   }
 

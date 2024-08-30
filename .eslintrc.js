@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2022-10-15 17:00:42
- * @LastEditTime: 2024-04-20 11:33:17
+ * @LastEditTime: 2024-08-30 15:46:05
  * @Description : ESLint
  */
 module.exports = {
@@ -20,7 +20,8 @@ module.exports = {
     'prefer-promise-reject-errors': 'off', // 取消reject时必须new Error的规定
     quotes: 'off',
     indent: ['off', 2], // 关闭与缩进有关的检查
-    camelcase: 0
+    camelcase: 0,
+    'no-unused-vars': 'off'
   },
   /* 允许哪些未定义变量作为全局使用 */
   globals: {
