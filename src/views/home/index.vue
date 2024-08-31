@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-08-30 17:41:22
+ * @LastEditTime: 2024-08-31 10:22:16
  * @Description : home
 -->
 <template>
@@ -52,7 +52,8 @@
           <div>
             <el-input
               ref="QRCodeInput"
-              placeholder=""
+              placeholder="不要手输，请用扫码枪"
+              maxlength="8"
               v-model="QRCode"
             ></el-input>
           </div>
@@ -63,12 +64,28 @@
           </div>
         </div>
 
-        <!-- 实时显示4个传感器的数字量 -->
-        <div>实时显示4个传感器的数据数组：{{ showSensorArray }}</div>
-
-        <div>成品滑块数据数组：{{ finishSliderArray }}</div>
-        <div>标准滑块数据数组：{{ standardSliderArray }}</div>
+        <!-- 按钮组 -->
+        <div class="btn-bom">
+          <el-button class="item" type="info" @click="handleClearStandard"
+            >清 空 标 定 值</el-button
+          >
+          <el-button class="item" type="info" @click="handleBtnRefresh"
+            >刷 新 页 面</el-button
+          >
+        </div>
       </div>
+
+      <!-- 实时显示4个传感器的数字量 -->
+      <div class="show">
+        <div class="text">实时值：</div>
+        <div class="item">{{ showSensorArray[0] }}</div>
+        <div class="item">{{ showSensorArray[1] }}</div>
+        <div class="item">{{ showSensorArray[2] }}</div>
+        <div class="item">{{ showSensorArray[3] }}</div>
+      </div>
+
+      <div>成品滑块数据数组：{{ finishSliderArray }}</div>
+      <div>标准滑块数据数组：{{ standardSliderArray }}</div>
 
       <!-- 下侧表格 -->
       <div class="table">
@@ -163,16 +180,6 @@
           </el-table-column>
         </el-table>
       </div>
-    </div>
-
-    <!-- 按钮组 -->
-    <div class="btn-bom">
-      <el-button class="item" type="primary" @click="handleClearStandard"
-        >清 空 标 定 值</el-button
-      >
-      <el-button class="item" type="primary" @click="handleBtnRefresh"
-        >刷 新 页 面</el-button
-      >
     </div>
 
     <!-- 参数配置页 -->
@@ -1359,14 +1366,11 @@ export default {
     @include flex(column, stretch, stretch);
     /* 上侧内容区域 */
     .main {
+      height: 10%;
       border-bottom: 2px solid black;
-      /* 是否已测标志 */
-      .bit {
-        width: 40px;
-      }
+      @include flex(row, stretch, center);
       /* 规格型号 */
       .gx {
-        margin-top: 10px;
         @include flex(row, stretch, stretch);
         .spec,
         .model {
@@ -1377,10 +1381,9 @@ export default {
           }
         }
       }
+
       /* 二维码 */
       .QRCode {
-        margin-top: 20px;
-        padding-bottom: 20px;
         @include flex(row, stretch, center);
         .text {
           margin-right: 10px;
@@ -1389,23 +1392,40 @@ export default {
           margin-left: 20px;
           .btn-item {
             width: 100px;
-            font-size: 18px;
           }
         }
+      }
+
+      /* 按钮组 */
+      .btn-bom {
+        margin-left: 260px;
+        .item {
+          margin-right: 20px;
+        }
+      }
+    }
+
+    /* 实时显示4个传感器值 */
+    .show {
+      height: 10%;
+      @include flex(row, center, center);
+      .text {
+        font-size: 30px;
+        font-weight: 700;
+      }
+      .item {
+        margin: 10px 100px;
+        border: 2px solid black;
+        padding: 5px 10px;
+        font-size: 30px;
+        color: red;
       }
     }
 
     /* 表格区域 */
     .table {
-      height: 100%;
-    }
-  }
-
-  /* 按钮组 */
-  .btn-bom {
-    margin-top: 20px;
-    .item {
-      margin-right: 40px;
+      flex: 1;
+      margin-bottom: 30px;
     }
   }
 
