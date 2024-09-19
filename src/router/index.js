@@ -32,14 +32,6 @@ const routes = [
     meta: ['开发者']
   },
 
-  // 参数配置
-  {
-    path: '/set-parameter',
-    name: 'set-parameter',
-    component: () => import('@/views/set/set-parameter'),
-    meta: ['参数配置']
-  },
-
   {
     path: '/refresh',
     name: 'refresh',

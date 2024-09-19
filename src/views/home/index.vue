@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-08-31 10:22:16
+ * @LastEditTime: 2024-09-19 17:55:27
  * @Description : home
 -->
 <template>
@@ -110,21 +110,14 @@
             label="测量时间"
             width="190"
           />
-          <!-- 规格 -->
+          <!-- 规格型号 -->
           <el-table-column
             align="center"
-            prop="specValue"
-            label="规格"
-            width="60"
+            prop="xhgg"
+            label="规格型号"
+            width="140"
           />
-          <!-- 型号 -->
-          <el-table-column
-            align="center"
-            prop="modelValue"
-            label="型号"
-            width="80"
-          />
-          <!-- 中心距 -->
+          <!-- 中心距评审结果 -->
           <el-table-column
             align="center"
             prop="centerSpacing"
@@ -182,14 +175,6 @@
       </div>
     </div>
 
-    <!-- 参数配置页 -->
-    <el-button
-      class="btn-parameter"
-      type="info"
-      size="mini"
-      @click="handleParameter"
-      >参数配置页</el-button
-    >
     <!-- 开发者页按钮 -->
     <el-button
       class="btn-developer"
@@ -233,7 +218,7 @@ export default {
       /* 服务器地址ip */
       ip: '',
 
-      /* 规格 */
+      /* 规格（外协滑块暂时没有35与45） */
       specValue: '',
       specSelection: [
         {
@@ -247,13 +232,13 @@ export default {
         },
         {
           value: '30'
-        },
-        {
-          value: '35'
-        },
-        {
-          value: '45'
         }
+        // {
+        //   value: '35'
+        // },
+        // {
+        //   value: '45'
+        // }
       ],
       /* 型号 */
       modelValue: '',
@@ -303,7 +288,7 @@ export default {
       aParallel: 0, // A平行
       bParallel: 0, // B平行
       accuracyClass: '', // 精度等级
-      remark: '' // 备注（互换、不发互换、报废）
+      remark: '' // 备注（E级互换、N级互换、不发互换、报废）
     }
   },
 
@@ -481,8 +466,7 @@ export default {
           this.$axios
             .post(api, {
               QRCode: this.QRCode,
-              specValue: this.specValue,
-              modelValue: this.modelValue,
+              xhgg: 'TSGS' + this.specValue + this.modelValue,
               centerSpacing: this.centerSpacing,
               dg: this.dg,
               toA: this.toA,
@@ -592,25 +576,6 @@ export default {
         .then(() => {
           this.$router.push({
             path: '/set-developer'
-          })
-        })
-        .catch(() => {})
-    },
-    /**
-     * @description: 前往参数配置
-     */
-    handleParameter() {
-      this.$prompt('请输入密码', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^st$/,
-        inputErrorMessage: '密码不正确',
-        showClose: true,
-        closeOnClickModal: false
-      })
-        .then(() => {
-          this.$router.push({
-            path: '/set-parameter'
           })
         })
         .catch(() => {})
@@ -731,6 +696,51 @@ export default {
                 this.QRCode = `T0${num_res}`
               } else {
                 this.QRCode = `T00${num_res}`
+              }
+            } else if (QRCodeArray[3] === '0') {
+              if (QRCodeArray[4] !== '0') {
+                const num =
+                  QRCodeArray[4] +
+                  QRCodeArray[5] +
+                  QRCodeArray[6] +
+                  QRCodeArray[7]
+                const num_res = parseInt(num) + 1
+                if (num_res === 10000) {
+                  this.QRCode = `T00${num_res}`
+                } else {
+                  this.QRCode = `T000${num_res}`
+                }
+              } else if (QRCodeArray[4] === '0') {
+                if (QRCodeArray[5] !== '0') {
+                  const num = QRCodeArray[5] + QRCodeArray[6] + QRCodeArray[7]
+                  const num_res = parseInt(num) + 1
+                  if (num_res === 1000) {
+                    this.QRCode = `T000${num_res}`
+                  } else {
+                    this.QRCode = `T0000${num_res}`
+                  }
+                } else if (QRCodeArray[5] === '0') {
+                  if (QRCodeArray[6] !== '0') {
+                    const num = QRCodeArray[6] + QRCodeArray[7]
+                    const num_res = parseInt(num) + 1
+                    if (num_res === 100) {
+                      this.QRCode = `T0000${num_res}`
+                    } else {
+                      this.QRCode = `T00000${num_res}`
+                    }
+                  } else if (QRCodeArray[6] === '0') {
+                    if (QRCodeArray[7] !== '0') {
+                      const num = QRCodeArray[7]
+                      const num_res = parseInt(num) + 1
+                      if (num_res === 10) {
+                        this.QRCode = `T00000${num_res}`
+                      } else {
+                        this.QRCode = `T000000${num_res}`
+                      }
+                    } else if (QRCodeArray[7] === '0') {
+                    }
+                  }
+                }
               }
             }
           }
@@ -1077,145 +1087,263 @@ export default {
           let k3 = 0 // 3号传感器K值
           let k4 = 0 // 4号传感器K值
 
-          let centerSpacing_min = 0 // 中心距下限（5位压力数字量）
-          let centerSpacing_max = 0 // 中心距上限（5位压力数字量）
           let dg_constant = 0 // 等高常数（μm）
           let toA_constant = 0 // 到A常数（μm）
           let toB_constant = 0 // 到B常数（μm）
+
+          let centerSpacing_min = 0 // 中心距下限（5位压力数字量）
+          let centerSpacing_max = 0 // 中心距上限（5位压力数字量）
 
           let n = 2 // 矩形2，法兰型3
           if (modelValue === 'EA' || modelValue === 'HEA') {
             n = 3
           }
 
-          // 中心距下限、中心距上限、2~4号传感器K值、等高常数、到A常数、到B常数
+          // 2~4号传感器K值、等高常数、到A常数、到B常数
           if (specValue === '15') {
             /* K2~K4 */
-            k2 = 0
-            k3 = 0
-            k4 = 0
+            k2 = 155.6
+            k3 = 146.1
+            k4 = 156.6
             switch (modelValue) {
               case 'AA':
-                centerSpacing_min = 0
-                centerSpacing_max = 0
+                dg_constant = 5
+                toA_constant = -12
+                toB_constant = 26
+                break
+              case 'AN':
+                dg_constant = 5
+                toA_constant = -12
+                toB_constant = 26
+                break
+              case 'DA':
+                dg_constant = -4
+                toA_constant = 11
+                toB_constant = 2
+                break
+              default:
                 dg_constant = 0
                 toA_constant = 0
                 toB_constant = 0
                 break
-              case 'EA':
-                break
-              case 'AN':
-                break
-              case 'DA':
-                break
             }
           } else if (specValue === '20') {
             /* K2~K4 */
-            k2 = 0
-            k3 = 0
-            k4 = 0
+            k2 = 152.8
+            k3 = 152.7
+            k4 = 132.6
             switch (modelValue) {
               case 'AA':
+                dg_constant = -1
+                toA_constant = 10
+                toB_constant = 3
                 break
               case 'EA':
-                break
-              case 'AN':
+                dg_constant = 1
+                toA_constant = -11
+                toB_constant = 7
                 break
               case 'HAA':
+                dg_constant = -1
+                toA_constant = 10
+                toB_constant = 3
                 break
               case 'HEA':
+                dg_constant = 1
+                toA_constant = -11
+                toB_constant = 7
                 break
-              case 'HAN':
+              default:
+                dg_constant = 0
+                toA_constant = 0
+                toB_constant = 0
                 break
             }
           } else if (specValue === '25') {
             /* K2~K4 */
-            k2 = 0
-            k3 = 0
-            k4 = 0
+            k2 = 153.6
+            k3 = 149.4
+            k4 = 135.5
             switch (modelValue) {
               case 'AA':
+                dg_constant = 0
+                toA_constant = 14
+                toB_constant = 4
                 break
               case 'EA':
+                dg_constant = 0
+                toA_constant = 10
+                toB_constant = 0
                 break
               case 'AN':
+                dg_constant = 2
+                toA_constant = 19
+                toB_constant = 10
                 break
               case 'HAA':
+                dg_constant = 0
+                toA_constant = 14
+                toB_constant = 4
                 break
               case 'HEA':
+                dg_constant = 0
+                toA_constant = 10
+                toB_constant = 0
                 break
               case 'HAN':
+                dg_constant = 2
+                toA_constant = 19
+                toB_constant = 10
+                break
+              default:
+                dg_constant = 0
+                toA_constant = 0
+                toB_constant = 0
                 break
             }
           } else if (specValue === '30') {
             /* K2~K4 */
-            k2 = 0
-            k3 = 0
-            k4 = 0
+            k2 = 125.4
+            k3 = 141
+            k4 = 141
             switch (modelValue) {
               case 'AA':
+                dg_constant = 4
+                toA_constant = 8
+                toB_constant = 18
                 break
               case 'EA':
+                dg_constant = -1
+                toA_constant = -6
+                toB_constant = 1
                 break
               case 'AN':
+                dg_constant = -2
+                toA_constant = -13
+                toB_constant = 10
                 break
               case 'HAA':
+                dg_constant = 4
+                toA_constant = 8
+                toB_constant = 18
                 break
               case 'HEA':
+                dg_constant = -1
+                toA_constant = -6
+                toB_constant = 1
                 break
               case 'HAN':
+                dg_constant = -2
+                toA_constant = -13
+                toB_constant = 10
+                break
+              default:
+                dg_constant = 0
+                toA_constant = 0
+                toB_constant = 0
                 break
             }
           } else if (specValue === '35') {
             /* K2~K4 */
-            k2 = 0
-            k3 = 0
-            k4 = 0
+            k2 = 129.5
+            k3 = 139.4
+            k4 = 143.4
             switch (modelValue) {
-              case 'AA':
-                break
-              case 'EA':
-                break
-              case 'AN':
-                break
-              case 'HAA':
-                break
-              case 'HEA':
-                break
-              case 'HAN':
+              default:
+                dg_constant = 0
+                toA_constant = 0
+                toB_constant = 0
                 break
             }
           } else if (specValue === '45') {
             /* K2~K4 */
-            k2 = 0
-            k3 = 0
-            k4 = 0
+            k2 = 86.1
+            k3 = 138
+            k4 = 145.9
             switch (modelValue) {
-              case 'AA':
-                break
-              case 'EA':
-                break
-              case 'AN':
-                break
-              case 'HEA':
-                break
-              case 'HAN':
+              default:
+                dg_constant = 0
+                toA_constant = 0
+                toB_constant = 0
                 break
             }
           }
 
-          /* 中心距的评审结果 */
-          if (
-            finish_array[0][0] >= centerSpacing_min &&
-            finish_array[0][0] <= centerSpacing_max
-          ) {
+          /* 中心距的评审结果（0：不合格，1：合格） */
+          let centerSpacing_k = 0
+          switch (specValue) {
+            case '15':
+              centerSpacing_k = 0.01
+              break
+            case '20':
+              centerSpacing_k = 0.014
+              break
+            case '25':
+              centerSpacing_k = 0.017
+              break
+            case '30':
+              centerSpacing_k = 0.016
+              break
+            default:
+              centerSpacing_k = 0
+              break
+          }
+          const standard_d = parseFloat(standard_array[0][0] * centerSpacing_k)
+          if (specValue === '15') {
+            centerSpacing_min = standard_d - 1
+            centerSpacing_max = standard_d + 5
+          } else if (specValue === '20') {
+            if (
+              modelValue === 'HAA' ||
+              modelValue === 'HEA' ||
+              modelValue === 'HAN'
+            ) {
+              centerSpacing_min = standard_d - 4
+              centerSpacing_max = standard_d
+            } else {
+              centerSpacing_min = standard_d - 3
+              centerSpacing_max = standard_d + 2
+            }
+          } else if (specValue === '25') {
+            if (
+              modelValue === 'HAA' ||
+              modelValue === 'HEA' ||
+              modelValue === 'HAN'
+            ) {
+              centerSpacing_min = standard_d
+              centerSpacing_max = standard_d + 4
+            } else {
+              centerSpacing_min = standard_d - 3
+              centerSpacing_max = standard_d + 1
+            }
+          } else if (specValue === '30') {
+            if (
+              modelValue === 'HAA' ||
+              modelValue === 'HEA' ||
+              modelValue === 'HAN'
+            ) {
+              centerSpacing_min = standard_d - 1
+              centerSpacing_max = standard_d + 3
+            } else {
+              centerSpacing_min = standard_d - 1
+              centerSpacing_max = standard_d + 5
+            }
+          }
+          const finish_d = parseFloat(finish_array[0][0] * centerSpacing_k)
+          if (finish_d >= centerSpacing_min && finish_d <= centerSpacing_max) {
             this.centerSpacing = 1
           } else {
             this.centerSpacing = 0
           }
 
           /* 等高 */
-          // this.dg =
+          this.dg =
+            (finish_array[2][2] / k2 -
+              finish_array[2][3] / k3 -
+              (standard_array[2][2] / k2 - standard_array[2][3] / k3)) /
+              n +
+            dg_constant
+          this.dg = parseInt(this.dg)
 
           /* 到A */
           // this.toA =
@@ -1231,12 +1359,11 @@ export default {
 
           /* 精度等级 */
           // 调用API直接返回结果
-          // 先判等高报废，再判断其他报废，再判断A平行和B平行的N，再判断F->E->D->C->B
           // this.accuracyClass =
 
           /* 备注评审：E级互换、N级互换、不发互换、报废 */
-          // 先判断报废、再判断不发互换、再判断N级互换、再判断E级互换
-          // 如果是互换：先判断等高
+          // 先判断等高（以此来判断报废、不发互换、互换）
+          // 如果是互换，则先判断N级互换、再判断E级互换
           // this.remark =
 
           this.isSaveing = false // 状态标志
@@ -1246,8 +1373,7 @@ export default {
           // this.$axios
           //   .post(api, {
           //     QRCode: this.QRCode,
-          //     specValue: this.specValue,
-          //     modelValue: this.modelValue,
+          //     xhgg: 'TSGS' + this.specValue + this.modelValue,
           //     centerSpacing: this.centerSpacing,
           //     dg: this.dg,
           //     toA: this.toA,
@@ -1429,12 +1555,6 @@ export default {
     }
   }
 
-  /* 参数配置 */
-  .btn-parameter {
-    position: absolute;
-    right: 200px;
-    bottom: 0;
-  }
   /* 开发者页按钮 */
   .btn-developer {
     position: absolute;
