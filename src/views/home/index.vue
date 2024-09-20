@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-09-20 11:33:09
+ * @LastEditTime: 2024-09-20 17:43:33
  * @Description : home
 -->
 <template>
@@ -93,7 +93,7 @@
           :data="tableData"
           style="width: 100%"
           height="100%"
-          :default-sort="{ prop: 'create_time', order: 'descending' }"
+          :default-sort="{ prop: 'riqi', order: 'ascending' }"
           :stripe="false"
           :border="true"
           v-loading="tableLoading"
@@ -101,14 +101,22 @@
           element-loading-spinner="el-icon-loading"
           element-loading-background="rgba(0, 0, 0, 0.8)"
         >
+          <!-- No -->
+          <el-table-column
+            align="center"
+            type="index"
+            label="No"
+            width="50"
+          ></el-table-column>
           <!-- 二维码 -->
-          <el-table-column align="center" prop="QRCode" label="二维码" fixed />
+          <el-table-column align="center" prop="sxm" label="二维码" sortable />
           <!-- 测量时间 -->
           <el-table-column
             align="center"
             prop="riqi"
             label="测量时间"
             width="190"
+            sortable
           />
           <!-- 规格型号 -->
           <el-table-column
@@ -121,7 +129,7 @@
           <el-table-column
             align="center"
             prop="zxj"
-            label="中心距评审结果"
+            label="中心距评审结果 (0不合格，1合格)"
             width="100"
           />
           <!-- 等高 -->
@@ -131,19 +139,9 @@
           <!-- 到B -->
           <el-table-column align="center" prop="daob" label="到B" width="80" />
           <!-- A平行 -->
-          <el-table-column
-            align="center"
-            prop="apx"
-            label="A平行"
-            width="80"
-          />
+          <el-table-column align="center" prop="apx" label="A平行" width="80" />
           <!-- B平行 -->
-          <el-table-column
-            align="center"
-            prop="bpx"
-            label="B平行"
-            width="80"
-          />
+          <el-table-column align="center" prop="bpx" label="B平行" width="80" />
           <!-- 精度等级 -->
           <el-table-column
             align="center"
@@ -155,7 +153,7 @@
           <el-table-column
             align="center"
             prop="beizhu"
-            label="备注"
+            label="备注 (互换性)"
             width="100"
           />
 
@@ -309,7 +307,7 @@ export default {
     this.initSerialPort()
 
     /* 获取表格数据 */
-    // this.getTableData()
+    this.getTableData()
   },
   mounted() {
     /* 二维码输入框获取鼠标焦点 */
@@ -362,7 +360,7 @@ export default {
         const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/getSlideDetectionData`
         this.$axios
           .post(api, {
-            num: 30 // 默认获取最新的30条，并且是T开头的才查询出来，因为凯特和双特共用同一个数据表
+            num: 50 // 默认获取最新的n条，并且是T开头的才查询出来，因为凯特和双特共用同一个数据表
           })
           .then(res => {
             const data = res.data
@@ -406,7 +404,7 @@ export default {
           const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/deleteSlideDetectionData`
           this.$axios
             .post(api, {
-              sxm: row.QRCode
+              sxm: row.sxm
             })
             .then(res => {
               const data = res.data
@@ -450,7 +448,7 @@ export default {
     updateTableData() {
       this.$confirm(
         '数据库中已存在这个二维码的滑块数据, 是否要覆盖旧数据?',
-        '提示',
+        '重 测 提 示',
         {
           confirmButtonText: '覆 盖',
           cancelButtonText: '取 消',
@@ -487,8 +485,6 @@ export default {
                 })
                 // 成品滑块数据数组清空
                 this.finishSliderArray = []
-                // 二维码编号自增
-                this.QRCodeAdd()
               } else if (data.status === 0) {
                 /* 失败 */
                 this.$alert(
@@ -532,9 +528,16 @@ export default {
                 }
               })
             })
-            .finally(() => {})
+            .finally(() => {
+              this.handleRescan()
+              this.getTableData()
+            })
         })
-        .catch(() => {})
+        .catch(() => {
+          // 成品滑块数据数组清空
+          this.finishSliderArray = []
+          this.handleRescan()
+        })
     },
 
     /**
@@ -1387,10 +1390,101 @@ export default {
           this.bParallel = bParallelMax - bParallelMin
           this.bParallel = parseInt(this.bParallel.toFixed(0))
 
-          /* 备注评审：E级互换、N级互换、不发互换、报废 */
-          // 先判断等高（以此来判断报废、不发互换、互换）
-          // 如果是互换，则先判断N级互换、再判断E级互换
-          // this.remark =
+          /* 备注互换性评审：E级互换、N级互换、不发互换、报废 */
+          const dg_abs = Math.abs(this.dg) // 等高的绝对值
+          const toA_abs = Math.abs(this.toA) // 到A的绝对值
+          const toB_abs = Math.abs(this.toB) // 到B的绝对值
+          let toA_res = ''
+          let toB_res = ''
+          let aParallel_res = ''
+          let bParallel_res = ''
+          // 先判断等高互换性
+          if (dg_abs > 50) {
+            this.remark = '报废'
+          } else if (dg_abs > 5 && dg_abs <= 50) {
+            this.remark = '不发互换'
+          } else {
+            // 判断到A互换性
+            if (specValue === '45') {
+              if (toA_abs > 100) {
+                toA_res = '报废'
+              } else if (toA_abs > 25 && toA_abs <= 100) {
+                toA_res = '不发互换'
+              } else if (toA_abs > 5 && toA_abs <= 25) {
+                toA_res = 'N级互换'
+              } else {
+                toA_res = 'E级互换'
+              }
+            } else {
+              if (toA_abs > 80) {
+                toA_res = '报废'
+              } else if (toA_abs > 20 && toA_abs <= 80) {
+                toA_res = '不发互换'
+              } else if (toA_abs > 5 && toA_abs <= 20) {
+                toA_res = 'N级互换'
+              } else {
+                toA_res = 'E级互换'
+              }
+            }
+            // 判断到B互换性
+            if (specValue === '45') {
+              if (toB_abs > 160) {
+                toB_res = '报废'
+              } else if (toB_abs > 45 && toB_abs <= 160) {
+                toB_res = '不发互换'
+              } else if (toB_abs > 15 && toB_abs <= 45) {
+                toB_res = 'N级互换'
+              } else {
+                toB_res = 'E级互换'
+              }
+            } else {
+              if (toB_abs > 150) {
+                toB_res = '报废'
+              } else if (toB_abs > 40 && toB_abs <= 150) {
+                toB_res = '不发互换'
+              } else if (toB_abs > 12 && toB_abs <= 40) {
+                toB_res = 'N级互换'
+              } else {
+                toB_res = 'E级互换'
+              }
+            }
+            // 判断A平行互换性
+            if (this.aParallel > 40) {
+              aParallel_res = '报废'
+            } else if (this.aParallel > 10 && this.aParallel <= 40) {
+              aParallel_res = 'N级互换'
+            } else {
+              aParallel_res = 'E级互换'
+            }
+            // 判断B平行互换性
+            if (this.bParallel > 40) {
+              bParallel_res = '报废'
+            } else if (this.bParallel > 15 && this.bParallel <= 40) {
+              bParallel_res = 'N级互换'
+            } else {
+              bParallel_res = 'E级互换'
+            }
+          }
+          // 最终判断互换性
+          if (
+            toA_res === '报废' ||
+            toB_res === '报废' ||
+            aParallel_res === '报废' ||
+            bParallel_res === '报废'
+          ) {
+            this.remark = '报废'
+          } else if (toA_res === '不发互换' || toB_res === '不发互换') {
+            this.remark = '不发互换'
+          } else if (
+            toA_res === 'N级互换' ||
+            toB_res === 'N级互换' ||
+            aParallel_res === 'N级互换' ||
+            bParallel_res === 'N级互换'
+          ) {
+            this.remark = 'N级互换'
+          } else {
+            this.remark = 'E级互换'
+          }
 
           /* 精度等级（调用API直接返回结果） */
           const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/getTTData`
@@ -1410,92 +1504,92 @@ export default {
                 /* 成功 */
                 this.accuracyClass = data.result[0].ReviewPrecision
 
-                console.log(this.QRCode)
-                console.log('TSGS' + this.specValue + this.modelValue)
-                console.log(this.centerSpacing)
-                console.log(this.dg)
-                console.log(this.toA)
-                console.log(this.toB)
-                console.log(this.aParallel)
-                console.log(this.bParallel)
-                console.log(this.accuracyClass)
-                console.log(this.remark)
+                // console.log(this.QRCode)
+                // console.log('TSGS' + this.specValue + this.modelValue)
+                // console.log(this.centerSpacing)
+                // console.log(this.dg)
+                // console.log(this.toA)
+                // console.log(this.toB)
+                // console.log(this.aParallel)
+                // console.log(this.bParallel)
+                // console.log(this.accuracyClass)
+                // console.log(this.remark)
 
                 /* 第2步：新增数据到后端数据库 */
-                // const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/setSlideDetectionData`
-                // this.$axios
-                //   .post(api, {
-                //     sxm: this.QRCode,
-                //     xhgg: 'TSGS' + this.specValue + this.modelValue,
-                //     zxj: this.centerSpacing,
-                //     dg: this.dg,
-                //     daoa: this.toA,
-                //     daob: this.toB,
-                //     apx: this.aParallel,
-                //     bpx: this.bParallel,
-                //     dengji: this.accuracyClass,
-                //     beizhu: this.remark
-                //   })
-                //   .then(res => {
-                //     const data = res.data
-                //     if (data.status === 1) {
-                //       /* 上传成功 */
-                //       this.$message({
-                //         message: `数据上传成功。`,
-                //         type: 'success',
-                //         duration: 2000
-                //       })
-                //       // 成品滑块数据数组清空
-                //       this.finishSliderArray = []
-                //       // 二维码编号自增
-                //       this.QRCodeAdd()
-                //     } else if (data.status === 0) {
-                //       /* 上传失败 */
-                //       this.$alert(
-                //         `数据上传失败，请点击“刷新页面”按钮，然后重新测量！`,
-                //         `状态码[${data.status}]`,
-                //         {
-                //           type: 'error',
-                //           showClose: false,
-                //           center: true,
-                //           confirmButtonText: '刷新页面',
-                //           callback: () => {
-                //             this.handleRefresh()
-                //           }
-                //         }
-                //       )
-                //     } else if (data.status === -5) {
-                //       /* 二维码已存在，弹出是否要覆盖的弹窗 */
-                //       this.updateTableData()
-                //     } else {
-                //       /* 其他错误 */
-                //       this.$alert(
-                //         `其他错误，请点击“刷新页面”按钮，然后重新测量！`,
-                //         `状态码[${data.status}]`,
-                //         {
-                //           type: 'error',
-                //           showClose: false,
-                //           center: true,
-                //           confirmButtonText: '刷新页面',
-                //           callback: () => {
-                //             this.handleRefresh()
-                //           }
-                //         }
-                //       )
-                //     }
-                //   })
-                //   .catch(err => {
-                //     this.$alert(`[新增-环节] ${err}`, '断网了', {
-                //       type: 'error',
-                //       showClose: false, // 是否显示右上角关闭按钮
-                //       center: false, // 是否居中布局
-                //       confirmButtonText: '刷新页面', // 确定按钮的文本内容
-                //       callback: () => {
-                //         this.handleRefresh()
-                //       }
-                //     })
-                //   })
-                //   .finally(() => {})
+                const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/setSlideDetectionData`
+                this.$axios
+                  .post(api, {
+                    sxm: this.QRCode,
+                    xhgg: 'TSGS' + this.specValue + this.modelValue,
+                    zxj: this.centerSpacing,
+                    dg: this.dg,
+                    daoa: this.toA,
+                    daob: this.toB,
+                    apx: this.aParallel,
+                    bpx: this.bParallel,
+                    dengji: this.accuracyClass,
+                    beizhu: this.remark
+                  })
+                  .then(res => {
+                    const data = res.data
+                    if (data.status === 1) {
+                      /* 上传成功 */
+                      this.$message({
+                        message: `数据上传成功。`,
+                        type: 'success',
+                        duration: 2000
+                      })
+                      // 成品滑块数据数组清空
+                      this.finishSliderArray = []
+                      // 二维码编号自增
+                      this.QRCodeAdd()
+                    } else if (data.status === 0) {
+                      /* 上传失败 */
+                      this.$alert(
+                        `数据上传失败，请点击“刷新页面”按钮，然后重新测量！`,
+                        `状态码[${data.status}]`,
+                        {
+                          type: 'error',
+                          showClose: false,
+                          center: true,
+                          confirmButtonText: '刷新页面',
+                          callback: () => {
+                            this.handleRefresh()
+                          }
+                        }
+                      )
+                    } else if (data.status === -5) {
+                      /* 二维码已存在，弹出是否要覆盖旧数据的弹窗 */
+                      this.updateTableData()
+                    } else {
+                      /* 其他错误 */
+                      this.$alert(
+                        `其他错误，请点击“刷新页面”按钮，然后重新测量！`,
+                        `状态码[${data.status}]`,
+                        {
+                          type: 'error',
+                          showClose: false,
+                          center: true,
+                          confirmButtonText: '刷新页面',
+                          callback: () => {
+                            this.handleRefresh()
+                          }
+                        }
+                      )
+                    }
+                  })
+                  .catch(err => {
+                    this.$alert(`[新增-环节] ${err}`, '断网了', {
+                      type: 'error',
+                      showClose: false, // 是否显示右上角关闭按钮
+                      center: false, // 是否居中布局
+                      confirmButtonText: '刷新页面', // 确定按钮的文本内容
+                      callback: () => {
+                        this.handleRefresh()
+                      }
+                    })
+                  })
+                  .finally(() => {})
               } else {
                 /* 失败 */
                 this.$alert(
@@ -1515,6 +1609,7 @@ export default {
             })
             .finally(() => {
               this.isSaveing = false // 状态标志
+              this.getTableData() // 重新获取表格数据（也即刷新表格）
             })
         } else {
           this.$alert(
