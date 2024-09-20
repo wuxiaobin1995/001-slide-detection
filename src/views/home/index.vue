@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-09-19 17:55:27
+ * @LastEditTime: 2024-09-20 11:07:30
  * @Description : home
 -->
 <template>
@@ -120,41 +120,41 @@
           <!-- 中心距评审结果 -->
           <el-table-column
             align="center"
-            prop="centerSpacing"
+            prop="zxj"
             label="中心距评审结果"
             width="100"
           />
           <!-- 等高 -->
           <el-table-column align="center" prop="dg" label="等高" width="80" />
           <!-- 到A -->
-          <el-table-column align="center" prop="toA" label="到A" width="80" />
+          <el-table-column align="center" prop="daoa" label="到A" width="80" />
           <!-- 到B -->
-          <el-table-column align="center" prop="toB" label="到B" width="80" />
+          <el-table-column align="center" prop="daob" label="到B" width="80" />
           <!-- A平行 -->
           <el-table-column
             align="center"
-            prop="aParallel"
+            prop="apx"
             label="A平行"
             width="80"
           />
           <!-- B平行 -->
           <el-table-column
             align="center"
-            prop="bParallel"
+            prop="bpx"
             label="B平行"
             width="80"
           />
           <!-- 精度等级 -->
           <el-table-column
             align="center"
-            prop="accuracyClass"
+            prop="dengji"
             label="精度等级"
             width="50"
           />
           <!-- 备注 -->
           <el-table-column
             align="center"
-            prop="remark"
+            prop="beizhu"
             label="备注"
             width="100"
           />
@@ -359,7 +359,7 @@ export default {
     getTableData() {
       if (this.ip !== '') {
         this.tableLoading = true
-        const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/getData`
+        const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/getSlideDetectionData`
         this.$axios
           .post(api, {
             num: 30 // 默认获取最新的30条，并且是T开头的才查询出来，因为凯特和双特共用同一个数据表
@@ -403,10 +403,10 @@ export default {
         center: true
       })
         .then(() => {
-          const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/deleteData`
+          const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/deleteSlideDetectionData`
           this.$axios
             .post(api, {
-              QRCode: row.QRCode
+              bianhao: row.QRCode
             })
             .then(res => {
               const data = res.data
@@ -462,19 +462,19 @@ export default {
         }
       )
         .then(() => {
-          const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/updateData`
+          const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/updateSlideDetectionData`
           this.$axios
             .post(api, {
-              QRCode: this.QRCode,
+              bianhao: this.QRCode,
               xhgg: 'TSGS' + this.specValue + this.modelValue,
-              centerSpacing: this.centerSpacing,
+              zxj: this.centerSpacing,
               dg: this.dg,
-              toA: this.toA,
-              toB: this.toB,
-              aParallel: this.aParallel,
-              bParallel: this.bParallel,
-              accuracyClass: this.accuracyClass,
-              remark: this.remark
+              daoa: this.toA,
+              daob: this.toB,
+              apx: this.aParallel,
+              bpx: this.bParallel,
+              dengji: this.accuracyClass,
+              beizhu: this.remark
             })
             .then(res => {
               const data = res.data
@@ -800,7 +800,7 @@ export default {
               /* 第0步：如果save函数正在执行，就不进行下面的逻辑，防止出bug */
               if (this.isSaveing === false) {
                 /* 第1步：获取数据，并对数据进行预处理 */
-                console.log(data)
+                // console.log(data)
                 const dataArray = data.split(',')
                 for (let i = 0; i < dataArray.length; i++) {
                   dataArray[i] = parseInt(dataArray[i]) // 字符串类型转成整数类型
@@ -1338,111 +1338,184 @@ export default {
 
           /* 等高 */
           this.dg =
-            (finish_array[2][2] / k2 -
-              finish_array[2][3] / k3 -
-              (standard_array[2][2] / k2 - standard_array[2][3] / k3)) /
+            (finish_array[2][2] / k3 -
+              finish_array[2][3] / k4 -
+              (standard_array[2][2] / k3 - standard_array[2][3] / k4)) /
               n +
             dg_constant
-          this.dg = parseInt(this.dg)
+          this.dg = parseInt(this.dg.toFixed(0))
 
           /* 到A */
-          // this.toA =
+          this.toA =
+            (finish_array[2][2] / k3 +
+              finish_array[2][3] / k4 -
+              (standard_array[2][2] / k3 + standard_array[2][3] / k4)) /
+              2 +
+            toA_constant
+          this.toA = parseInt(this.toA.toFixed(0))
 
           /* 到B */
-          // this.toB =
+          this.toB =
+            finish_array[2][1] / k2 - standard_array[2][1] / k2 + toB_constant
+          this.toB = parseInt(this.toB.toFixed(0))
 
           /* A平行 */
-          // this.aParallel =
+          const aParallelMax = Math.max(
+            (finish_array[1][2] + finish_array[1][3]) / 2,
+            (finish_array[2][2] + finish_array[2][3]) / 2,
+            (finish_array[3][2] + finish_array[3][3]) / 2
+          )
+          const aParallelMin = Math.min(
+            (finish_array[1][2] + finish_array[1][3]) / 2,
+            (finish_array[2][2] + finish_array[2][3]) / 2,
+            (finish_array[3][2] + finish_array[3][3]) / 2
+          )
+          this.aParallel = aParallelMax - aParallelMin
+          this.aParallel = parseInt(this.aParallel.toFixed(0))
 
           /* B平行 */
-          // this.bParallel =
-
-          /* 精度等级 */
-          // 调用API直接返回结果
-          // this.accuracyClass =
+          const bParallelMax = Math.max(
+            finish_array[1][1],
+            finish_array[2][1],
+            finish_array[3][1]
+          )
+          const bParallelMin = Math.min(
+            finish_array[1][1],
+            finish_array[2][1],
+            finish_array[3][1]
+          )
+          this.bParallel = bParallelMax - bParallelMin
+          this.bParallel = parseInt(this.bParallel.toFixed(0))
 
           /* 备注评审：E级互换、N级互换、不发互换、报废 */
           // 先判断等高（以此来判断报废、不发互换、互换）
           // 如果是互换，则先判断N级互换、再判断E级互换
           // this.remark =
 
-          this.isSaveing = false // 状态标志
+          /* 精度等级（调用API直接返回结果） */
+          const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/getTTData`
+          this.$axios
+            .post(api, {
+              xhgg: 'TSGS' + this.specValue + this.modelValue,
+              zxj: 0,
+              dg: this.dg,
+              daoa: this.toA,
+              daob: this.toB,
+              apx: this.aParallel,
+              bpx: this.bParallel
+            })
+            .then(res => {
+              const data = res.data
+              if (data.status === 1) {
+                /* 成功 */
+                this.accuracyClass = data.result[0].ReviewPrecision
 
-          /* 第2步：新增数据到后端数据库 */
-          // const api = `http://${this.ip}/st_t6_m5_001_slide_detection/public/index.php/slideDetection/setData`
-          // this.$axios
-          //   .post(api, {
-          //     QRCode: this.QRCode,
-          //     xhgg: 'TSGS' + this.specValue + this.modelValue,
-          //     centerSpacing: this.centerSpacing,
-          //     dg: this.dg,
-          //     toA: this.toA,
-          //     toB: this.toB,
-          //     aParallel: this.aParallel,
-          //     bParallel: this.bParallel,
-          //     accuracyClass: this.accuracyClass,
-          //     remark: this.remark
-          //   })
-          //   .then(res => {
-          //     const data = res.data
-          //     if (data.status === 1) {
-          //       /* 上传成功 */
-          //       this.$message({
-          //         message: `数据上传成功。`,
-          //         type: 'success',
-          //         duration: 2000
-          //       })
-          //       // 成品滑块数据数组清空
-          //       this.finishSliderArray = []
-          //       // 二维码编号自增
-          //       this.QRCodeAdd()
-          //     } else if (data.status === 0) {
-          //       /* 上传失败 */
-          //       this.$alert(
-          //         `数据上传失败，请点击“刷新页面”按钮，然后重新测量！`,
-          //         `状态码[${data.status}]`,
-          //         {
-          //           type: 'error',
-          //           showClose: false,
-          //           center: true,
-          //           confirmButtonText: '刷新页面',
-          //           callback: () => {
-          //             this.handleRefresh()
-          //           }
-          //         }
-          //       )
-          //     } else if (data.status === -5) {
-          //       /* 二维码已存在，弹出是否要覆盖的弹窗 */
-          //       this.updateTableData()
-          //     } else {
-          //       /* 其他错误 */
-          //       this.$alert(
-          //         `其他错误，请点击“刷新页面”按钮，然后重新测量！`,
-          //         `状态码[${data.status}]`,
-          //         {
-          //           type: 'error',
-          //           showClose: false,
-          //           center: true,
-          //           confirmButtonText: '刷新页面',
-          //           callback: () => {
-          //             this.handleRefresh()
-          //           }
-          //         }
-          //       )
-          //     }
-          //   })
-          //   .catch(err => {
-          //     this.$alert(`[新增-环节] ${err}`, '断网了', {
-          //       type: 'error',
-          //       showClose: false, // 是否显示右上角关闭按钮
-          //       center: false, // 是否居中布局
-          //       confirmButtonText: '刷新页面', // 确定按钮的文本内容
-          //       callback: () => {
-          //         this.handleRefresh()
-          //       }
-          //     })
-          //   })
-          //   .finally(() => {})
+                console.log(this.QRCode)
+                console.log('TSGS' + this.specValue + this.modelValue)
+                console.log(this.centerSpacing)
+                console.log(this.dg)
+                console.log(this.toA)
+                console.log(this.toB)
+                console.log(this.aParallel)
+                console.log(this.bParallel)
+                console.log(this.accuracyClass)
+                console.log(this.remark)
+
+                /* 第2步：新增数据到后端数据库 */
+                // const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/setSlideDetectionData`
+                // this.$axios
+                //   .post(api, {
+                //     bianhao: this.QRCode,
+                //     xhgg: 'TSGS' + this.specValue + this.modelValue,
+                //     zxj: this.centerSpacing,
+                //     dg: this.dg,
+                //     daoa: this.toA,
+                //     daob: this.toB,
+                //     apx: this.aParallel,
+                //     bpx: this.bParallel,
+                //     dengji: this.accuracyClass,
+                //     beizhu: this.remark
+                //   })
+                //   .then(res => {
+                //     const data = res.data
+                //     if (data.status === 1) {
+                //       /* 上传成功 */
+                //       this.$message({
+                //         message: `数据上传成功。`,
+                //         type: 'success',
+                //         duration: 2000
+                //       })
+                //       // 成品滑块数据数组清空
+                //       this.finishSliderArray = []
+                //       // 二维码编号自增
+                //       this.QRCodeAdd()
+                //     } else if (data.status === 0) {
+                //       /* 上传失败 */
+                //       this.$alert(
+                //         `数据上传失败，请点击“刷新页面”按钮，然后重新测量！`,
+                //         `状态码[${data.status}]`,
+                //         {
+                //           type: 'error',
+                //           showClose: false,
+                //           center: true,
+                //           confirmButtonText: '刷新页面',
+                //           callback: () => {
+                //             this.handleRefresh()
+                //           }
+                //         }
+                //       )
+                //     } else if (data.status === -5) {
+                //       /* 二维码已存在，弹出是否要覆盖的弹窗 */
+                //       this.updateTableData()
+                //     } else {
+                //       /* 其他错误 */
+                //       this.$alert(
+                //         `其他错误，请点击“刷新页面”按钮，然后重新测量！`,
+                //         `状态码[${data.status}]`,
+                //         {
+                //           type: 'error',
+                //           showClose: false,
+                //           center: true,
+                //           confirmButtonText: '刷新页面',
+                //           callback: () => {
+                //             this.handleRefresh()
+                //           }
+                //         }
+                //       )
+                //     }
+                //   })
+                //   .catch(err => {
+                //     this.$alert(`[新增-环节] ${err}`, '断网了', {
+                //       type: 'error',
+                //       showClose: false, // 是否显示右上角关闭按钮
+                //       center: false, // 是否居中布局
+                //       confirmButtonText: '刷新页面', // 确定按钮的文本内容
+                //       callback: () => {
+                //         this.handleRefresh()
+                //       }
+                //     })
+                //   })
+                //   .finally(() => {})
+              } else {
+                /* 失败 */
+                this.$alert(
+                  `[${res.data.message}]，精度等级API接口出错，请点击“刷新页面”按钮，然后重新测量！`,
+                  `状态码[${data.status}]`,
+                  {
+                    type: 'error',
+                    showClose: false,
+                    center: true,
+                    confirmButtonText: '刷新页面',
+                    callback: () => {
+                      this.handleRefresh()
+                    }
+                  }
+                )
+              }
+            })
+            .finally(() => {
+              this.isSaveing = false // 状态标志
+            })
         } else {
           this.$alert(
             `标定值不能为空，请点击"刷新页面"按钮，重新测量标定值！`,
