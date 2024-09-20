@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-09-20 11:07:30
+ * @LastEditTime: 2024-09-20 11:33:09
  * @Description : home
 -->
 <template>
@@ -106,7 +106,7 @@
           <!-- 测量时间 -->
           <el-table-column
             align="center"
-            prop="create_time"
+            prop="riqi"
             label="测量时间"
             width="190"
           />
@@ -406,7 +406,7 @@ export default {
           const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/deleteSlideDetectionData`
           this.$axios
             .post(api, {
-              bianhao: row.QRCode
+              sxm: row.QRCode
             })
             .then(res => {
               const data = res.data
@@ -465,7 +465,7 @@ export default {
           const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/updateSlideDetectionData`
           this.$axios
             .post(api, {
-              bianhao: this.QRCode,
+              sxm: this.QRCode,
               xhgg: 'TSGS' + this.specValue + this.modelValue,
               zxj: this.centerSpacing,
               dg: this.dg,
@@ -1425,7 +1425,7 @@ export default {
                 // const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/setSlideDetectionData`
                 // this.$axios
                 //   .post(api, {
-                //     bianhao: this.QRCode,
+                //     sxm: this.QRCode,
                 //     xhgg: 'TSGS' + this.specValue + this.modelValue,
                 //     zxj: this.centerSpacing,
                 //     dg: this.dg,
