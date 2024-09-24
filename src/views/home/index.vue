@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-09-20 17:43:33
+ * @LastEditTime: 2024-09-23 16:24:55
  * @Description : home
 -->
 <template>
@@ -1504,16 +1504,16 @@ export default {
                 /* 成功 */
                 this.accuracyClass = data.result[0].ReviewPrecision
 
-                // console.log(this.QRCode)
-                // console.log('TSGS' + this.specValue + this.modelValue)
-                // console.log(this.centerSpacing)
-                // console.log(this.dg)
-                // console.log(this.toA)
-                // console.log(this.toB)
-                // console.log(this.aParallel)
-                // console.log(this.bParallel)
-                // console.log(this.accuracyClass)
-                // console.log(this.remark)
+                console.log(this.QRCode)
+                console.log('TSGS' + this.specValue + this.modelValue)
+                console.log(this.centerSpacing)
+                console.log(this.dg)
+                console.log(this.toA)
+                console.log(this.toB)
+                console.log(this.aParallel)
+                console.log(this.bParallel)
+                console.log(this.accuracyClass)
+                console.log(this.remark)
 
                 /* 第2步：新增数据到后端数据库 */
                 const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/setSlideDetectionData`
