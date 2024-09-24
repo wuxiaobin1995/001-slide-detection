@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-09-23 16:24:55
+ * @LastEditTime: 2024-09-24 15:01:54
  * @Description : home
 -->
 <template>
@@ -93,7 +93,7 @@
           :data="tableData"
           style="width: 100%"
           height="100%"
-          :default-sort="{ prop: 'riqi', order: 'ascending' }"
+          :default-sort="{ prop: 'riqi', order: 'descending' }"
           :stripe="false"
           :border="true"
           v-loading="tableLoading"
@@ -110,14 +110,6 @@
           ></el-table-column>
           <!-- 二维码 -->
           <el-table-column align="center" prop="sxm" label="二维码" sortable />
-          <!-- 测量时间 -->
-          <el-table-column
-            align="center"
-            prop="riqi"
-            label="测量时间"
-            width="190"
-            sortable
-          />
           <!-- 规格型号 -->
           <el-table-column
             align="center"
@@ -155,6 +147,14 @@
             prop="beizhu"
             label="备注 (互换性)"
             width="100"
+          />
+          <!-- 测量时间 -->
+          <el-table-column
+            align="center"
+            prop="riqi"
+            label="测量时间"
+            width="190"
+            sortable
           />
 
           <!-- 删除按钮 -->
@@ -1223,7 +1223,7 @@ export default {
               case 'AN':
                 dg_constant = -2
                 toA_constant = -13
-                toB_constant = 10
+                toB_constant = 6
                 break
               case 'HAA':
                 dg_constant = 4
@@ -1238,7 +1238,7 @@ export default {
               case 'HAN':
                 dg_constant = -2
                 toA_constant = -13
-                toB_constant = 10
+                toB_constant = 6
                 break
               default:
                 dg_constant = 0
@@ -1364,28 +1364,28 @@ export default {
 
           /* A平行 */
           const aParallelMax = Math.max(
-            (finish_array[1][2] + finish_array[1][3]) / 2,
-            (finish_array[2][2] + finish_array[2][3]) / 2,
-            (finish_array[3][2] + finish_array[3][3]) / 2
+            (finish_array[1][2] / k3 + finish_array[1][3] / k4) / 2,
+            (finish_array[2][2] / k3 + finish_array[2][3] / k4) / 2,
+            (finish_array[3][2] / k3 + finish_array[3][3] / k4) / 2
           )
           const aParallelMin = Math.min(
-            (finish_array[1][2] + finish_array[1][3]) / 2,
-            (finish_array[2][2] + finish_array[2][3]) / 2,
-            (finish_array[3][2] + finish_array[3][3]) / 2
+            (finish_array[1][2] / k3 + finish_array[1][3] / k4) / 2,
+            (finish_array[2][2] / k3 + finish_array[2][3] / k4) / 2,
+            (finish_array[3][2] / k3 + finish_array[3][3] / k4) / 2
           )
           this.aParallel = aParallelMax - aParallelMin
           this.aParallel = parseInt(this.aParallel.toFixed(0))
 
           /* B平行 */
           const bParallelMax = Math.max(
-            finish_array[1][1],
-            finish_array[2][1],
-            finish_array[3][1]
+            finish_array[1][1] / k2,
+            finish_array[2][1] / k2,
+            finish_array[3][1] / k2
           )
           const bParallelMin = Math.min(
-            finish_array[1][1],
-            finish_array[2][1],
-            finish_array[3][1]
+            finish_array[1][1] / k2,
+            finish_array[2][1] / k2,
+            finish_array[3][1] / k2
           )
           this.bParallel = bParallelMax - bParallelMin
           this.bParallel = parseInt(this.bParallel.toFixed(0))
