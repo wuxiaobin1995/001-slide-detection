@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-09-25 11:54:26
+ * @LastEditTime: 2024-09-26 10:12:09
  * @Description : home
 -->
 <template>
@@ -52,24 +52,24 @@
           <div>
             <el-input
               ref="QRCodeInput"
-              placeholder="不要手输，请用扫码枪"
+              placeholder="建议不要手输，请用扫码枪"
               maxlength="8"
               v-model="QRCode"
             ></el-input>
           </div>
           <div class="btn">
             <el-button class="btn-item" type="primary" @click="handleRescan"
-              >清 空</el-button
+              >清空二维码</el-button
             >
           </div>
         </div>
 
         <!-- 按钮组 -->
         <div class="btn-bom">
-          <el-button class="item" type="info" @click="handleClearStandard"
+          <el-button class="item" type="success" @click="handleClearStandard"
             >清 空 标 定 值</el-button
           >
-          <el-button class="item" type="info" @click="handleBtnRefresh"
+          <el-button class="item" type="success" @click="handleBtnRefresh"
             >刷 新 页 面</el-button
           >
         </div>
@@ -109,7 +109,7 @@
             width="50"
           ></el-table-column>
           <!-- 二维码 -->
-          <el-table-column align="center" prop="sxm" label="二维码" sortable />
+          <el-table-column align="center" prop="sxm" label="二维码" />
           <!-- 规格型号 -->
           <el-table-column
             align="center"
@@ -139,7 +139,7 @@
             align="center"
             prop="dengji"
             label="精度等级"
-            width="50"
+            width="80"
           />
           <!-- 备注 -->
           <el-table-column
@@ -1338,14 +1338,18 @@ export default {
           } else {
             this.centerSpacing = 0
           }
-          // 给一个中心距的评审不合格提示
+          // 给一个中心距的评审不合格弹窗提示
           if (this.centerSpacing === 0) {
-            this.$alert('该滑块的中心距评审不合格！', '提示', {
-              confirmButtonText: '确定',
-              type: 'error',
-              center: true,
-              callback: () => {}
-            })
+            this.$alert(
+              '该滑块的中心距评审不合格，请拿去换球，然后拿回来再测一遍！',
+              '提示',
+              {
+                confirmButtonText: '确定',
+                type: 'error',
+                center: true,
+                callback: () => {}
+              }
+            )
           }
 
           /* 等高 */
@@ -1694,14 +1698,14 @@ export default {
         .btn {
           margin-left: 20px;
           .btn-item {
-            width: 100px;
+            width: 118px;
           }
         }
       }
 
       /* 按钮组 */
       .btn-bom {
-        margin-left: 260px;
+        margin-left: 100px;
         .item {
           margin-right: 20px;
         }
@@ -1727,7 +1731,9 @@ export default {
 
     /* 表格区域 */
     .table {
+      border-top: 2px solid rgb(0, 0, 0);
       flex: 1;
+      margin-bottom: 40px;
     }
   }
 
