@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-09-25 09:30:43
+ * @LastEditTime: 2024-09-25 11:54:26
  * @Description : home
 -->
 <template>
@@ -1218,7 +1218,7 @@ export default {
               case 'EA':
                 dg_constant = -1
                 toA_constant = -6
-                toB_constant = 1
+                toB_constant = -3
                 break
               case 'AN':
                 dg_constant = -2
@@ -1233,7 +1233,7 @@ export default {
               case 'HEA':
                 dg_constant = -1
                 toA_constant = -6
-                toB_constant = 1
+                toB_constant = -3
                 break
               case 'HAN':
                 dg_constant = -2
@@ -1337,6 +1337,15 @@ export default {
             this.centerSpacing = 1
           } else {
             this.centerSpacing = 0
+          }
+          // 给一个中心距的评审不合格提示
+          if (this.centerSpacing === 0) {
+            this.$alert('该滑块的中心距评审不合格！', '提示', {
+              confirmButtonText: '确定',
+              type: 'error',
+              center: true,
+              callback: () => {}
+            })
           }
 
           /* 等高 */
@@ -1719,7 +1728,6 @@ export default {
     /* 表格区域 */
     .table {
       flex: 1;
-      margin-bottom: 30px;
     }
   }
 
