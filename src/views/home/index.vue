@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-09-26 10:12:09
+ * @LastEditTime: 2024-09-29 15:53:48
  * @Description : home
 -->
 <template>
@@ -375,6 +375,17 @@ export default {
                 duration: 5000
               })
             }
+          })
+          .catch(err => {
+            this.$alert(`[获取表格数据-环节]，请联系技术员重新开启VPN ${err}`, '服务器VPN断开', {
+              type: 'error',
+              showClose: false, // 是否显示右上角关闭按钮
+              center: false, // 是否居中布局
+              confirmButtonText: '刷新页面', // 确定按钮的文本内容
+              callback: () => {
+                this.handleRefresh()
+              }
+            })
           })
           .finally(() => {
             this.tableLoading = false
