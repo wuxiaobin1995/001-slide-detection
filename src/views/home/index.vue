@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-09-29 15:53:48
+ * @LastEditTime: 2024-10-07 11:01:31
  * @Description : home
 -->
 <template>
@@ -1337,7 +1337,7 @@ export default {
               modelValue === 'HAN'
             ) {
               centerSpacing_min = standard_d - 1
-              centerSpacing_max = standard_d + 3
+              centerSpacing_max = standard_d + 4
             } else {
               centerSpacing_min = standard_d - 1
               centerSpacing_max = standard_d + 5
