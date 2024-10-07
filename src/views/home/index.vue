@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-10-07 11:01:31
+ * @LastEditTime: 2024-10-07 17:31:24
  * @Description : home
 -->
 <template>
@@ -72,6 +72,9 @@
           <el-button class="item" type="success" @click="handleBtnRefresh"
             >刷 新 页 面</el-button
           >
+          <el-button class="item" type="success" @click="handleToSensorK"
+            >修 改 K 值</el-button
+          >
         </div>
       </div>
 
@@ -84,8 +87,9 @@
         <div class="item">{{ showSensorArray[3] }}</div>
       </div>
 
-      <div>成品滑块数据数组：{{ finishSliderArray }}</div>
-      <div>标准滑块数据数组：{{ standardSliderArray }}</div>
+      <!-- 显示按键按下时的原始数据 -->
+      <div class="show-2">成品滑块数据数组：{{ finishSliderArray }}</div>
+      <div class="show-2">标准滑块数据数组：{{ standardSliderArray }}</div>
 
       <!-- 下侧表格 -->
       <div class="table">
@@ -216,6 +220,9 @@ export default {
       /* 服务器地址ip */
       ip: '',
 
+      /* 传感器K2~K4的值 */
+      sensor_k: [],
+
       /* 规格（外协滑块暂时没有35与45） */
       specValue: '',
       specSelection: [
@@ -303,6 +310,9 @@ export default {
     /* 获取服务器地址IP */
     this.ip = window.localStorage.getItem('ip')
 
+    /* 获取传感器的K2~K4 */
+    this.sensor_k = JSON.parse(window.localStorage.getItem('sensor_k'))
+
     /* 开启串口通信 */
     this.initSerialPort()
 
@@ -377,22 +387,26 @@ export default {
             }
           })
           .catch(err => {
-            this.$alert(`[获取表格数据-环节]，请联系技术员重新开启VPN ${err}`, '服务器VPN断开', {
-              type: 'error',
-              showClose: false, // 是否显示右上角关闭按钮
-              center: false, // 是否居中布局
-              confirmButtonText: '刷新页面', // 确定按钮的文本内容
-              callback: () => {
-                this.handleRefresh()
+            this.$alert(
+              `[获取表格数据-环节]，请联系技术员重新开启VPN ${err}`,
+              '服务器VPN断开',
+              {
+                type: 'error',
+                showClose: false, // 是否显示右上角关闭按钮
+                center: false, // 是否居中布局
+                confirmButtonText: '刷新页面', // 确定按钮的文本内容
+                callback: () => {
+                  this.handleRefresh()
+                }
               }
-            })
+            )
           })
           .finally(() => {
             this.tableLoading = false
           })
       } else {
         this.$message({
-          message: `ip为空，请先去设置。`,
+          message: `服务器ip为空，请联系技术员去设置ip`,
           type: 'error',
           duration: 5000
         })
@@ -436,7 +450,7 @@ export default {
               }
             })
             .catch(err => {
-              this.$alert(`[删除-环节] ${err}`, '断网了', {
+              this.$alert(`[删除-环节] ${err}`, '断网了，请联系技术员', {
                 type: 'error',
                 showClose: false, // 是否显示右上角关闭按钮
                 center: false, // 是否居中布局
@@ -499,7 +513,7 @@ export default {
               } else if (data.status === 0) {
                 /* 失败 */
                 this.$alert(
-                  `覆盖失败，请点击“刷新页面”按钮，然后重新覆盖！`,
+                  `覆盖失败，请点击“刷新页面”按钮，然后重新测量！`,
                   `状态码[${data.status}]`,
                   {
                     type: 'error',
@@ -514,7 +528,7 @@ export default {
               } else {
                 /* 其他错误 */
                 this.$alert(
-                  `其他错误，请点击“刷新页面”按钮，然后重新覆盖！`,
+                  `其他错误，请点击“刷新页面”按钮，然后重新测量！`,
                   `状态码[${data.status}]`,
                   {
                     type: 'error',
@@ -529,7 +543,7 @@ export default {
               }
             })
             .catch(err => {
-              this.$alert(`[覆盖-环节] ${err}`, '断网了', {
+              this.$alert(`[覆盖-环节] ${err}`, '断网了，请联系技术员', {
                 type: 'error',
                 showClose: false, // 是否显示右上角关闭按钮
                 center: false, // 是否居中布局
@@ -590,6 +604,25 @@ export default {
         .then(() => {
           this.$router.push({
             path: '/set-developer'
+          })
+        })
+        .catch(() => {})
+    },
+    /**
+     * @description: 前往修改传感器K2~K4页
+     */
+    handleToSensorK() {
+      this.$prompt('请输入密码', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^st$/,
+        inputErrorMessage: '密码不正确',
+        showClose: true,
+        closeOnClickModal: false
+      })
+        .then(() => {
+          this.$router.push({
+            path: '/set-k'
           })
         })
         .catch(() => {})
@@ -1114,11 +1147,18 @@ export default {
           }
 
           // 2~4号传感器K值、等高常数、到A常数、到B常数
+          const sensor_k = this.sensor_k
+          const gg15 = sensor_k[0]
+          const gg20 = sensor_k[1]
+          const gg25 = sensor_k[2]
+          const gg30 = sensor_k[3]
+          const gg35 = sensor_k[4]
+          const gg45 = sensor_k[5]
           if (specValue === '15') {
             /* K2~K4 */
-            k2 = 155.6
-            k3 = 146.1
-            k4 = 156.6
+            k2 = gg15.k2
+            k3 = gg15.k3
+            k4 = gg15.k4
             switch (modelValue) {
               case 'AA':
                 dg_constant = 5
@@ -1143,9 +1183,9 @@ export default {
             }
           } else if (specValue === '20') {
             /* K2~K4 */
-            k2 = 152.8
-            k3 = 152.7
-            k4 = 132.6
+            k2 = gg20.k2
+            k3 = gg20.k3
+            k4 = gg20.k4
             switch (modelValue) {
               case 'AA':
                 dg_constant = -1
@@ -1175,9 +1215,9 @@ export default {
             }
           } else if (specValue === '25') {
             /* K2~K4 */
-            k2 = 153.6
-            k3 = 149.4
-            k4 = 135.5
+            k2 = gg25.k2
+            k3 = gg25.k3
+            k4 = gg25.k4
             switch (modelValue) {
               case 'AA':
                 dg_constant = 0
@@ -1217,9 +1257,9 @@ export default {
             }
           } else if (specValue === '30') {
             /* K2~K4 */
-            k2 = 125.4
-            k3 = 141
-            k4 = 141
+            k2 = gg30.k2
+            k3 = gg30.k3
+            k4 = gg30.k4
             switch (modelValue) {
               case 'AA':
                 dg_constant = 4
@@ -1259,9 +1299,9 @@ export default {
             }
           } else if (specValue === '35') {
             /* K2~K4 */
-            k2 = 129.5
-            k3 = 139.4
-            k4 = 143.4
+            k2 = gg35.k2
+            k3 = gg35.k3
+            k4 = gg35.k4
             switch (modelValue) {
               default:
                 dg_constant = 0
@@ -1271,9 +1311,9 @@ export default {
             }
           } else if (specValue === '45') {
             /* K2~K4 */
-            k2 = 86.1
-            k3 = 138
-            k4 = 145.9
+            k2 = gg45.k2
+            k3 = gg45.k3
+            k4 = gg45.k4
             switch (modelValue) {
               default:
                 dg_constant = 0
@@ -1728,16 +1768,20 @@ export default {
       height: 10%;
       @include flex(row, center, center);
       .text {
-        font-size: 30px;
+        font-size: 24px;
         font-weight: 700;
       }
       .item {
         margin: 10px 100px;
         border: 2px solid black;
         padding: 5px 10px;
-        font-size: 30px;
+        font-size: 24px;
         color: red;
       }
+    }
+    /* 显示按键按下时的原始数据 */
+    .show-2 {
+      font-size: 18px;
     }
 
     /* 表格区域 */

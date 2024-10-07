@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-09-25 09:24:25
+ * @LastEditTime: 2024-10-07 16:39:32
  * @Description : 根组件
 -->
 <template>
@@ -27,6 +27,49 @@ export default {
       /* 初始化API的IP地址 */
       if (!window.localStorage.getItem('ip')) {
         window.localStorage.setItem('ip', '192.168.1.100')
+      }
+
+      /* 初始化传感器K2~K4 */
+      const sensor_k = [
+        {
+          gg: '15',
+          k2: 155.6,
+          k3: 146.1,
+          k4: 156.6
+        },
+        {
+          gg: '20',
+          k2: 152.8,
+          k3: 152.7,
+          k4: 132.6
+        },
+        {
+          gg: '25',
+          k2: 153.6,
+          k3: 149.4,
+          k4: 135.5
+        },
+        {
+          gg: '30',
+          k2: 125.4,
+          k3: 141.0,
+          k4: 141.0
+        },
+        {
+          gg: '35',
+          k2: 129.5,
+          k3: 139.4,
+          k4: 143.4
+        },
+        {
+          gg: '45',
+          k2: 86.1,
+          k3: 138.0,
+          k4: 145.9
+        }
+      ]
+      if (!window.localStorage.getItem('sensor_k')) {
+        window.localStorage.setItem('sensor_k', JSON.stringify(sensor_k))
       }
     },
 

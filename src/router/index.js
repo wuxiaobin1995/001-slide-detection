@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-07-25 15:20:09
+ * @LastEditTime: 2024-10-07 15:24:13
  * @Description : 路由
  */
 import Vue from 'vue'
@@ -30,6 +30,14 @@ const routes = [
     name: 'set-developer',
     component: () => import('@/views/set/set-developer'),
     meta: ['开发者']
+  },
+
+  // 修改传感器K值
+  {
+    path: '/set-k',
+    name: 'set-k',
+    component: () => import('@/views/set/set-k'),
+    meta: ['修改传感器K值']
   },
 
   {
