@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-10-07 15:23:00
- * @LastEditTime: 2024-10-07 17:04:20
+ * @LastEditTime: 2024-10-08 16:14:42
  * @Description : 修改传感器K值
 -->
 <template>
@@ -172,7 +172,7 @@ export default {
     @include flex(row, center, center);
     .item {
       font-size: 28px;
-      margin: 50px 60px;
+      margin: 20px 60px;
     }
   }
 }

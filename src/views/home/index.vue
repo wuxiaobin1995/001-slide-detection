@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-10-07 17:31:24
+ * @LastEditTime: 2024-10-08 17:42:33
  * @Description : home
 -->
 <template>
@@ -66,14 +66,17 @@
 
         <!-- 按钮组 -->
         <div class="btn-bom">
-          <el-button class="item" type="success" @click="handleClearStandard"
-            >清 空 标 定 值</el-button
+          <el-button class="item" type="primary" @click="handleBtnRefresh"
+            >刷新页面</el-button
           >
-          <el-button class="item" type="success" @click="handleBtnRefresh"
-            >刷 新 页 面</el-button
+          <el-button class="item" type="primary" @click="handleClearStandard"
+            >清空标定值</el-button
           >
-          <el-button class="item" type="success" @click="handleToSensorK"
-            >修 改 K 值</el-button
+          <el-button class="item" type="warning" @click="handleToSensorK"
+            >修改 K 值</el-button
+          >
+          <el-button class="item" type="warning" @click="handleSensorDialog"
+            >调整传感器位置</el-button
           >
         </div>
       </div>
@@ -157,7 +160,7 @@
             align="center"
             prop="riqi"
             label="测量时间"
-            width="190"
+            width="220"
             sortable
           />
 
@@ -176,6 +179,41 @@
         </el-table>
       </div>
     </div>
+
+    <!-- 调整传感器位置 -->
+    <el-dialog
+      title="调整传感器位置"
+      :visible.sync="sensorDialogVisible"
+      width="30%"
+      top="20vh"
+      center
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <div class="dialog-box">
+        <div>
+          2号传感器：<span class="item">{{
+            showSensorArray[1] - showZeroSensorArray[1]
+          }}</span>
+        </div>
+        <div>
+          3号传感器：<span class="item">{{
+            showSensorArray[2] - showZeroSensorArray[2]
+          }}</span>
+        </div>
+        <div>
+          4号传感器：<span class="item">{{
+            showSensorArray[3] - showZeroSensorArray[3]
+          }}</span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="sensorDialogVisible = false"
+          >关 闭</el-button
+        >
+      </span>
+    </el-dialog>
 
     <!-- 开发者页按钮 -->
     <el-button
@@ -222,6 +260,10 @@ export default {
 
       /* 传感器K2~K4的值 */
       sensor_k: [],
+
+      /* 调整传感器螺丝时专用 */
+      sensorDialogVisible: false,
+      showZeroSensorArray: [],
 
       /* 规格（外协滑块暂时没有35与45） */
       specValue: '',
@@ -362,48 +404,76 @@ export default {
     },
 
     /**
+     * @description: 调整传感器位置
+     */
+    handleSensorDialog() {
+      if (this.showSensorArray.length === 0) {
+        this.$message({
+          message: `请先选择规格和型号！`,
+          type: 'error',
+          duration: 3000
+        })
+      } else {
+        this.$confirm('请确保在"没有"套滑块的前提下，才进行该操作！', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          center: true,
+          type: 'warning'
+        })
+          .then(() => {
+            this.showZeroSensorArray = this.showSensorArray
+            this.sensorDialogVisible = true
+          })
+          .catch(() => {})
+      }
+    },
+
+    /**
      * @description: 获取表格数据
      */
     getTableData() {
       if (this.ip !== '') {
         this.tableLoading = true
-        const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/getSlideDetectionData`
-        this.$axios
-          .post(api, {
-            num: 50 // 默认获取最新的n条，并且是T开头的才查询出来，因为凯特和双特共用同一个数据表
-          })
-          .then(res => {
-            const data = res.data
-            if (data.status === 1) {
-              /* 成功 */
-              this.tableData = data.result
-            } else if (data.status === 0) {
-              /* 失败 */
-              this.$message({
-                message: `表格数据获取失败`,
-                type: 'error',
-                duration: 5000
-              })
-            }
-          })
-          .catch(err => {
-            this.$alert(
-              `[获取表格数据-环节]，请联系技术员重新开启VPN ${err}`,
-              '服务器VPN断开',
-              {
-                type: 'error',
-                showClose: false, // 是否显示右上角关闭按钮
-                center: false, // 是否居中布局
-                confirmButtonText: '刷新页面', // 确定按钮的文本内容
-                callback: () => {
-                  this.handleRefresh()
-                }
+        // 延迟500ms再查询，因为数据库插入有延迟
+        setTimeout(() => {
+          const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/getSlideDetectionData`
+          this.$axios
+            .post(api, {
+              num: 50 // 默认获取最新的n条，并且是T开头的才查询出来，因为凯特和双特共用同一个数据表
+            })
+            .then(res => {
+              const data = res.data
+              if (data.status === 1) {
+                /* 成功 */
+                this.tableData = data.result
+              } else if (data.status === 0) {
+                /* 失败 */
+                this.$message({
+                  message: `表格数据获取失败`,
+                  type: 'error',
+                  duration: 5000
+                })
               }
-            )
-          })
-          .finally(() => {
-            this.tableLoading = false
-          })
+            })
+            .catch(err => {
+              this.$alert(
+                `[获取表格数据-环节]，请联系技术员重新开启VPN ${err}`,
+                '服务器VPN断开',
+                {
+                  type: 'error',
+                  showClose: false, // 是否显示右上角关闭按钮
+                  center: false, // 是否居中布局
+                  confirmButtonText: '刷新页面', // 确定按钮的文本内容
+                  callback: () => {
+                    this.handleRefresh()
+                  }
+                }
+              )
+            })
+            .finally(() => {
+              this.tableLoading = false
+            })
+        }, 300)
       } else {
         this.$message({
           message: `服务器ip为空，请联系技术员去设置ip`,
@@ -554,14 +624,14 @@ export default {
               })
             })
             .finally(() => {
-              this.handleRescan()
+              // 二维码编号自增
+              this.QRCodeAdd()
               this.getTableData()
             })
         })
         .catch(() => {
           // 成品滑块数据数组清空
           this.finishSliderArray = []
-          this.handleRescan()
         })
     },
 
@@ -1392,7 +1462,7 @@ export default {
           // 给一个中心距的评审不合格弹窗提示
           if (this.centerSpacing === 0) {
             this.$alert(
-              '该滑块的中心距评审不合格，请拿去换球，然后拿回来再测一遍！',
+              '该滑块的中心距评审不合格，请拿去换球，然后拿回来重测一遍！',
               '提示',
               {
                 confirmButtonText: '确定',
@@ -1528,26 +1598,26 @@ export default {
             } else {
               bParallel_res = 'E级互换'
             }
-          }
-          // 最终判断互换性
-          if (
-            toA_res === '报废' ||
-            toB_res === '报废' ||
-            aParallel_res === '报废' ||
-            bParallel_res === '报废'
-          ) {
-            this.remark = '报废'
-          } else if (toA_res === '不发互换' || toB_res === '不发互换') {
-            this.remark = '不发互换'
-          } else if (
-            toA_res === 'N级互换' ||
-            toB_res === 'N级互换' ||
-            aParallel_res === 'N级互换' ||
-            bParallel_res === 'N级互换'
-          ) {
-            this.remark = 'N级互换'
-          } else {
-            this.remark = 'E级互换'
+            // 最终再判断互换性
+            if (
+              toA_res === '报废' ||
+              toB_res === '报废' ||
+              aParallel_res === '报废' ||
+              bParallel_res === '报废'
+            ) {
+              this.remark = '报废'
+            } else if (toA_res === '不发互换' || toB_res === '不发互换') {
+              this.remark = '不发互换'
+            } else if (
+              toA_res === 'N级互换' ||
+              toB_res === 'N级互换' ||
+              aParallel_res === 'N级互换' ||
+              bParallel_res === 'N级互换'
+            ) {
+              this.remark = 'N级互换'
+            } else {
+              this.remark = 'E级互换'
+            }
           }
 
           /* 精度等级（调用API直接返回结果） */
@@ -1747,6 +1817,7 @@ export default {
           margin-right: 10px;
         }
         .btn {
+          display: none; // 默认隐藏清空二维码的按钮
           margin-left: 20px;
           .btn-item {
             width: 118px;
@@ -1756,7 +1827,7 @@ export default {
 
       /* 按钮组 */
       .btn-bom {
-        margin-left: 100px;
+        margin-left: 25px;
         .item {
           margin-right: 20px;
         }
@@ -1789,6 +1860,15 @@ export default {
       border-top: 2px solid rgb(0, 0, 0);
       flex: 1;
       margin-bottom: 40px;
+    }
+  }
+
+  /* 调整传感器位置弹窗 */
+  .dialog-box {
+    font-size: 30px;
+    .item {
+      color: red;
+      margin-top: 20px;
     }
   }
 
