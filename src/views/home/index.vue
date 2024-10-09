@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-10-08 17:42:33
+ * @LastEditTime: 2024-10-09 11:25:08
  * @Description : home
 -->
 <template>
@@ -508,7 +508,7 @@ export default {
                 this.$message({
                   message: `删除成功`,
                   type: 'success',
-                  duration: 2500
+                  duration: 2000
                 })
               } else if (data.status === 0) {
                 /* 失败 */
@@ -576,7 +576,7 @@ export default {
                 this.$message({
                   message: `覆盖成功`,
                   type: 'success',
-                  duration: 2500
+                  duration: 2000
                 })
                 // 成品滑块数据数组清空
                 this.finishSliderArray = []
@@ -1671,7 +1671,7 @@ export default {
                       this.$message({
                         message: `数据上传成功。`,
                         type: 'success',
-                        duration: 2000
+                        duration: 1000
                       })
                       // 成品滑块数据数组清空
                       this.finishSliderArray = []
@@ -1727,7 +1727,7 @@ export default {
               } else {
                 /* 失败 */
                 this.$alert(
-                  `[${res.data.message}]，精度等级API接口出错，请点击“刷新页面”按钮，然后重新测量！`,
+                  `[${res.data.message}]，新厂服务器的精度等级API接口出错，请点击“刷新页面”按钮，然后重新测量！`,
                   `状态码[${data.status}]`,
                   {
                     type: 'error',
@@ -1827,7 +1827,7 @@ export default {
 
       /* 按钮组 */
       .btn-bom {
-        margin-left: 25px;
+        margin-left: 40px;
         .item {
           margin-right: 20px;
         }
