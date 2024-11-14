@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-11-14 14:22:51
+ * @LastEditTime: 2024-11-14 14:43:53
  * @Description : home
 -->
 <template>
@@ -1236,9 +1236,9 @@ export default {
                 toB_constant = 26
                 break
               case 'AN':
-                dg_constant = 5
-                toA_constant = -12
-                toB_constant = 26
+                dg_constant = -4
+                toA_constant = 11
+                toB_constant = 2
                 break
               case 'DA':
                 dg_constant = 5
@@ -1265,7 +1265,7 @@ export default {
               case 'EA':
                 dg_constant = 1
                 toA_constant = -11
-                toB_constant = 7
+                toB_constant = -7
                 break
               case 'HAA':
                 dg_constant = -1
@@ -1275,7 +1275,7 @@ export default {
               case 'HEA':
                 dg_constant = 1
                 toA_constant = -11
-                toB_constant = 7
+                toB_constant = -7
                 break
               default:
                 dg_constant = 0
