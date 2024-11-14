@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-10-09 11:25:08
+ * @LastEditTime: 2024-11-14 14:22:51
  * @Description : home
 -->
 <template>
@@ -1241,9 +1241,9 @@ export default {
                 toB_constant = 26
                 break
               case 'DA':
-                dg_constant = -4
-                toA_constant = 11
-                toB_constant = 2
+                dg_constant = 5
+                toA_constant = -12
+                toB_constant = 26
                 break
               default:
                 dg_constant = 0
