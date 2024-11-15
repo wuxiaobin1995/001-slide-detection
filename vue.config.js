@@ -1,12 +1,12 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:28:22
- * @LastEditTime: 2024-03-19 14:47:33
+ * @LastEditTime: 2024-11-15 09:19:11
  * @Description : vue.config.js
  */
 
 const projectName = '001-slide-detection' // 项目名称，是一个程序的唯一标识符
-const softwareName = '001-滑块数据检测软件' // 软件名称
+const softwareName = '001-TGS-外协成品滑块数据检测软件' // 软件名称
 
 const logo = './public/ico/logo/medical.ico' // 软件图标（医疗）
 // const logo = './public/ico/logo/power.ico' // 软件图标（运动）
