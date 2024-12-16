@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-10-07 15:24:13
+ * @LastEditTime: 2024-12-16 11:38:53
  * @Description : 路由
  */
 import Vue from 'vue'
@@ -38,6 +38,14 @@ const routes = [
     name: 'set-k',
     component: () => import('@/views/set/set-k'),
     meta: ['修改传感器K值']
+  },
+
+  // 3个常数项：等高常数、到A常数、到B常数
+  {
+    path: '/set-cs',
+    name: 'set-cs',
+    component: () => import('@/views/set/set-cs'),
+    meta: ['3个常数项']
   },
 
   {

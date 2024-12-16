@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-11-14 14:43:53
+ * @LastEditTime: 2024-12-16 17:54:23
  * @Description : home
 -->
 <template>
@@ -74,6 +74,9 @@
           >
           <el-button class="item" type="warning" @click="handleToSensorK"
             >修改 K 值</el-button
+          >
+          <el-button class="item" type="warning" @click="handleToCS"
+            >修改常数项</el-button
           >
           <el-button class="item" type="warning" @click="handleSensorDialog"
             >调整传感器位置</el-button
@@ -258,8 +261,11 @@ export default {
       /* 服务器地址ip */
       ip: '',
 
-      /* 传感器K2~K4的值 */
+      /* 传感器K1~K4的值 */
       sensor_k: [],
+
+      /* 3个常数项：等高常数、到A常数、到B常数 */
+      cs: [],
 
       /* 调整传感器螺丝时专用 */
       sensorDialogVisible: false,
@@ -352,8 +358,11 @@ export default {
     /* 获取服务器地址IP */
     this.ip = window.localStorage.getItem('ip')
 
-    /* 获取传感器的K2~K4 */
+    /* 获取传感器的K1~K4 */
     this.sensor_k = JSON.parse(window.localStorage.getItem('sensor_k'))
+
+    /* 获取3个常数项 */
+    this.cs = JSON.parse(window.localStorage.getItem('cs'))
 
     /* 开启串口通信 */
     this.initSerialPort()
@@ -693,6 +702,25 @@ export default {
         .then(() => {
           this.$router.push({
             path: '/set-k'
+          })
+        })
+        .catch(() => {})
+    },
+    /**
+     * @description: 前往修改常数项页
+     */
+    handleToCS() {
+      this.$prompt('请输入密码', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^st$/,
+        inputErrorMessage: '密码不正确',
+        showClose: true,
+        closeOnClickModal: false
+      })
+        .then(() => {
+          this.$router.push({
+            path: '/set-cs'
           })
         })
         .catch(() => {})
@@ -1200,6 +1228,7 @@ export default {
           const standard_array = this.standardSliderArray // 标定值，二维数组
           const finish_array = this.finishSliderArray // 测量值，二维数组
 
+          let centerSpacing_k = 0 // 1号传感器K值（应变片）
           let k2 = 0 // 2号传感器K值
           let k3 = 0 // 3号传感器K值
           let k4 = 0 // 4号传感器K值
@@ -1216,7 +1245,7 @@ export default {
             n = 3
           }
 
-          // 2~4号传感器K值、等高常数、到A常数、到B常数
+          // 1~4号传感器K值
           const sensor_k = this.sensor_k
           const gg15 = sensor_k[0]
           const gg20 = sensor_k[1]
@@ -1224,6 +1253,28 @@ export default {
           const gg30 = sensor_k[3]
           const gg35 = sensor_k[4]
           const gg45 = sensor_k[5]
+          // 等高常数、到A常数、到B常数
+          const cs = this.cs
+          const gx15AA = cs[0]
+          const gx15AN = cs[1]
+          const gx15DA = cs[2]
+          const gx20AA = cs[3]
+          const gx20EA = cs[4]
+          const gx20HAA = cs[5]
+          const gx20HEA = cs[6]
+          const gx25AA = cs[7]
+          const gx25EA = cs[8]
+          const gx25AN = cs[9]
+          const gx25HAA = cs[10]
+          const gx25HEA = cs[11]
+          const gx25HAN = cs[12]
+          const gx30AA = cs[13]
+          const gx30EA = cs[14]
+          const gx30AN = cs[15]
+          const gx30HAA = cs[16]
+          const gx30HEA = cs[17]
+          const gx30HAN = cs[18]
+
           if (specValue === '15') {
             /* K2~K4 */
             k2 = gg15.k2
@@ -1231,19 +1282,19 @@ export default {
             k4 = gg15.k4
             switch (modelValue) {
               case 'AA':
-                dg_constant = 5
-                toA_constant = -12
-                toB_constant = 26
+                dg_constant = gx15AA.dgCS
+                toA_constant = gx15AA.toACS
+                toB_constant = gx15AA.toBCS
                 break
               case 'AN':
-                dg_constant = -4
-                toA_constant = 11
-                toB_constant = 2
+                dg_constant = gx15AN.dgCS
+                toA_constant = gx15AN.toACS
+                toB_constant = gx15AN.toBCS
                 break
               case 'DA':
-                dg_constant = 5
-                toA_constant = -12
-                toB_constant = 26
+                dg_constant = gx15DA.dgCS
+                toA_constant = gx15DA.toACS
+                toB_constant = gx15DA.toBCS
                 break
               default:
                 dg_constant = 0
@@ -1258,24 +1309,24 @@ export default {
             k4 = gg20.k4
             switch (modelValue) {
               case 'AA':
-                dg_constant = -1
-                toA_constant = 10
-                toB_constant = 3
+                dg_constant = gx20AA.dgCS
+                toA_constant = gx20AA.toACS
+                toB_constant = gx20AA.toBCS
                 break
               case 'EA':
-                dg_constant = 1
-                toA_constant = -11
-                toB_constant = -7
+                dg_constant = gx20EA.dgCS
+                toA_constant = gx20EA.toACS
+                toB_constant = gx20EA.toBCS
                 break
               case 'HAA':
-                dg_constant = -1
-                toA_constant = 10
-                toB_constant = 3
+                dg_constant = gx20HAA.dgCS
+                toA_constant = gx20HAA.toACS
+                toB_constant = gx20HAA.toBCS
                 break
               case 'HEA':
-                dg_constant = 1
-                toA_constant = -11
-                toB_constant = -7
+                dg_constant = gx20HEA.dgCS
+                toA_constant = gx20HEA.toACS
+                toB_constant = gx20HEA.toBCS
                 break
               default:
                 dg_constant = 0
@@ -1290,34 +1341,34 @@ export default {
             k4 = gg25.k4
             switch (modelValue) {
               case 'AA':
-                dg_constant = 0
-                toA_constant = 14
-                toB_constant = 4
+                dg_constant = gx25AA.dgCS
+                toA_constant = gx25AA.toACS
+                toB_constant = gx25AA.toBCS
                 break
               case 'EA':
-                dg_constant = 0
-                toA_constant = 10
-                toB_constant = 0
+                dg_constant = gx25EA.dgCS
+                toA_constant = gx25EA.toACS
+                toB_constant = gx25EA.toBCS
                 break
               case 'AN':
-                dg_constant = 2
-                toA_constant = 19
-                toB_constant = 10
+                dg_constant = gx25AN.dgCS
+                toA_constant = gx25AN.toACS
+                toB_constant = gx25AN.toBCS
                 break
               case 'HAA':
-                dg_constant = 0
-                toA_constant = 14
-                toB_constant = 4
+                dg_constant = gx25HAA.dgCS
+                toA_constant = gx25HAA.toACS
+                toB_constant = gx25HAA.toBCS
                 break
               case 'HEA':
-                dg_constant = 0
-                toA_constant = 10
-                toB_constant = 0
+                dg_constant = gx25HEA.dgCS
+                toA_constant = gx25HEA.toACS
+                toB_constant = gx25HEA.toBCS
                 break
               case 'HAN':
-                dg_constant = 2
-                toA_constant = 19
-                toB_constant = 10
+                dg_constant = gx25HAN.dgCS
+                toA_constant = gx25HAN.toACS
+                toB_constant = gx25HAN.toBCS
                 break
               default:
                 dg_constant = 0
@@ -1332,34 +1383,34 @@ export default {
             k4 = gg30.k4
             switch (modelValue) {
               case 'AA':
-                dg_constant = 4
-                toA_constant = 8
-                toB_constant = 18
+                dg_constant = gx30AA.dgCS
+                toA_constant = gx30AA.toACS
+                toB_constant = gx30AA.toBCS
                 break
               case 'EA':
-                dg_constant = -1
-                toA_constant = -6
-                toB_constant = -3
+                dg_constant = gx30EA.dgCS
+                toA_constant = gx30EA.toACS
+                toB_constant = gx30EA.toBCS
                 break
               case 'AN':
-                dg_constant = -2
-                toA_constant = -13
-                toB_constant = 6
+                dg_constant = gx30AN.dgCS
+                toA_constant = gx30AN.toACS
+                toB_constant = gx30AN.toBCS
                 break
               case 'HAA':
-                dg_constant = 4
-                toA_constant = 8
-                toB_constant = 18
+                dg_constant = gx30HAA.dgCS
+                toA_constant = gx30HAA.toACS
+                toB_constant = gx30HAA.toBCS
                 break
               case 'HEA':
-                dg_constant = -1
-                toA_constant = -6
-                toB_constant = -3
+                dg_constant = gx30HEA.dgCS
+                toA_constant = gx30HEA.toACS
+                toB_constant = gx30HEA.toBCS
                 break
               case 'HAN':
-                dg_constant = -2
-                toA_constant = -13
-                toB_constant = 6
+                dg_constant = gx30HAN.dgCS
+                toA_constant = gx30HAN.toACS
+                toB_constant = gx30HAN.toBCS
                 break
               default:
                 dg_constant = 0
@@ -1394,19 +1445,24 @@ export default {
           }
 
           /* 中心距的评审结果（0：不合格，1：合格） */
-          let centerSpacing_k = 0
           switch (specValue) {
             case '15':
-              centerSpacing_k = 0.01
+              centerSpacing_k = gg15.k1
               break
             case '20':
-              centerSpacing_k = 0.014
+              centerSpacing_k = gg20.k1
               break
             case '25':
-              centerSpacing_k = 0.017
+              centerSpacing_k = gg25.k1
               break
             case '30':
-              centerSpacing_k = 0.016
+              centerSpacing_k = gg30.k1
+              break
+            case '35':
+              centerSpacing_k = gg35.k1
+              break
+            case '45':
+              centerSpacing_k = gg45.k1
               break
             default:
               centerSpacing_k = 0
