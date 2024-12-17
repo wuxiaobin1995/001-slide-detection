@@ -1,7 +1,7 @@
 /*
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-12-16 11:38:53
+ * @LastEditTime: 2024-12-17 17:02:59
  * @Description : 路由
  */
 import Vue from 'vue'
@@ -46,6 +46,14 @@ const routes = [
     name: 'set-cs',
     component: () => import('@/views/set/set-cs'),
     meta: ['3个常数项']
+  },
+
+  // 修改中心距评定上下限
+  {
+    path: '/set-centerSpacingMinMax',
+    name: 'set-centerSpacingMinMax',
+    component: () => import('@/views/set/set-centerSpacingMinMax'),
+    meta: ['修改中心距评定上下限']
   },
 
   {

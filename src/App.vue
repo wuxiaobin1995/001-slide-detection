@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-02-07 14:19:10
- * @LastEditTime: 2024-12-16 17:51:50
+ * @LastEditTime: 2024-12-17 17:14:32
  * @Description : 根组件
 -->
 <template>
@@ -83,7 +83,8 @@ export default {
         {
           gg: '15', // 规格
           xh: 'AA', // 型号
-          QRCode: '', // 标准滑块二维码编号
+          gx: '15AA', // 规格型号
+          QRCode: 'S3042218', // 标准滑块二维码号
           dgCS: 5, // 等高常数
           toACS: -12, // 到A常数
           toBCS: 26 // 到B常数
@@ -91,7 +92,8 @@ export default {
         {
           gg: '15',
           xh: 'AN',
-          QRCode: '',
+          gx: '15AN',
+          QRCode: 'S3150157',
           dgCS: -4,
           toACS: 11,
           toBCS: 2
@@ -99,7 +101,8 @@ export default {
         {
           gg: '15',
           xh: 'DA',
-          QRCode: '',
+          gx: '15DA',
+          QRCode: 'S3042218',
           dgCS: 5,
           toACS: -12,
           toBCS: 26
@@ -107,7 +110,8 @@ export default {
         {
           gg: '20',
           xh: 'AA',
-          QRCode: '',
+          gx: '20AA',
+          QRCode: 'S2902341',
           dgCS: -1,
           toACS: 10,
           toBCS: 3
@@ -115,7 +119,8 @@ export default {
         {
           gg: '20',
           xh: 'EA',
-          QRCode: '',
+          gx: '20EA',
+          QRCode: 'S3145435',
           dgCS: 1,
           toACS: -11,
           toBCS: -7
@@ -123,7 +128,8 @@ export default {
         {
           gg: '20',
           xh: 'HAA',
-          QRCode: '',
+          gx: '20HAA',
+          QRCode: 'S2902341',
           dgCS: -1,
           toACS: 10,
           toBCS: 3
@@ -131,7 +137,8 @@ export default {
         {
           gg: '20',
           xh: 'HEA',
-          QRCode: '',
+          gx: '20HEA',
+          QRCode: 'S3145435',
           dgCS: 1,
           toACS: -11,
           toBCS: -7
@@ -139,7 +146,8 @@ export default {
         {
           gg: '25',
           xh: 'AA',
-          QRCode: '',
+          gx: '25AA',
+          QRCode: 'S2776468',
           dgCS: 0,
           toACS: 14,
           toBCS: 4
@@ -147,7 +155,8 @@ export default {
         {
           gg: '25',
           xh: 'EA',
-          QRCode: '',
+          gx: '25EA',
+          QRCode: 'S3118440',
           dgCS: 0,
           toACS: 10,
           toBCS: 0
@@ -155,7 +164,8 @@ export default {
         {
           gg: '25',
           xh: 'AN',
-          QRCode: '',
+          gx: '25AN',
+          QRCode: 'S3038146',
           dgCS: 2,
           toACS: 19,
           toBCS: 10
@@ -163,7 +173,8 @@ export default {
         {
           gg: '25',
           xh: 'HAA',
-          QRCode: '',
+          gx: '25HAA',
+          QRCode: 'S2776468',
           dgCS: 0,
           toACS: 14,
           toBCS: 4
@@ -171,7 +182,8 @@ export default {
         {
           gg: '25',
           xh: 'HEA',
-          QRCode: '',
+          gx: '25HEA',
+          QRCode: 'S3118440',
           dgCS: 0,
           toACS: 10,
           toBCS: 0
@@ -179,7 +191,8 @@ export default {
         {
           gg: '25',
           xh: 'HAN',
-          QRCode: '',
+          gx: '25HAN',
+          QRCode: 'S3038146',
           dgCS: 2,
           toACS: 19,
           toBCS: 10
@@ -187,7 +200,8 @@ export default {
         {
           gg: '30',
           xh: 'AA',
-          QRCode: '',
+          gx: '30AA',
+          QRCode: 'S2778639',
           dgCS: 4,
           toACS: 8,
           toBCS: 18
@@ -195,7 +209,8 @@ export default {
         {
           gg: '30',
           xh: 'EA',
-          QRCode: '',
+          gx: '30EA',
+          QRCode: 'S3090119',
           dgCS: -1,
           toACS: -6,
           toBCS: -3
@@ -203,7 +218,8 @@ export default {
         {
           gg: '30',
           xh: 'AN',
-          QRCode: '',
+          gx: '30AN',
+          QRCode: 'S2749178',
           dgCS: -2,
           toACS: -13,
           toBCS: 6
@@ -211,7 +227,8 @@ export default {
         {
           gg: '30',
           xh: 'HAA',
-          QRCode: '',
+          gx: '30HAA',
+          QRCode: 'S2778639',
           dgCS: 4,
           toACS: 8,
           toBCS: 18
@@ -219,7 +236,8 @@ export default {
         {
           gg: '30',
           xh: 'HEA',
-          QRCode: '',
+          gx: '30HEA',
+          QRCode: 'S3090119',
           dgCS: -1,
           toACS: -6,
           toBCS: -3
@@ -227,7 +245,8 @@ export default {
         {
           gg: '30',
           xh: 'HAN',
-          QRCode: '',
+          gx: '30HAN',
+          QRCode: 'S2749178',
           dgCS: -2,
           toACS: -13,
           toBCS: 6
@@ -235,6 +254,51 @@ export default {
       ]
       if (!window.localStorage.getItem('cs')) {
         window.localStorage.setItem('cs', JSON.stringify(cs))
+      }
+
+      /* 初始化中心距评定的上下限 */
+      const centerSpacing_min_max = [
+        {
+          gx: '15',
+          centerSpacing_min: -1,
+          centerSpacing_max: 5
+        },
+        {
+          gx: '20', // 非加长
+          centerSpacing_min: -3,
+          centerSpacing_max: 2
+        },
+        {
+          gx: '20H', // 加长
+          centerSpacing_min: -4,
+          centerSpacing_max: 0
+        },
+        {
+          gx: '25',
+          centerSpacing_min: -3,
+          centerSpacing_max: 1
+        },
+        {
+          gx: '25H',
+          centerSpacing_min: 0,
+          centerSpacing_max: 4
+        },
+        {
+          gx: '30',
+          centerSpacing_min: -1,
+          centerSpacing_max: 5
+        },
+        {
+          gx: '30H',
+          centerSpacing_min: -1,
+          centerSpacing_max: 4
+        }
+      ]
+      if (!window.localStorage.getItem('centerSpacing_min_max')) {
+        window.localStorage.setItem(
+          'centerSpacing_min_max',
+          JSON.stringify(centerSpacing_min_max)
+        )
       }
     },
 

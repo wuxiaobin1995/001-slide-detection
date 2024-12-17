@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-10-07 15:23:00
- * @LastEditTime: 2024-12-16 10:18:54
+ * @LastEditTime: 2024-12-17 11:46:08
  * @Description : 修改传感器K值
 -->
 <template>
@@ -142,7 +142,7 @@ export default {
 
       /* 成功 */
       this.$message({
-        message: `K值保存成功`,
+        message: `K值修改成功`,
         type: 'success',
         duration: 2500
       })

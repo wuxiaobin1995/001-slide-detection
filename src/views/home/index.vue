@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-12-16 17:54:23
+ * @LastEditTime: 2024-12-17 17:26:49
  * @Description : home
 -->
 <template>
@@ -78,8 +78,14 @@
           <el-button class="item" type="warning" @click="handleToCS"
             >修改常数项</el-button
           >
+          <el-button
+            class="item"
+            type="warning"
+            @click="handleToCenterSpacingMinMax"
+            >修改中心距评定的上下限</el-button
+          >
           <el-button class="item" type="warning" @click="handleSensorDialog"
-            >调整传感器位置</el-button
+            >机械调整传感器位置</el-button
           >
         </div>
       </div>
@@ -131,7 +137,7 @@
           <el-table-column
             align="center"
             prop="zxj"
-            label="中心距评审结果 (0不合格，1合格)"
+            label="中心距评审结果 (0不合格，1合格，2小到标定值，3标定值到大)"
             width="100"
           />
           <!-- 等高 -->
@@ -263,9 +269,10 @@ export default {
 
       /* 传感器K1~K4的值 */
       sensor_k: [],
-
       /* 3个常数项：等高常数、到A常数、到B常数 */
       cs: [],
+      /* 中心距评定上下限 */
+      centerSpacing_min_max: [],
 
       /* 调整传感器螺丝时专用 */
       sensorDialogVisible: false,
@@ -360,9 +367,12 @@ export default {
 
     /* 获取传感器的K1~K4 */
     this.sensor_k = JSON.parse(window.localStorage.getItem('sensor_k'))
-
     /* 获取3个常数项 */
     this.cs = JSON.parse(window.localStorage.getItem('cs'))
+    /* 获取中心距评定上下限 */
+    this.centerSpacing_min_max = JSON.parse(
+      window.localStorage.getItem('centerSpacing_min_max')
+    )
 
     /* 开启串口通信 */
     this.initSerialPort()
@@ -669,7 +679,7 @@ export default {
         .catch(() => {})
     },
     /**
-     * @description: 前往开发者页
+     * @description: 前往开发者页面
      */
     handleToDeveloper() {
       this.$prompt('请输入密码', '提示', {
@@ -688,7 +698,7 @@ export default {
         .catch(() => {})
     },
     /**
-     * @description: 前往修改传感器K2~K4页
+     * @description: 前往修改传感器K1~K4页面
      */
     handleToSensorK() {
       this.$prompt('请输入密码', '提示', {
@@ -707,7 +717,7 @@ export default {
         .catch(() => {})
     },
     /**
-     * @description: 前往修改常数项页
+     * @description: 前往修改常数项页面
      */
     handleToCS() {
       this.$prompt('请输入密码', '提示', {
@@ -721,6 +731,25 @@ export default {
         .then(() => {
           this.$router.push({
             path: '/set-cs'
+          })
+        })
+        .catch(() => {})
+    },
+    /**
+     * @description: 前往修改中心距评定上下限页面
+     */
+    handleToCenterSpacingMinMax() {
+      this.$prompt('请输入密码', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^st$/,
+        inputErrorMessage: '密码不正确',
+        showClose: true,
+        closeOnClickModal: false
+      })
+        .then(() => {
+          this.$router.push({
+            path: '/set-centerSpacingMinMax'
           })
         })
         .catch(() => {})
@@ -1274,6 +1303,15 @@ export default {
           const gx30HAA = cs[16]
           const gx30HEA = cs[17]
           const gx30HAN = cs[18]
+          // 中心距评定上下限
+          const centerSpacing_min_max = this.centerSpacing_min_max
+          const gx15 = centerSpacing_min_max[0]
+          const gx20 = centerSpacing_min_max[1]
+          const gx20H = centerSpacing_min_max[2]
+          const gx25 = centerSpacing_min_max[3]
+          const gx25H = centerSpacing_min_max[4]
+          const gx30 = centerSpacing_min_max[5]
+          const gx30H = centerSpacing_min_max[6]
 
           if (specValue === '15') {
             /* K2~K4 */
@@ -1444,91 +1482,6 @@ export default {
             }
           }
 
-          /* 中心距的评审结果（0：不合格，1：合格） */
-          switch (specValue) {
-            case '15':
-              centerSpacing_k = gg15.k1
-              break
-            case '20':
-              centerSpacing_k = gg20.k1
-              break
-            case '25':
-              centerSpacing_k = gg25.k1
-              break
-            case '30':
-              centerSpacing_k = gg30.k1
-              break
-            case '35':
-              centerSpacing_k = gg35.k1
-              break
-            case '45':
-              centerSpacing_k = gg45.k1
-              break
-            default:
-              centerSpacing_k = 0
-              break
-          }
-          const standard_d = parseFloat(standard_array[0][0] * centerSpacing_k)
-          if (specValue === '15') {
-            centerSpacing_min = standard_d - 1
-            centerSpacing_max = standard_d + 5
-          } else if (specValue === '20') {
-            if (
-              modelValue === 'HAA' ||
-              modelValue === 'HEA' ||
-              modelValue === 'HAN'
-            ) {
-              centerSpacing_min = standard_d - 4
-              centerSpacing_max = standard_d
-            } else {
-              centerSpacing_min = standard_d - 3
-              centerSpacing_max = standard_d + 2
-            }
-          } else if (specValue === '25') {
-            if (
-              modelValue === 'HAA' ||
-              modelValue === 'HEA' ||
-              modelValue === 'HAN'
-            ) {
-              centerSpacing_min = standard_d
-              centerSpacing_max = standard_d + 4
-            } else {
-              centerSpacing_min = standard_d - 3
-              centerSpacing_max = standard_d + 1
-            }
-          } else if (specValue === '30') {
-            if (
-              modelValue === 'HAA' ||
-              modelValue === 'HEA' ||
-              modelValue === 'HAN'
-            ) {
-              centerSpacing_min = standard_d - 1
-              centerSpacing_max = standard_d + 4
-            } else {
-              centerSpacing_min = standard_d - 1
-              centerSpacing_max = standard_d + 5
-            }
-          }
-          const finish_d = parseFloat(finish_array[0][0] * centerSpacing_k)
-          if (finish_d >= centerSpacing_min && finish_d <= centerSpacing_max) {
-            this.centerSpacing = 1
-          } else {
-            this.centerSpacing = 0
-          }
-          // 给一个中心距的评审不合格弹窗提示
-          if (this.centerSpacing === 0) {
-            this.$alert(
-              '该滑块的中心距评审不合格，请拿去换球，然后拿回来重测一遍！',
-              '提示',
-              {
-                confirmButtonText: '确定',
-                type: 'error',
-                center: true,
-                callback: () => {}
-              }
-            )
-          }
-
           /* 等高 */
           this.dg =
             (finish_array[2][2] / k3 -
@@ -1674,6 +1627,115 @@ export default {
             } else {
               this.remark = 'E级互换'
             }
+          }
+
+          /* 中心距的评审结果（0：不合格，1：合格，2：小到标定值，3：标定值到大） */
+          // 在E级互换的前提下，1中再分2或3，也即轻预紧和重预紧
+          switch (specValue) {
+            case '15':
+              centerSpacing_k = gg15.k1
+              break
+            case '20':
+              centerSpacing_k = gg20.k1
+              break
+            case '25':
+              centerSpacing_k = gg25.k1
+              break
+            case '30':
+              centerSpacing_k = gg30.k1
+              break
+            case '35':
+              centerSpacing_k = gg35.k1
+              break
+            case '45':
+              centerSpacing_k = gg45.k1
+              break
+            default:
+              centerSpacing_k = 0
+              break
+          }
+          const standard_d = parseFloat(standard_array[0][0] * centerSpacing_k)
+          if (specValue === '15') {
+            centerSpacing_min = standard_d + gx15.centerSpacing_min
+            centerSpacing_max = standard_d + gx15.centerSpacing_max
+          } else if (specValue === '20') {
+            if (
+              modelValue === 'HAA' ||
+              modelValue === 'HEA' ||
+              modelValue === 'HAN'
+            ) {
+              centerSpacing_min = standard_d + gx20H.centerSpacing_min
+              centerSpacing_max = standard_d + gx20H.centerSpacing_max
+            } else {
+              centerSpacing_min = standard_d + gx20.centerSpacing_min
+              centerSpacing_max = standard_d + gx20.centerSpacing_max
+            }
+          } else if (specValue === '25') {
+            if (
+              modelValue === 'HAA' ||
+              modelValue === 'HEA' ||
+              modelValue === 'HAN'
+            ) {
+              centerSpacing_min = standard_d + gx25H.centerSpacing_min
+              centerSpacing_max = standard_d + gx25H.centerSpacing_max
+            } else {
+              centerSpacing_min = standard_d + gx25.centerSpacing_min
+              centerSpacing_max = standard_d + gx25.centerSpacing_max
+            }
+          } else if (specValue === '30') {
+            if (
+              modelValue === 'HAA' ||
+              modelValue === 'HEA' ||
+              modelValue === 'HAN'
+            ) {
+              centerSpacing_min = standard_d + gx30H.centerSpacing_min
+              centerSpacing_max = standard_d + gx30H.centerSpacing_max
+            } else {
+              centerSpacing_min = standard_d + gx30.centerSpacing_min
+              centerSpacing_max = standard_d + gx30.centerSpacing_max
+            }
+          }
+          const finish_d = parseFloat(finish_array[0][0] * centerSpacing_k)
+          if (finish_d >= centerSpacing_min && finish_d <= centerSpacing_max) {
+            this.centerSpacing = 1
+            // 在E级互换前提下，1再分为2或3
+            if (this.remark === 'E级互换') {
+              if (finish_d >= centerSpacing_min && finish_d <= standard_d) {
+                // 小到标定：2
+                this.centerSpacing = 2
+              } else {
+                // 标定到大：3
+                this.centerSpacing = 3
+              }
+            }
+          } else {
+            this.centerSpacing = 0
+          }
+          // 给一个中心距的评审不合格弹窗提示
+          if (this.centerSpacing === 0) {
+            this.$alert(
+              '该滑块的中心距评审不合格，请拿去换球，然后拿回来重测一遍！',
+              '提示',
+              {
+                confirmButtonText: '确定',
+                type: 'error',
+                center: true,
+                callback: () => {}
+              }
+            )
+          }
+          // 安全性判断，防止出现centerSpacing_min＞centerSpacing_max的情况，需要去中心距上下限页面排查
+          if (centerSpacing_min > centerSpacing_max) {
+            this.$alert(
+              '中心距评定的下限Min＞中心距评定的上限Max，请停止检测，先去中心距上下限页面排查一下数值是否输入有误！',
+              '警告',
+              {
+                confirmButtonText: '确定',
+                type: 'error',
+                center: true,
+                callback: () => {}
+              }
+            )
           }
 
           /* 精度等级（调用API直接返回结果） */
@@ -1850,7 +1912,7 @@ export default {
     @include flex(column, stretch, stretch);
     /* 上侧内容区域 */
     .main {
-      height: 10%;
+      height: 12%;
       border-bottom: 2px solid rgb(0, 0, 0);
       @include flex(row, stretch, center);
       /* 规格型号 */
@@ -1886,6 +1948,7 @@ export default {
         margin-left: 40px;
         .item {
           margin-right: 20px;
+          margin-bottom: 10px;
         }
       }
     }

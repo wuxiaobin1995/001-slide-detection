@@ -1,73 +1,52 @@
 <!--
  * @Author      : Mr.bin
- * @Date        : 2024-12-16 11:39:03
- * @LastEditTime: 2024-12-17 11:46:19
- * @Description : 3个常数项：等高常数、到A常数、到B常数
+ * @Date        : 2024-12-17 11:58:39
+ * @LastEditTime: 2024-12-17 17:10:56
+ * @Description : 修改中心距评定上下限
 -->
 <template>
-  <div class="set-cs">
+  <div class="set-centerSpacingMinMax">
     <el-page-header
       class="page"
       title="返回首页"
-      content="修改3个常数项"
+      content="修改中心距评定的上下限"
       @back="handleToHome"
     ></el-page-header>
 
     <div class="box">
       <el-row class="row">
-        <el-col :span="2">
-          <div class="item title">规格</div>
+        <el-col :span="6">
+          <div class="item title">规格型号(加长/非加长)</div>
         </el-col>
-        <el-col :span="2">
-          <div class="item title">型号</div>
+        <el-col :span="9">
+          <div class="item title">中心距-min小值</div>
         </el-col>
-        <el-col :span="5">
-          <div class="item title">标准滑块二维码号</div>
-        </el-col>
-        <el-col :span="5">
-          <div class="item title">等高常数</div>
-        </el-col>
-        <el-col :span="5">
-          <div class="item title">到A常数</div>
-        </el-col>
-        <el-col :span="5">
-          <div class="item title">到B常数</div>
+        <el-col :span="9">
+          <div class="item title">中心距-max大值</div>
         </el-col>
       </el-row>
 
-      <el-row class="row" v-for="(item, index) of cs" :key="index">
+      <el-row
+        class="row"
+        v-for="(item, index) of centerSpacing_min_max"
+        :key="index"
+      >
         <el-divider></el-divider>
-        <el-col :span="2">
-          <div class="item">{{ item.gg }}</div>
+        <el-col :span="6">
+          <div class="item">{{ item.gx }}</div>
         </el-col>
-        <el-col :span="2">
-          <div class="item">{{ item.xh }}</div>
-        </el-col>
-        <el-col :span="5">
-          <div class="item">
-            <el-input v-model="item.QRCode"></el-input>
-          </div>
-        </el-col>
-        <el-col :span="5">
+        <el-col :span="9">
           <div class="item">
             <el-input-number
-              v-model="item.dgCS"
+              v-model="item.centerSpacing_min"
               :precision="0"
             ></el-input-number>
           </div>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="9">
           <div class="item">
             <el-input-number
-              v-model="item.toACS"
-              :precision="0"
-            ></el-input-number>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="item">
-            <el-input-number
-              v-model="item.toBCS"
+              v-model="item.centerSpacing_max"
               :precision="0"
             ></el-input-number>
           </div>
@@ -82,7 +61,10 @@
       <el-button class="item" type="danger" @click="handleToHome"
         >返回首页</el-button
       >
-      <el-button class="item" type="success" @click="handleSaveCS"
+      <el-button
+        class="item"
+        type="success"
+        @click="handleSaveCenterSpacingMinMax"
         >保 存</el-button
       >
       <el-button class="item" type="primary" @click="handleRefresh"
@@ -94,16 +76,16 @@
 
 <script>
 export default {
-  name: 'set-cs',
+  name: 'set-centerSpacingMinMax',
 
   data() {
     return {
-      cs: []
+      centerSpacing_min_max: []
     }
   },
 
   created() {
-    this.getCS()
+    this.getCenterSpacingMinMax()
   },
 
   methods: {
@@ -123,28 +105,33 @@ export default {
       this.$router.push({
         path: '/refresh',
         query: {
-          routerName: JSON.stringify('/set-cs'),
+          routerName: JSON.stringify('/set-centerSpacingMinMax'),
           duration: JSON.stringify(300)
         }
       })
     },
 
     /**
-     * @description: 获取常数项
+     * @description: 获取中心距评定上下限
      */
-    getCS() {
-      this.cs = JSON.parse(window.localStorage.getItem('cs'))
+    getCenterSpacingMinMax() {
+      this.centerSpacing_min_max = JSON.parse(
+        window.localStorage.getItem('centerSpacing_min_max')
+      )
     },
 
     /**
      * @description: 保存按钮
      */
-    handleSaveCS() {
-      window.localStorage.setItem('cs', JSON.stringify(this.cs))
+    handleSaveCenterSpacingMinMax() {
+      window.localStorage.setItem(
+        'centerSpacing_min_max',
+        JSON.stringify(this.centerSpacing_min_max)
+      )
 
       /* 成功 */
       this.$message({
-        message: `常数项修改成功`,
+        message: `中心距上下限修改成功`,
         type: 'success',
         duration: 2500
       })
@@ -154,7 +141,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.set-cs {
+.set-centerSpacingMinMax {
   width: 100%;
   height: 100%;
   position: relative;
