@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-12-17 17:26:49
+ * @LastEditTime: 2024-12-18 17:54:42
  * @Description : home
 -->
 <template>
@@ -28,13 +28,14 @@
               </el-option>
             </el-select>
           </div>
-          <!-- 型号 -->
+          <!-- 型号（需要先选择规格） -->
           <div class="model">
             <div class="text">型号</div>
             <el-select
               v-model="modelValue"
               placeholder="请选择型号"
               @change="modelChange"
+              :disabled="specValue === ''"
             >
               <el-option
                 v-for="item in modelSelection"
@@ -76,7 +77,7 @@
             >修改 K 值</el-button
           >
           <el-button class="item" type="warning" @click="handleToCS"
-            >修改常数项</el-button
+            >修改标准值</el-button
           >
           <el-button
             class="item"
@@ -91,17 +92,33 @@
       </div>
 
       <!-- 实时显示4个传感器的数字量 -->
+      <!-- k1是乘，k2~k4是除 -->
+      <!-- 悬空时显示为0 -->
       <div class="show">
         <div class="text">实时值：</div>
-        <div class="item">{{ showSensorArray[0] }}</div>
-        <div class="item">{{ showSensorArray[1] }}</div>
-        <div class="item">{{ showSensorArray[2] }}</div>
-        <div class="item">{{ showSensorArray[3] }}</div>
+        <div class="item">{{ (showSensorArray[0] * k1_show).toFixed(0) }}</div>
+        <div class="item">{{ (showSensorArray[1] / k2_show).toFixed(1) }}</div>
+        <div class="item">{{ (showSensorArray[2] / k3_show).toFixed(1) }}</div>
+        <div class="item">{{ (showSensorArray[3] / k4_show).toFixed(1) }}</div>
       </div>
 
       <!-- 显示按键按下时的原始数据 -->
       <div class="show-2">成品滑块数据数组：{{ finishSliderArray }}</div>
       <div class="show-2">标准滑块数据数组：{{ standardSliderArray }}</div>
+
+      <!-- 显示所选规格型号的3个常数项 -->
+      <div class="show-3">
+        对应规格型号的标准值：等高【{{ dgCS_show }}】，到A【{{
+          toACS_show
+        }}】，到B【{{ toBCS_show }}】
+      </div>
+
+      <!-- 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示 -->
+      <div class="show-4">
+        对应工位的K值：k1(应变片)【{{ k1_show }}】，k2【{{ k2_show }}】，k3【{{
+          k3_show
+        }}】，k4【{{ k4_show }}】
+      </div>
 
       <!-- 下侧表格 -->
       <div class="table">
@@ -273,6 +290,15 @@ export default {
       cs: [],
       /* 中心距评定上下限 */
       centerSpacing_min_max: [],
+      /* 选择完规格型号后，把对应的3个常数项也显示出来，方便排查有没有bug和对不对得上 */
+      dgCS_show: '无',
+      toACS_show: '无',
+      toBCS_show: '无',
+      /* 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示 */
+      k1_show: 0,
+      k2_show: 0,
+      k3_show: 0,
+      k4_show: 0,
 
       /* 调整传感器螺丝时专用 */
       sensorDialogVisible: false,
@@ -373,6 +399,10 @@ export default {
     this.centerSpacing_min_max = JSON.parse(
       window.localStorage.getItem('centerSpacing_min_max')
     )
+    /* 把对应的3个常数项也显示出来，方便排查有没有bug和对不对得上 */
+    this.csShow()
+    /* 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示 */
+    this.kShow()
 
     /* 开启串口通信 */
     this.initSerialPort()
@@ -780,6 +810,12 @@ export default {
       // 清空标准滑块数据数组
       this.standardSliderArray = []
       window.sessionStorage.setItem('standard_slider_value', JSON.stringify([]))
+
+      // 选择完规格型号后，把对应的3个常数项也显示出来，方便排查有没有bug和对不对得上
+      this.csShow()
+
+      // 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示
+      this.kShow()
     },
     /**
      * @description: 型号下拉框的选中值发生变化时触发
@@ -791,13 +827,256 @@ export default {
       // 清空标准滑块数据数组
       this.standardSliderArray = []
       window.sessionStorage.setItem('standard_slider_value', JSON.stringify([]))
+
+      // 选择完规格型号后，把对应的3个常数项也显示出来，方便排查有没有bug和对不对得上
+      this.csShow()
+    },
+    /**
+     * @description: 选择完规格型号后，把对应的3个常数项也显示出来，方便排查有没有bug和对不对得上
+     */
+    csShow() {
+      this.dgCS_show = '无'
+      this.toACS_show = '无'
+      this.toBCS_show = '无'
+
+      const specValue = this.specValue // 规格
+      const modelValue = this.modelValue // 型号
+
+      if (specValue === '' || modelValue === '') {
+      } else {
+        // 等高常数、到A常数、到B常数
+        const cs = this.cs
+        const gx15AA = cs[0]
+        const gx15AN = cs[1]
+        const gx15DA = cs[2]
+        const gx20AA = cs[3]
+        const gx20EA = cs[4]
+        const gx20HAA = cs[5]
+        const gx20HEA = cs[6]
+        const gx25AA = cs[7]
+        const gx25EA = cs[8]
+        const gx25AN = cs[9]
+        const gx25HAA = cs[10]
+        const gx25HEA = cs[11]
+        const gx25HAN = cs[12]
+        const gx30AA = cs[13]
+        const gx30EA = cs[14]
+        const gx30AN = cs[15]
+        const gx30HAA = cs[16]
+        const gx30HEA = cs[17]
+        const gx30HAN = cs[18]
+
+        if (specValue === '15') {
+          switch (modelValue) {
+            case 'AA':
+              this.dgCS_show = gx15AA.dgCS
+              this.toACS_show = gx15AA.toACS
+              this.toBCS_show = gx15AA.toBCS
+              break
+            case 'AN':
+              this.dgCS_show = gx15AN.dgCS
+              this.toACS_show = gx15AN.toACS
+              this.toBCS_show = gx15AN.toBCS
+              break
+            case 'DA':
+              this.dgCS_show = gx15DA.dgCS
+              this.toACS_show = gx15DA.toACS
+              this.toBCS_show = gx15DA.toBCS
+              break
+            default:
+              this.dgCS_show = '无'
+              this.toACS_show = '无'
+              this.toBCS_show = '无'
+              break
+          }
+        } else if (specValue === '20') {
+          switch (modelValue) {
+            case 'AA':
+              this.dgCS_show = gx20AA.dgCS
+              this.toACS_show = gx20AA.toACS
+              this.toBCS_show = gx20AA.toBCS
+              break
+            case 'EA':
+              this.dgCS_show = gx20EA.dgCS
+              this.toACS_show = gx20EA.toACS
+              this.toBCS_show = gx20EA.toBCS
+              break
+            case 'HAA':
+              this.dgCS_show = gx20HAA.dgCS
+              this.toACS_show = gx20HAA.toACS
+              this.toBCS_show = gx20HAA.toBCS
+              break
+            case 'HEA':
+              this.dgCS_show = gx20HEA.dgCS
+              this.toACS_show = gx20HEA.toACS
+              this.toBCS_show = gx20HEA.toBCS
+              break
+            default:
+              this.dgCS_show = '无'
+              this.toACS_show = '无'
+              this.toBCS_show = '无'
+              break
+          }
+        } else if (specValue === '25') {
+          switch (modelValue) {
+            case 'AA':
+              this.dgCS_show = gx25AA.dgCS
+              this.toACS_show = gx25AA.toACS
+              this.toBCS_show = gx25AA.toBCS
+              break
+            case 'EA':
+              this.dgCS_show = gx25EA.dgCS
+              this.toACS_show = gx25EA.toACS
+              this.toBCS_show = gx25EA.toBCS
+              break
+            case 'AN':
+              this.dgCS_show = gx25AN.dgCS
+              this.toACS_show = gx25AN.toACS
+              this.toBCS_show = gx25AN.toBCS
+              break
+            case 'HAA':
+              this.dgCS_show = gx25HAA.dgCS
+              this.toACS_show = gx25HAA.toACS
+              this.toBCS_show = gx25HAA.toBCS
+              break
+            case 'HEA':
+              this.dgCS_show = gx25HEA.dgCS
+              this.toACS_show = gx25HEA.toACS
+              this.toBCS_show = gx25HEA.toBCS
+              break
+            case 'HAN':
+              this.dgCS_show = gx25HAN.dgCS
+              this.toACS_show = gx25HAN.toACS
+              this.toBCS_show = gx25HAN.toBCS
+              break
+            default:
+              this.dgCS_show = '无'
+              this.toACS_show = '无'
+              this.toBCS_show = '无'
+              break
+          }
+        } else if (specValue === '30') {
+          switch (modelValue) {
+            case 'AA':
+              this.dgCS_show = gx30AA.dgCS
+              this.toACS_show = gx30AA.toACS
+              this.toBCS_show = gx30AA.toBCS
+              break
+            case 'EA':
+              this.dgCS_show = gx30EA.dgCS
+              this.toACS_show = gx30EA.toACS
+              this.toBCS_show = gx30EA.toBCS
+              break
+            case 'AN':
+              this.dgCS_show = gx30AN.dgCS
+              this.toACS_show = gx30AN.toACS
+              this.toBCS_show = gx30AN.toBCS
+              break
+            case 'HAA':
+              this.dgCS_show = gx30HAA.dgCS
+              this.toACS_show = gx30HAA.toACS
+              this.toBCS_show = gx30HAA.toBCS
+              break
+            case 'HEA':
+              this.dgCS_show = gx30HEA.dgCS
+              this.toACS_show = gx30HEA.toACS
+              this.toBCS_show = gx30HEA.toBCS
+              break
+            case 'HAN':
+              this.dgCS_show = gx30HAN.dgCS
+              this.toACS_show = gx30HAN.toACS
+              this.toBCS_show = gx30HAN.toBCS
+              break
+            default:
+              this.dgCS_show = '无'
+              this.toACS_show = '无'
+              this.toBCS_show = '无'
+              break
+          }
+        } else if (specValue === '35') {
+          switch (modelValue) {
+            default:
+              this.dgCS_show = '无'
+              this.toACS_show = '无'
+              this.toBCS_show = '无'
+              break
+          }
+        } else if (specValue === '45') {
+          switch (modelValue) {
+            default:
+              this.dgCS_show = '无'
+              this.toACS_show = '无'
+              this.toBCS_show = '无'
+              break
+          }
+        }
+      }
+    },
+    /**
+     * @description: 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示
+     */
+    kShow() {
+      this.k1_show = 0
+      this.k2_show = 0
+      this.k3_show = 0
+      this.k4_show = 0
+
+      const specValue = this.specValue // 规格
+      if (specValue === '') {
+      } else {
+        // 1~4号传感器K值
+        const sensor_k = this.sensor_k
+        const gg15 = sensor_k[0]
+        const gg20 = sensor_k[1]
+        const gg25 = sensor_k[2]
+        const gg30 = sensor_k[3]
+        const gg35 = sensor_k[4]
+        const gg45 = sensor_k[5]
+
+        if (specValue === '15') {
+          this.k1_show = gg15.k1
+          this.k2_show = gg15.k2
+          this.k3_show = gg15.k3
+          this.k4_show = gg15.k4
+        } else if (specValue === '20') {
+          this.k1_show = gg20.k1
+          this.k2_show = gg20.k2
+          this.k3_show = gg20.k3
+          this.k4_show = gg20.k4
+        } else if (specValue === '25') {
+          this.k1_show = gg25.k1
+          this.k2_show = gg25.k2
+          this.k3_show = gg25.k3
+          this.k4_show = gg25.k4
+        } else if (specValue === '30') {
+          this.k1_show = gg30.k1
+          this.k2_show = gg30.k2
+          this.k3_show = gg30.k3
+          this.k4_show = gg30.k4
+        } else if (specValue === '35') {
+          this.k1_show = gg35.k1
+          this.k2_show = gg35.k2
+          this.k3_show = gg35.k3
+          this.k4_show = gg35.k4
+        } else if (specValue === '45') {
+          this.k1_show = gg45.k1
+          this.k2_show = gg45.k2
+          this.k3_show = gg45.k3
+          this.k4_show = gg45.k4
+        } else {
+          this.k1_show = 0
+          this.k2_show = 0
+          this.k3_show = 0
+          this.k4_show = 0
+        }
+      }
     },
 
     /**
      * @description: 清空标定值按钮（包括sessionStorage里面的）
      */
     handleClearStandard() {
-      this.$confirm('是否要清空标定值?', '提示', {
+      this.$confirm('是否要清空标准化快的标定值?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         center: true,
@@ -1727,7 +2006,7 @@ export default {
           // 安全性判断，防止出现centerSpacing_min＞centerSpacing_max的情况，需要去中心距上下限页面排查
           if (centerSpacing_min > centerSpacing_max) {
             this.$alert(
-              '中心距评定的下限Min＞中心距评定的上限Max，请停止检测，先去中心距上下限页面排查一下数值是否输入有误！',
+              '中心距评定的下限Min ＞ 中心距评定的上限Max，请停止检测，先去中心距上下限页面排查一下数值是否输入有误！',
               '警告',
               {
                 confirmButtonText: '确定',
@@ -1947,7 +2226,8 @@ export default {
       .btn-bom {
         margin-left: 40px;
         .item {
-          margin-right: 20px;
+          margin-right: 10px;
+          margin-left: 10px;
           margin-bottom: 10px;
         }
       }
@@ -1972,6 +2252,21 @@ export default {
     /* 显示按键按下时的原始数据 */
     .show-2 {
       font-size: 18px;
+    }
+    /* 显示所选规格型号的3个常数项 */
+    .show-3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      color: green;
+    }
+    /* 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示 */
+    .show-4 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: green;
     }
 
     /* 表格区域 */

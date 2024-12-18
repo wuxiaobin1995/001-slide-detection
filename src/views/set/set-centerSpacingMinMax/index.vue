@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-12-17 11:58:39
- * @LastEditTime: 2024-12-17 17:10:56
+ * @LastEditTime: 2024-12-18 15:42:04
  * @Description : 修改中心距评定上下限
 -->
 <template>
@@ -14,6 +14,10 @@
     ></el-page-header>
 
     <div class="box">
+      <div class="ps">
+        【必须注意：修改数值时，min值不能大于max值，否则会导致计算出错Bug】
+      </div>
+
       <el-row class="row">
         <el-col :span="6">
           <div class="item title">规格型号(加长/非加长)</div>
@@ -155,6 +159,14 @@ export default {
   .box {
     width: 100%;
     padding: 50px 5px 0 5px;
+
+    .ps {
+      @include flex(row, center, center);
+      font-size: 30px;
+      color: red;
+      font-weight: 700;
+      margin: 5px 0;
+    }
 
     .row {
       .title {

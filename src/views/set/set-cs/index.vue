@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-12-16 11:39:03
- * @LastEditTime: 2024-12-17 11:46:19
+ * @LastEditTime: 2024-12-18 17:32:02
  * @Description : 3个常数项：等高常数、到A常数、到B常数
 -->
 <template>
@@ -9,7 +9,7 @@
     <el-page-header
       class="page"
       title="返回首页"
-      content="修改3个常数项"
+      content="修改3个标准值（也即常数项）"
       @back="handleToHome"
     ></el-page-header>
 
@@ -25,13 +25,13 @@
           <div class="item title">标准滑块二维码号</div>
         </el-col>
         <el-col :span="5">
-          <div class="item title">等高常数</div>
+          <div class="item title">等高</div>
         </el-col>
         <el-col :span="5">
-          <div class="item title">到A常数</div>
+          <div class="item title">到A</div>
         </el-col>
         <el-col :span="5">
-          <div class="item title">到B常数</div>
+          <div class="item title">到B</div>
         </el-col>
       </el-row>
 
