@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-12-18 17:54:42
+ * @LastEditTime: 2024-12-19 11:58:57
  * @Description : home
 -->
 <template>
@@ -86,25 +86,44 @@
             >修改中心距评定的上下限</el-button
           >
           <el-button class="item" type="warning" @click="handleSensorDialog"
-            >机械调整传感器位置</el-button
+            >调整传感器机械位置</el-button
+          >
+          <el-button class="item" type="warning" @click="handleZero"
+            >调 零</el-button
           >
         </div>
       </div>
 
-      <!-- 实时显示4个传感器的数字量 -->
+      <!-- 实时显示4个传感器的经过以下处理后的值 -->
       <!-- k1是乘，k2~k4是除 -->
-      <!-- 悬空时显示为0 -->
+      <!-- 悬空时显示为0，也即实时值减掉打开软件时第一个值 -->
       <div class="show">
         <div class="text">实时值：</div>
-        <div class="item">{{ (showSensorArray[0] * k1_show).toFixed(0) }}</div>
-        <div class="item">{{ (showSensorArray[1] / k2_show).toFixed(1) }}</div>
-        <div class="item">{{ (showSensorArray[2] / k3_show).toFixed(1) }}</div>
-        <div class="item">{{ (showSensorArray[3] / k4_show).toFixed(1) }}</div>
+        <div class="item">
+          {{
+            ((showSensorArray[0] - showOnceSensorArray[0]) * k1_show).toFixed(0)
+          }}
+        </div>
+        <div class="item">
+          {{
+            ((showSensorArray[1] - showOnceSensorArray[1]) / k2_show).toFixed(1)
+          }}
+        </div>
+        <div class="item">
+          {{
+            ((showSensorArray[2] - showOnceSensorArray[2]) / k3_show).toFixed(1)
+          }}
+        </div>
+        <div class="item">
+          {{
+            ((showSensorArray[3] - showOnceSensorArray[3]) / k4_show).toFixed(1)
+          }}
+        </div>
       </div>
 
       <!-- 显示按键按下时的原始数据 -->
-      <div class="show-2">成品滑块数据数组：{{ finishSliderArray }}</div>
-      <div class="show-2">标准滑块数据数组：{{ standardSliderArray }}</div>
+      <div class="show-2">被测滑块原始数据：{{ finishSliderArray }}</div>
+      <div class="show-2">标准滑块原始数据：{{ standardSliderArray }}</div>
 
       <!-- 显示所选规格型号的3个常数项 -->
       <div class="show-3">
@@ -300,7 +319,10 @@ export default {
       k3_show: 0,
       k4_show: 0,
 
-      /* 调整传感器螺丝时专用 */
+      /* 悬空时显示为0 */
+      showOnceSensorArray: [],
+
+      /* 调整传感器机械位置时专用 */
       sensorDialogVisible: false,
       showZeroSensorArray: [],
 
@@ -383,6 +405,16 @@ export default {
     this.specValue = this.$store.state.spec
     this.modelValue = this.$store.state.model
 
+    if (this.specValue === '' || this.modelValue === '') {
+      this.$notify({
+        title: '提示',
+        message: `请选择"规格"和"型号"`,
+        type: 'success',
+        position: 'top-left',
+        duration: 5000
+      })
+    }
+
     /* 获取标准滑块数据数组 */
     this.standardSliderArray = JSON.parse(
       window.sessionStorage.getItem('standard_slider_value')
@@ -413,6 +445,11 @@ export default {
   mounted() {
     /* 二维码输入框获取鼠标焦点 */
     this.QRFocus()
+
+    /* 调零（用于悬空时显示为0） */
+    setTimeout(() => {
+      this.zero()
+    }, 1000)
   },
   beforeDestroy() {
     if (this.usbPort) {
@@ -450,31 +487,6 @@ export default {
           this.handleRefresh()
         })
         .catch(() => {})
-    },
-
-    /**
-     * @description: 调整传感器位置
-     */
-    handleSensorDialog() {
-      if (this.showSensorArray.length === 0) {
-        this.$message({
-          message: `请先选择规格和型号！`,
-          type: 'error',
-          duration: 3000
-        })
-      } else {
-        this.$confirm('请确保在"没有"套滑块的前提下，才进行该操作！', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          center: true,
-          type: 'warning'
-        })
-          .then(() => {
-            this.showZeroSensorArray = this.showSensorArray
-            this.sensorDialogVisible = true
-          })
-          .catch(() => {})
-      }
     },
 
     /**
@@ -531,7 +543,6 @@ export default {
         })
       }
     },
-
     /**
      * @description: 删除数据按钮
      * @param {*} index
@@ -585,9 +596,8 @@ export default {
         })
         .catch(() => {})
     },
-
     /**
-     * @description: 覆盖数据弹窗
+     * @description: 覆盖数据弹窗（重测时会用到）
      */
     updateTableData() {
       this.$confirm(
@@ -728,6 +738,30 @@ export default {
         .catch(() => {})
     },
     /**
+     * @description: 清空标准滑块的标定值按钮（包括也清空 SessionStorage 里面的）
+     */
+    handleClearStandard() {
+      this.$confirm('是否要清空标准滑块的标定值?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        center: true,
+        type: 'warning'
+      })
+        .then(() => {
+          this.standardSliderArray = []
+          window.sessionStorage.setItem(
+            'standard_slider_value',
+            JSON.stringify([])
+          )
+          this.$message({
+            message: `标定值清空完成`,
+            type: 'success',
+            duration: 5000
+          })
+        })
+        .catch(() => {})
+    },
+    /**
      * @description: 前往修改传感器K1~K4页面
      */
     handleToSensorK() {
@@ -766,7 +800,7 @@ export default {
         .catch(() => {})
     },
     /**
-     * @description: 前往修改中心距评定上下限页面
+     * @description: 前往修改中心距评定的上下限页面
      */
     handleToCenterSpacingMinMax() {
       this.$prompt('请输入密码', '提示', {
@@ -783,6 +817,75 @@ export default {
           })
         })
         .catch(() => {})
+    },
+    /**
+     * @description: 调整传感器机械位置
+     */
+    handleSensorDialog() {
+      if (this.showSensorArray.length === 0) {
+        this.$message({
+          message: `请先选择规格和型号！`,
+          type: 'error',
+          duration: 3000
+        })
+      } else {
+        this.$confirm(
+          '请确保在"没有"套滑块的前提下（即传感器处于悬空状态时），才点击"确定"按钮！',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            center: true,
+            type: 'warning'
+          }
+        )
+          .then(() => {
+            this.showZeroSensorArray = this.showSensorArray
+            this.sensorDialogVisible = true
+          })
+          .catch(() => {})
+      }
+    },
+    /**
+     * @description: 调零按钮（用于悬空时显示为0）
+     */
+    handleZero() {
+      if (this.showSensorArray.length === 0) {
+        this.$message({
+          message: `请先选择规格和型号！`,
+          type: 'error',
+          duration: 3000
+        })
+      } else {
+        this.$confirm(
+          '请确保在"没有"套滑块的前提下（即传感器处于悬空状态时），才点击"确定"按钮！',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            center: true,
+            type: 'warning'
+          }
+        )
+          .then(() => {
+            this.zero()
+          })
+          .catch(() => {})
+      }
+    },
+    /**
+     * @description: 具体调零代码实现
+     */
+    zero() {
+      if (this.showSensorArray.length === 0) {
+      } else {
+        this.showOnceSensorArray = this.showSensorArray
+        this.$message({
+          message: `调零成功`,
+          type: 'success',
+          duration: 1500
+        })
+      }
     },
 
     /**
@@ -816,6 +919,11 @@ export default {
 
       // 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示
       this.kShow()
+
+      // 调零（用于悬空时显示为0）
+      setTimeout(() => {
+        this.zero()
+      }, 1000)
     },
     /**
      * @description: 型号下拉框的选中值发生变化时触发
@@ -830,6 +938,11 @@ export default {
 
       // 选择完规格型号后，把对应的3个常数项也显示出来，方便排查有没有bug和对不对得上
       this.csShow()
+
+      // 调零（用于悬空时显示为0）
+      setTimeout(() => {
+        this.zero()
+      }, 1000)
     },
     /**
      * @description: 选择完规格型号后，把对应的3个常数项也显示出来，方便排查有没有bug和对不对得上
@@ -1073,31 +1186,6 @@ export default {
     },
 
     /**
-     * @description: 清空标定值按钮（包括sessionStorage里面的）
-     */
-    handleClearStandard() {
-      this.$confirm('是否要清空标准化快的标定值?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        center: true,
-        type: 'warning'
-      })
-        .then(() => {
-          this.standardSliderArray = []
-          window.sessionStorage.setItem(
-            'standard_slider_value',
-            JSON.stringify([])
-          )
-          this.$message({
-            message: `标定值清空完成`,
-            type: 'success',
-            duration: 5000
-          })
-        })
-        .catch(() => {})
-    },
-
-    /**
      * @description: 二维码编号自增（方便操作工不用每次都扫码）
      */
     QRCodeAdd() {
@@ -1260,21 +1348,21 @@ export default {
                 }
                 // 按键的键值（0-没有按键，1-标定按键，2-测量按键，3-清空按键）
                 const keyNum = dataArray[0]
-                // 工位1（15或30）
+                // 工位1或4（15或30）
                 const workstation_1 = [
                   dataArray[1],
                   dataArray[2],
                   dataArray[3],
                   dataArray[4]
                 ]
-                // 工位2（20或35）
+                // 工位2或5（20或35）
                 const workstation_2 = [
                   dataArray[5],
                   dataArray[6],
                   dataArray[7],
                   dataArray[8]
                 ]
-                // 工位3（25或45）
+                // 工位3或6（25或45）
                 const workstation_3 = [
                   dataArray[9],
                   dataArray[10],
