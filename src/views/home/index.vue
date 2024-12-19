@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-12-19 11:58:57
+ * @LastEditTime: 2024-12-19 17:43:30
  * @Description : home
 -->
 <template>
@@ -96,7 +96,7 @@
 
       <!-- 实时显示4个传感器的经过以下处理后的值 -->
       <!-- k1是乘，k2~k4是除 -->
-      <!-- 悬空时显示为0，也即实时值减掉打开软件时第一个值 -->
+      <!-- 悬空时显示为0 -->
       <div class="show">
         <div class="text">实时值：</div>
         <div class="item">
@@ -405,9 +405,10 @@ export default {
     this.specValue = this.$store.state.spec
     this.modelValue = this.$store.state.model
 
+    /* 提示一下选择规格型号 */
     if (this.specValue === '' || this.modelValue === '') {
       this.$notify({
-        title: '提示',
+        title: '温馨提示',
         message: `请选择"规格"和"型号"`,
         type: 'success',
         position: 'top-left',
