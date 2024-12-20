@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-12-19 17:43:30
+ * @LastEditTime: 2024-12-20 15:09:06
  * @Description : home
 -->
 <template>
@@ -17,7 +17,7 @@
             <div class="text">规格</div>
             <el-select
               v-model="specValue"
-              placeholder="请选择规格"
+              placeholder="先选择规格"
               @change="specChange"
             >
               <el-option
@@ -33,7 +33,7 @@
             <div class="text">型号</div>
             <el-select
               v-model="modelValue"
-              placeholder="请选择型号"
+              placeholder="后选择型号"
               @change="modelChange"
               :disabled="specValue === ''"
             >
@@ -53,7 +53,7 @@
           <div>
             <el-input
               ref="QRCodeInput"
-              placeholder="建议不要手输，请用扫码枪"
+              placeholder="建议使用扫码枪"
               maxlength="8"
               v-model="QRCode"
             ></el-input>
@@ -85,10 +85,10 @@
             @click="handleToCenterSpacingMinMax"
             >修改中心距评定的上下限</el-button
           >
-          <el-button class="item" type="warning" @click="handleSensorDialog"
+          <el-button class="item" type="success" @click="handleSensorDialog"
             >调整传感器机械位置</el-button
           >
-          <el-button class="item" type="warning" @click="handleZero"
+          <el-button class="item" type="success" @click="handleZero"
             >调 零</el-button
           >
         </div>
@@ -122,8 +122,8 @@
       </div>
 
       <!-- 显示按键按下时的原始数据 -->
-      <div class="show-2">被测滑块原始数据：{{ finishSliderArray }}</div>
-      <div class="show-2">标准滑块原始数据：{{ standardSliderArray }}</div>
+      <div class="show-2">被测滑块的原始数据：{{ finishSliderArray }}</div>
+      <div class="show-2">标准滑块的原始数据：{{ standardSliderArray }}</div>
 
       <!-- 显示所选规格型号的3个常数项 -->
       <div class="show-3">
@@ -134,7 +134,7 @@
 
       <!-- 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示 -->
       <div class="show-4">
-        对应工位的K值：k1(应变片)【{{ k1_show }}】，k2【{{ k2_show }}】，k3【{{
+        对应工位的传感器 K值：k1【{{ k1_show }}】，k2【{{ k2_show }}】，k3【{{
           k3_show
         }}】，k4【{{ k4_show }}】
       </div>
@@ -174,7 +174,7 @@
             align="center"
             prop="zxj"
             label="中心距评审结果 (0不合格，1合格，2小到标定值，3标定值到大)"
-            width="100"
+            width="120"
           />
           <!-- 等高 -->
           <el-table-column align="center" prop="dg" label="等高" width="80" />
@@ -227,7 +227,7 @@
 
     <!-- 调整传感器位置 -->
     <el-dialog
-      title="调整传感器位置"
+      title="调整传感器机械位置"
       :visible.sync="sensorDialogVisible"
       width="30%"
       top="20vh"
@@ -307,13 +307,13 @@ export default {
       sensor_k: [],
       /* 3个常数项：等高常数、到A常数、到B常数 */
       cs: [],
-      /* 中心距评定上下限 */
+      /* 中心距评定的上下限 */
       centerSpacing_min_max: [],
       /* 选择完规格型号后，把对应的3个常数项也显示出来，方便排查有没有bug和对不对得上 */
       dgCS_show: '无',
       toACS_show: '无',
       toBCS_show: '无',
-      /* 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示 */
+      /* 选择规格（工位）后，对应K1~K4的值，用于AD×K或AD÷K的计算显示 */
       k1_show: 0,
       k2_show: 0,
       k3_show: 0,
@@ -381,22 +381,22 @@ export default {
       tableData: [],
       tableLoading: false, // 表格加载动画
 
-      /* 实时显示4个传感器的数据数组，一维数组 */
+      /* 实时显示4个传感器的原始数据数组，一维数组 */
       showSensorArray: [],
-      /* 标准滑块数据数组，二维数组 */
+      /* 标准滑块的原始数据数组，二维数组 */
       standardSliderArray: [],
-      /* 成品滑块数据数组，二维数组 */
+      /* 被测滑块的原始数据数组，二维数组 */
       finishSliderArray: [],
 
       /* 滑块的最终精度结果 */
-      centerSpacing: 0, // 中心距的评审结果（1：合格，0：不合格）
+      centerSpacing: 0, // 中心距的评审结果（0：不合格，1：合格，2，3）
       dg: 0, // 等高
       toA: 0, // 沟槽到A
       toB: 0, // 沟槽到B
       aParallel: 0, // A平行
       bParallel: 0, // B平行
       accuracyClass: '', // 精度等级
-      remark: '' // 备注（E级互换、N级互换、不发互换、报废）
+      remark: '' // 互换性备注（E级互换、N级互换、不发互换、报废）
     }
   },
 
@@ -409,37 +409,36 @@ export default {
     if (this.specValue === '' || this.modelValue === '') {
       this.$notify({
         title: '温馨提示',
-        message: `请选择"规格"和"型号"`,
+        message: `请先选择"规格"，后选择"型号"`,
         type: 'success',
         position: 'top-left',
         duration: 5000
       })
     }
 
-    /* 获取标准滑块数据数组 */
+    /* 获取标准滑块的标定值 */
     this.standardSliderArray = JSON.parse(
       window.sessionStorage.getItem('standard_slider_value')
     )
 
-    /* 获取服务器地址IP */
-    this.ip = window.localStorage.getItem('ip')
+    /* 开启串口通信 */
+    this.initSerialPort()
 
     /* 获取传感器的K1~K4 */
     this.sensor_k = JSON.parse(window.localStorage.getItem('sensor_k'))
     /* 获取3个常数项 */
     this.cs = JSON.parse(window.localStorage.getItem('cs'))
-    /* 获取中心距评定上下限 */
+    /* 获取中心距评定的上下限 */
     this.centerSpacing_min_max = JSON.parse(
       window.localStorage.getItem('centerSpacing_min_max')
     )
     /* 把对应的3个常数项也显示出来，方便排查有没有bug和对不对得上 */
     this.csShow()
-    /* 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示 */
+    /* 选择规格（工位）后，对应K1~K4的值，用于AD×K或AD÷K的计算显示 */
     this.kShow()
 
-    /* 开启串口通信 */
-    this.initSerialPort()
-
+    /* 获取服务器地址IP */
+    this.ip = window.localStorage.getItem('ip')
     /* 获取表格数据 */
     this.getTableData()
   },
@@ -501,7 +500,7 @@ export default {
           const api = `http://${this.ip}/st_t6_sql_001_slide_detection/public/index.php/slideDetection/getSlideDetectionData`
           this.$axios
             .post(api, {
-              num: 50 // 默认获取最新的n条，并且是T开头的才查询出来，因为凯特和双特共用同一个数据表
+              num: 30 // 默认获取最新的n条，并且是T开头的才查询出来，因为凯特和双特共用同一个数据表
             })
             .then(res => {
               const data = res.data
@@ -638,7 +637,7 @@ export default {
                   type: 'success',
                   duration: 2000
                 })
-                // 成品滑块数据数组清空
+                // 被测滑块数据数组清空
                 this.finishSliderArray = []
               } else if (data.status === 0) {
                 /* 失败 */
@@ -690,7 +689,7 @@ export default {
             })
         })
         .catch(() => {
-          // 成品滑块数据数组清空
+          // 被测滑块数据数组清空
           this.finishSliderArray = []
         })
     },
@@ -896,7 +895,6 @@ export default {
       this.QRCode = ''
       this.QRFocus() // 二维码输入框获取鼠标焦点
     },
-
     /**
      * @description: 二维码输入框获取鼠标焦点函数
      */
@@ -1410,7 +1408,7 @@ export default {
                         })
                       }
                     } else if (keyNum === 2) {
-                      // 测量按键按下，此时就把数据存入到成品滑块数据数组，二维数组
+                      // 测量按键按下，此时就把数据存入到被测滑块数据数组，二维数组
                       if (this.finishSliderArray.length <= 2) {
                         // 按第1~3下
                         this.finishSliderArray.push([
@@ -1431,7 +1429,7 @@ export default {
                         this.save()
                       }
                     } else if (keyNum === 3) {
-                      // 清空按键按下，此时就把成品滑块数据数组清空
+                      // 清空按键按下，此时就把被测滑块数据数组清空
                       this.finishSliderArray = []
                       this.$message({
                         message: `清空成功`,
@@ -1477,7 +1475,7 @@ export default {
                         })
                       }
                     } else if (keyNum === 2) {
-                      // 测量按键按下，此时就把数据存入到成品滑块数据数组，二维数组
+                      // 测量按键按下，此时就把数据存入到被测滑块数据数组，二维数组
                       if (this.finishSliderArray.length <= 2) {
                         // 按第1~3下
                         this.finishSliderArray.push([
@@ -1498,7 +1496,7 @@ export default {
                         this.save()
                       }
                     } else if (keyNum === 3) {
-                      // 清空按键按下，此时就把成品滑块数据数组清空
+                      // 清空按键按下，此时就把被测滑块数据数组清空
                       this.finishSliderArray = []
                       this.$message({
                         message: `清空成功`,
@@ -1544,7 +1542,7 @@ export default {
                         })
                       }
                     } else if (keyNum === 2) {
-                      // 测量按键按下，此时就把数据存入到成品滑块数据数组，二维数组
+                      // 测量按键按下，此时就把数据存入到被测滑块数据数组，二维数组
                       if (this.finishSliderArray.length <= 2) {
                         // 按第1~3下
                         this.finishSliderArray.push([
@@ -1565,7 +1563,7 @@ export default {
                         this.save()
                       }
                     } else if (keyNum === 3) {
-                      // 清空按键按下，此时就把成品滑块数据数组清空
+                      // 清空按键按下，此时就把被测滑块数据数组清空
                       this.finishSliderArray = []
                       this.$message({
                         message: `清空成功`,
@@ -1634,8 +1632,8 @@ export default {
           let toA_constant = 0 // 到A常数（μm）
           let toB_constant = 0 // 到B常数（μm）
 
-          let centerSpacing_min = 0 // 中心距下限（5位压力数字量）
-          let centerSpacing_max = 0 // 中心距上限（5位压力数字量）
+          let centerSpacing_min = 0 // 中心距min下限（5位压力数字量）
+          let centerSpacing_max = 0 // 中心距max上限（5位压力数字量）
 
           let n = 2 // 矩形2，法兰型3
           if (modelValue === 'EA' || modelValue === 'HEA') {
@@ -2159,7 +2157,7 @@ export default {
                         type: 'success',
                         duration: 1000
                       })
-                      // 成品滑块数据数组清空
+                      // 被测滑块数据数组清空
                       this.finishSliderArray = []
                       // 二维码编号自增
                       this.QRCodeAdd()
@@ -2322,9 +2320,11 @@ export default {
       }
     }
 
-    /* 实时显示4个传感器值 */
+    /* 实时显示4个传感器的经过处理后的值 */
     .show {
+      margin-bottom: 5px;
       height: 10%;
+      border-bottom: 2px solid rgb(0, 0, 0);
       @include flex(row, center, center);
       .text {
         font-size: 24px;
@@ -2336,8 +2336,10 @@ export default {
         padding: 5px 10px;
         font-size: 24px;
         color: red;
+        font-weight: 700;
       }
     }
+
     /* 显示按键按下时的原始数据 */
     .show-2 {
       font-size: 18px;
@@ -2348,14 +2350,14 @@ export default {
       font-weight: 700;
       margin-top: 15px;
       margin-bottom: 5px;
-      color: green;
+      color: red;
     }
     /* 选择规格（工位）后，对应K1~K4的值，用于AD*K的计算显示 */
     .show-4 {
       font-size: 22px;
       font-weight: 700;
       margin-bottom: 5px;
-      color: green;
+      color: red;
     }
 
     /* 表格区域 */

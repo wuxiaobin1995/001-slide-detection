@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-10-07 15:23:00
- * @LastEditTime: 2024-12-17 11:46:08
+ * @LastEditTime: 2024-12-20 10:07:23
  * @Description : 修改传感器K值
 -->
 <template>
@@ -23,13 +23,13 @@
             <div class="item title">K1(应变片)</div>
           </el-col>
           <el-col :span="5">
-            <div class="item title">K2</div>
+            <div class="item title">K2(2号传感器)</div>
           </el-col>
           <el-col :span="5">
-            <div class="item title">K3</div>
+            <div class="item title">K3(3号传感器)</div>
           </el-col>
           <el-col :span="5">
-            <div class="item title">K4</div>
+            <div class="item title">K4(4号传感器)</div>
           </el-col>
         </el-row>
 
