@@ -1,7 +1,7 @@
 <!--
  * @Author      : Mr.bin
  * @Date        : 2024-03-12 15:11:07
- * @LastEditTime: 2024-12-20 15:09:06
+ * @LastEditTime: 2025-02-08 11:34:07
  * @Description : home
 -->
 <template>
@@ -97,11 +97,12 @@
       <!-- 实时显示4个传感器的经过以下处理后的值 -->
       <!-- k1是乘，k2~k4是除 -->
       <!-- 悬空时显示为0 -->
+      <!-- 应变片挤压时，数值是变小的。其他三个压力传感器挤压时，数值是变大的 -->
       <div class="show">
         <div class="text">实时值：</div>
         <div class="item">
           {{
-            ((showSensorArray[0] - showOnceSensorArray[0]) * k1_show).toFixed(0)
+            ((showOnceSensorArray[0] - showSensorArray[0]) * k1_show).toFixed(0)
           }}
         </div>
         <div class="item">
